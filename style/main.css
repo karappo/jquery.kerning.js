@@ -1,0 +1,299 @@
+@charset "UTF-8";
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+  line-height: 1;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+nav ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+/* change colours to suit your needs */
+ins {
+  background-color: #ff9;
+  color: #000;
+  text-decoration: none;
+}
+
+/* change colours to suit your needs */
+mark {
+  background-color: #ff9;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* change border colour to suit your needs */
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #cccccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+input, select {
+  vertical-align: middle;
+}
+
+/* unify font size between browsers by YUI(Yahoo! User Interface Library) */
+/*
+
+http://developer.yahoo.com/yui/3/examples/cssfonts/cssfonts-size.html
+http://colo-ri.jp/develop/2008/03/css.html
+
+*/
+body {
+  font: 13px;
+  *font-size: small;
+  *font: x-small;
+}
+
+.text10 {
+  font-size: 77%;
+}
+
+.text11 {
+  font-size: 85%;
+}
+
+.text12 {
+  font-size: 93%;
+}
+
+.text13 {
+  font-size: 100%;
+}
+
+.text14 {
+  font-size: 108%;
+}
+
+.text15 {
+  font-size: 116%;
+}
+
+.text16 {
+  font-size: 123.1%;
+}
+
+.text17 {
+  font-size: 131%;
+}
+
+.text18 {
+  font-size: 138.5%;
+}
+
+.text19 {
+  font-size: 146.5%;
+}
+
+.text20 {
+  font-size: 153.9%;
+}
+
+.text21 {
+  font-size: 161.6%;
+}
+
+.text22 {
+  font-size: 167%;
+}
+
+.text23 {
+  font-size: 174%;
+}
+
+.text24 {
+  font-size: 182%;
+}
+
+.text25 {
+  font-size: 189%;
+}
+
+.text26 {
+  font-size: 197%;
+}
+
+/* CSS Document */
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+/* float:left のみクリア */
+.clfl:after {
+  content: ".";
+  /* 新しい要素を作る */
+  display: block;
+  /* ブロックレベル要素に */
+  clear: left;
+  height: 0;
+  visibility: hidden;
+}
+
+/* float:right のみクリア */
+.clfr:after {
+  content: ".";
+  /* 新しい要素を作る */
+  display: block;
+  /* ブロックレベル要素に */
+  clear: right;
+  height: 0;
+  visibility: hidden;
+}
+
+/* float 両方クリア */
+.clf:after {
+  content: ".";
+  /* 新しい要素を作る */
+  display: block;
+  /* ブロックレベル要素に */
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+
+.clf {
+  min-height: 1px;
+}
+
+* html .clf {
+  height: 1px;
+  /*¥*/
+  /*/
+  height: auto;
+  overflow: hidden;
+  /**/
+}
+
+/* Reset All Default Styles */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+  outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* IEの画像の下に隙間ができるバグ対策 */
+img {
+  vertical-align: bottom;
+}
+
+/* IEでカーソルが変わらない対策 */
+a span {
+  cursor: pointer;
+}

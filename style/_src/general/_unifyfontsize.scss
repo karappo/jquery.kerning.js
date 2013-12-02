@@ -1,0 +1,31 @@
+@charset "utf-8";
+/* unify font size between browsers by YUI(Yahoo! User Interface Library) */
+/*
+
+http://developer.yahoo.com/yui/3/examples/cssfonts/cssfonts-size.html
+http://colo-ri.jp/develop/2008/03/css.html
+
+*/
+
+body {
+    font:13px;
+    *font-size:small;
+    *font:x-small;
+}
+.text10 { font-size:77%; }
+.text11 { font-size:85%; }
+.text12 { font-size:93%; }
+.text13 { font-size:100%; }
+.text14 { font-size:108%; }
+.text15 { font-size:116%; }
+.text16 { font-size:123.1%; }
+.text17 { font-size:131%; }
+.text18 { font-size:138.5%; }
+.text19 { font-size:146.5%; }
+.text20 { font-size:153.9%; }
+.text21 { font-size:161.6%; }
+.text22 { font-size:167%; }
+.text23 { font-size:174%; }
+.text24 { font-size:182%; }
+.text25 { font-size:189%; }
+.text26 { font-size:197%; }
