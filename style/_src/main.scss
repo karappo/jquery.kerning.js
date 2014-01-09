@@ -1,4 +1,16 @@
+@import 'compass';
 @import 'general/html5reset-1.6.1';
 @import 'general/unifyfontsize';
 @import 'general/general';
 @import 'general/reset';
+
+#drop_zone {
+	border: 2px dashed #bbb;
+	@include border-radius(5px);
+	padding: 25px;
+	margin: 30px;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+	color: #bbb;
+}
