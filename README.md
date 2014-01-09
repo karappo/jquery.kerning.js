@@ -1,4 +1,5 @@
-jquery.kerning.js
+KerningData Maker for jquery.kerning.js
+
 =================
 
-kerning plugin using jquey
+[http://naokazuterada.github.io/jquery.kerning.js/](http://naokazuterada.github.io/jquery.kerning.js/)
