@@ -4,7 +4,7 @@
 @import 'general/general';
 @import 'general/reset';
 
-#drop_zone {
+#dropzone {
 	border: 2px dashed #bbb;
 	@include border-radius(5px);
 	padding: 25px;

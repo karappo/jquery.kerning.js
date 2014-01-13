@@ -298,7 +298,7 @@ a span {
   cursor: pointer;
 }
 
-#drop_zone {
+#dropzone {
   border: 2px dashed #bbb;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
