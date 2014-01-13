@@ -1,2 +1,4 @@
+*.DS_Store
+style/_src/.sass-cache/*
 *.otf
 *.ttf
