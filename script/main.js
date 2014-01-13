@@ -36,26 +36,27 @@ function handleFileSelect(e) {
 		var reader = new FileReader();
 		reader.onload = function(theFile) {
 			data = new Int8Array(reader.result);
-			
-			var OffsetTable = new Object();
-			OffsetTable['version'] 				= u8ArrToStr(read(4));
-			OffsetTable['numTables'] 			= parseInt(u8ArrToStr(read(2)));
-			OffsetTable['searchRange'] 		= parseInt(u8ArrToStr(read(2)));
-			OffsetTable['entrySelector'] 	= parseInt(u8ArrToStr(read(2)));
-			OffsetTable['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
+			var FontInfo = {};
 
-			console.log('OffsetTable',OffsetTable);
+			FontInfo['OffsetTable'] = {};
+			FontInfo['OffsetTable']['version'] 				= u8ArrToStr(read(4));
+			FontInfo['OffsetTable']['numTables'] 			= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['searchRange'] 		= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['entrySelector'] 	= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
 
-			var TableDirectory = new Object();
-			for (var i = 0; i < OffsetTable['numTables']; i++) {
+			FontInfo['TableDirectory'] = {};
+			for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
 				var tag = String.fromCharCode.apply(null, read(4));
 
-				TableDirectory[tag] = {};
-				TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4),true);
-				TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4),true));
-				TableDirectory[tag]['length'] = u8ArrToStr(read(4));
+				FontInfo['TableDirectory'][tag] = {};
+				FontInfo['TableDirectory'][tag]['checkSum'] = u8ArrToStr(read(4),true);
+				FontInfo['TableDirectory'][tag]['offset'] = parseInt(u8ArrToStr(read(4),true));
+				FontInfo['TableDirectory'][tag]['length'] = u8ArrToStr(read(4));
 			}
-			console.log('TableDirectory',TableDirectory);
+			console.log('FontInfo',FontInfo);
+
+			$('#output').html(JSON.stringify(FontInfo, null, '\t'));
 		}
 		reader.readAsArrayBuffer(f);
 	}
