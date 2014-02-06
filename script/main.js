@@ -2,12 +2,11 @@ $(window).resize(windowResize);
 $(function(){
 	windowResize();
 	
-	loadData('/fonts/Yu Gothic Bold.otf', function(){
-		console.log('Load data success !');
-	});
+	// loadData('/fonts/Yu Gothic Bold.otf', function(){
+	// 	console.log('Load data success !');
+	// });
 	
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
-		
 		// Setup the dnd listeners.
 		var dropZone = document.getElementById('drop_zone');
 		dropZone.addEventListener('dragover', handleDragOver, false);
@@ -18,12 +17,12 @@ $(function(){
 	}
 });
 
-function handleFileSelect(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
+function handleFileSelect(e) {
+	e.stopPropagation();
+	e.preventDefault();
 
-	var files = evt.dataTransfer.files;
-	// var files = evt.target.files;
+	var files = e.dataTransfer.files;
+	// var files = e.target.files;
 
 	// Loop through the FileList and render image files as thumbnails.
 	for (var i = 0, f; f = files[i]; i++) {
@@ -45,7 +44,7 @@ function handleFileSelect(evt) {
 					os2  = data.indexOf('OS/2'),
 					post = data.indexOf('post'),
 					kern = data.indexOf('kern'),
-					palt = data.indexOf('palt');
+					palt = data.indexOf('palt'),
 					CFF = data.indexOf('CFF');
 			// console.log(u8ArrToStr(data.charAt(32)));
 			console.log('CFF',CFF);
@@ -64,10 +63,10 @@ function handleFileSelect(evt) {
 	}
 }
 
-function handleDragOver(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
-	evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+function handleDragOver(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
 function loadData(dataUrl, callback){
