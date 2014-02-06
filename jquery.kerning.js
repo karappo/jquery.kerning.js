@@ -7,7 +7,10 @@
 	// by Naokazu Terada
 	// 
 	// Usage
-	// $('#pageTopButton').kerning();
+	// $.getJSON("/script/kerning.json" , function(data) {
+	// 		kerningData = data;
+	// 		$('h2,h3,h4,h5').kerning({"data":kerningData});
+	// });
 	//
 
 	$.fn.kerning=function(config){
@@ -50,18 +53,24 @@
 				var left = 0;
 				var right = 0;
 				if(kdata[str]){
+					// console.log(str,kdata[str]);
 					if(kdata[str]["L"]) left = kdata[str]["L"];
 					if(kdata[str]["R"]) right = kdata[str]["R"];
+
+					// for test
+					if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span>';
+
+					content += '<span style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
+
+					// for test
+					if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span><br>';
+				}
+				else{
+					content += str;
 				}
 				// console.log(str,left,right);
 				
-				// for test
-				if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span>';
-
-				content += '<span style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+strArray[i]+'</span>';
-
-				// for test
-				if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span><br>';
+				
 			};
 			container.html(content);
 		});

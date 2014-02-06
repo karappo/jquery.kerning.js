@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jquery.kerning.js</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./style/jumbotron-narrow.css">
+  <style>
+
+    /* PrettyPrint */
+    .com { color: #93a1a1; }
+    .lit { color: #195f91; }
+    .pun, .opn, .clo { color: #93a1a1; }
+    .fun { color: #dc322f; }
+    .str, .atv { color: #D14; }
+    .kwd, .linenums .tag { color: #1e347b; }
+    .typ, .atn, .dec, .var { color: teal; }
+    .pln { color: #48484c; }
+     
+    .prettyprint {
+      padding: 8px;
+      background-color: #f7f7f9;
+      border: 1px solid #e1e1e8;
+    }
+    .prettyprint.linenums {
+      -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+         -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+              box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+    }
+    /* Specify class=linenums on a pre to get line numbering */
+    ol.linenums {
+      margin: 0 0 0 33px; /* IE indents via margin-left */
+    } 
+    ol.linenums li {
+      padding-left: 12px;
+      color: #bebec5;
+      line-height: 18px;
+      text-shadow: 0 1px 0 #fff;
+    }
+    
+
+    @font-face {
+      font-family:'mplus-2m-regular';
+      src: url('./fonts/mplus-2m-regular-sub.eot') format('eot');
+      src: url('./fonts/mplus-2m-regular-sub.woff') format('woff');
+      src: url('./fonts/mplus-2m-regular-sub.ttf') format('truetype');
+    }
+    .webfont {
+      font-family: 'mplus-2m-regular';
+    }
+    .example {
+      font-size: 50px;
+      color: #111;
+    }
+    .kern {
+      letter-spacing: 0.1em;
+    }
+    .texts {
+      letter-spacing: 0;
+      font-size: 50px;
+    }
+    .texts span{
+    }
+  </style>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="//google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script src="./jquery.kerning.js"></script>
+  <script>
+    $(function(){
+      $.getJSON("./kerning.json" , function(data) {
+        $('.kern').kerning({"data":data});
+      });
+    });
+  </script>
+</head>
+<body onload="prettyPrint()">
+  <div class="container">
+      <div class="header">
+        <h3 class="text-muted">jquery.kerning.js</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>jQuery.Kerning.js</h1>
+        <p class="lead">This is a jquery plugin which adjust text kerning in HTML.</p>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-12">
+          <h4>About</h4>
+          <p>カーニング調整のためのjQueryプラグインです。</p>
+          
+          <h4>Example</h4>
+          <p class="example webfont">
+            あいうえお、かきくけこ。
+          </p>
+          <p class="example webfont kern">
+            あいうえお、かきくけこ。
+          </p>
+
+          <h6>HTML</h6>
+          <pre class="prettyprint html">&lt;h1&gt;あいうえお、かきくけこ。&lt;/h1&gt;
+&lt;h1 class="kern"&gt;あいうえお、かきくけこ。&lt;/h1&gt;</pre>
+          js
+          <pre class="prettyprint javascript">$.getJSON("./kerning.json" , function(data) {
+  $('h1.kern').kerning({"data":data});
+});</pre>
+          CSS
+          <pre class="prettyprint css">h1 {
+  letter-spacing: 0.1em;
+}</pre>
+          
+          <h4>Thanks</h4>
+          <p class="texts webfont">
+            █あ█い█う█え█お█か█き█く█け█こ█さ█し█す█せ█そ█た█ち█つ█て█と█な█に█ぬ█ね█の█は█ひ█ふ█へ█ほ█ま█み█む█め█も█や█ゆ█よ█ら█り█る█れ█ろ█わ█を█ん█ー█、█。█「█」█（█）█・█！█？█＆█
+          </p>
+          <p class="texts webfont kern">
+            █あ█い█う█え█お█か█き█く█け█こ█さ█し█す█せ█そ█た█ち█つ█て█と█な█に█ぬ█ね█の█は█ひ█ふ█へ█ほ█ま█み█む█め█も█や█ゆ█よ█ら█り█る█れ█ろ█わ█を█ん█ー█、█。█「█」█（█）█・█！█？█＆█
+          </p>
+
+          <h4>Thanks</h4>
+          <p><a href="http://mplus.font-face.jp/#mplus-2m-regular">M+Web FONTS Subsetter</a></p>
+          <p><a href="https://code.google.com/p/google-code-prettify/">google-code-prettify</a></p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>&copy; Karappo Inc.</p>
+      </div>
+
+    </div>
+
+  <h1>jQueryカーニングプラグイン</h1>
+  <h2>これは何？</h2>
+  <p>
+    HTMLテキストの字間調整用jQueryプラグインです。
+  </p>
+  <h2>使い方</h2>
+  <p>
+    HTMLテキストの字間調整用jQueryプラグインです。
+  </p>
+  <section id="example">
+    <!-- <h3>カーニングOFF</h3>
+    <p>
+      █あ█い█う█え█お█か█き█く█け█こ█さ█し█す█せ█そ█た█ち█つ█て█と█な█に█ぬ█ね█の█は█ひ█ふ█へ█ほ█ま█み█む█め█も█や█ゆ█よ█ら█り█る█れ█ろ█わ█を█ん█
+    </p> -->
+    <h3>カーニングON</h3>
+    
+  </section>
+</body>
+</html>
