@@ -7,8 +7,9 @@ $(function(){
 	// });
 	
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		
 		// Setup the dnd listeners.
-		var dropZone = document.getElementById('drop_zone');
+		var dropZone = document.getElementById('dropzone');
 		dropZone.addEventListener('dragover', handleDragOver, false);
 		dropZone.addEventListener('drop', handleFileSelect, false);
 		
@@ -17,49 +18,47 @@ $(function(){
 	}
 });
 
+var pointer = 0, data;
+var read = function(_size){
+	var start = pointer;
+	pointer += _size;
+	return data.subarray(start,pointer);
+}
 function handleFileSelect(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
 	var files = e.dataTransfer.files;
-	// var files = e.target.files;
 
 	// Loop through the FileList and render image files as thumbnails.
 	for (var i = 0, f; f = files[i]; i++) {
 
-		// Only process image files.
-		// if (!f.type.match('image.*')) {
-		// 	continue;
-		// }
-
 		var reader = new FileReader();
 		reader.onload = function(theFile) {
-			var data = reader.result;
-					cmap = data.indexOf('cmap'),
-					head = data.indexOf('head'),
-					hhea = data.indexOf('hhea'),
-					hmtx = data.indexOf('hmtx'),
-					maxp = data.indexOf('maxp'),
-					name = data.indexOf('name'),
-					os2  = data.indexOf('OS/2'),
-					post = data.indexOf('post'),
-					kern = data.indexOf('kern'),
-					palt = data.indexOf('palt'),
-					CFF = data.indexOf('CFF');
-			// console.log(u8ArrToStr(data.charAt(32)));
-			console.log('CFF',CFF);
-			console.log('cmap',cmap);
-			console.log('head',head);
-			console.log('hhea',hhea);
-			console.log('hmtx',hmtx);
-			console.log('maxp',maxp);
-			console.log('name',name);
-			console.log('os2',os2);
-			console.log('post',post);
-			console.log('kern',kern);
-			console.log('palt',palt);
-		};
-		reader.readAsBinaryString(f);
+			data = new Int8Array(reader.result);
+			var FontInfo = {};
+
+			FontInfo['OffsetTable'] = {};
+			FontInfo['OffsetTable']['version'] 				= u8ArrToStr(read(4));
+			FontInfo['OffsetTable']['numTables'] 			= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['searchRange'] 		= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['entrySelector'] 	= parseInt(u8ArrToStr(read(2)));
+			FontInfo['OffsetTable']['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
+
+			FontInfo['TableDirectory'] = {};
+			for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
+				var tag = String.fromCharCode.apply(null, read(4));
+
+				FontInfo['TableDirectory'][tag] = {};
+				FontInfo['TableDirectory'][tag]['checkSum'] = u8ArrToStr(read(4),true);
+				FontInfo['TableDirectory'][tag]['offset'] = parseInt(u8ArrToStr(read(4),true));
+				FontInfo['TableDirectory'][tag]['length'] = u8ArrToStr(read(4));
+			}
+			console.log('FontInfo',FontInfo);
+
+			$('#output').html(JSON.stringify(FontInfo, null, '\t'));
+		}
+		reader.readAsArrayBuffer(f);
 	}
 }
 
@@ -69,41 +68,42 @@ function handleDragOver(e) {
 	e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
-function loadData(dataUrl, callback){
 
-	var req = new XMLHttpRequest();
+// function loadData(dataUrl, callback){
 
-	req.open('GET', dataUrl, true);
-	req.responseType = 'arraybuffer';
-	req.onload = function (oEvent) {
-		var arrayBuffer = req.response;
-		if (arrayBuffer) {
-			var data	= new Uint8Array(arrayBuffer);
+// 	var req = new XMLHttpRequest();
+
+// 	req.open('GET', dataUrl, true);
+// 	req.responseType = 'arraybuffer';
+// 	req.onload = function (oEvent) {
+// 		var arrayBuffer = req.response;
+// 		if (arrayBuffer) {
+// 			var data	= new Uint8Array(arrayBuffer);
 			
-			var thumbnailMagic = String.fromCharCode.apply(null, data.subarray(0,4)); // convert to string
-			// if(thumbnailMagic==='jatm'){
-				var samplesPerThumbSampleDSD 	= u8ArrToStr(data.subarray(4,6)),
-				samplesPerThumbSamplePCM 	= u8ArrToStr(data.subarray(6,8)),
-				totalSamples							= u8ArrToStr(data.subarray(8,16)),
-				numFinishedSamples				= u8ArrToStr(data.subarray(16,24)),
-				numThumbnailSamples 			= u8ArrToStr(data.subarray(24,28)),
-				numChannels								= u8ArrToStr(data.subarray(28,32)),
-				sampleRate								= u8ArrToStr(data.subarray(32,36)),
-						// future										= data.subarray(36,52), // reserved area
-						thumbnailSamples					= new Int8Array(data.subarray(52));
+// 			var thumbnailMagic = String.fromCharCode.apply(null, data.subarray(0,4)); // convert to string
+// 			// if(thumbnailMagic==='jatm'){
+// 				var samplesPerThumbSampleDSD 	= u8ArrToStr(data.subarray(4,6)),
+// 				samplesPerThumbSamplePCM 	= u8ArrToStr(data.subarray(6,8)),
+// 				totalSamples							= u8ArrToStr(data.subarray(8,16)),
+// 				numFinishedSamples				= u8ArrToStr(data.subarray(16,24)),
+// 				numThumbnailSamples 			= u8ArrToStr(data.subarray(24,28)),
+// 				numChannels								= u8ArrToStr(data.subarray(28,32)),
+// 				sampleRate								= u8ArrToStr(data.subarray(32,36)),
+// 						// future										= data.subarray(36,52), // reserved area
+// 						thumbnailSamples					= new Int8Array(data.subarray(52));
 
-				// success
-				console.log(sampleRate);
+// 				// success
+// 				console.log(sampleRate);
 				
-				callback();
-			// }else{
-			// 	// Not allowed file type
-			// 	console.error('Wrog waveform file format.');
-			// }
-		}
-	};
-	req.send(null);
-}
+// 				callback();
+// 			// }else{
+// 			// 	// Not allowed file type
+// 			// 	console.error('Wrog waveform file format.');
+// 			// }
+// 		}
+// 	};
+// 	req.send(null);
+// }
 
 function windowResize(){
 
@@ -112,10 +112,19 @@ function windowResize(){
 // ++++++++++++++++++++++++++++++++++++++++++++
 // Utility
 
-function u8ArrToStr(u8array){
-	// u8array : little endian
-	for (var i=u8array.length-1, result='0x'; i >= 0; i--) {
-		result += ('00'+u8array[i].toString(16)).substr(-2);
+function u8ArrToStr(u8array,_asLittleEndian){
+	var result='0x';
+	if(_asLittleEndian){
+		// u8array : little endian
+		for (var i=u8array.length-1; i >= 0; i--) {
+			result += ('00'+u8array[i].toString(16)).substr(-2);
+		}
+	}
+	else {
+		// u8array : big endian
+		for (var i=0; i<u8array.length; i++) {
+			result += ('00'+u8array[i].toString(16)).substr(-2);
+		}
 	}
 	return result;
 }
