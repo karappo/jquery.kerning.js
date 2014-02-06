@@ -21,23 +21,22 @@
 
 		return this.each(function(i){
 			
-			var me = $(this);
+			var me = $(this),
+					container = me,
+					strArray = me.html(),
+					content = '';
 
 			// 全タグ除去
 			// var strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
-
-			// アンカーは残す
-			var strArray,
-					container,
-					content = '';
-
-			if(me.children('a').length){
-				container = me.children('a');
-				strArray = container.html().replace(/(<([^>]+)>)/ig,"").split('');
-			}else{
-				container = me;
-				strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
-			}
+			
+			// アンカー以外のタグ除去
+			// if(me.children('a').length){
+			// 	container = me.children('a');
+			// 	strArray = container.html().replace(/(<([^>]+)>)/ig,"").split('');
+			// }else{
+			// 	container = me;
+			// 	strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
+			// }
 
 			// for test
 			var delimiter = me.data('delimiter');
@@ -45,8 +44,6 @@
 			if(delimiter!=undefined){
 				strArray = (delimiter+strArray.join(delimiter)+delimiter).split('');
 			}
-
-			
 
 			for (var i = 0; i < strArray.length; i++) {
 				var str = strArray[i];
