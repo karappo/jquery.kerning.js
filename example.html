@@ -8,6 +8,23 @@
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="./style/jumbotron-narrow.css">
   <style>
+    
+    .jumbotron {
+      background-color: #C9CDDA;
+    }
+    .jumbotron h1 {
+      color: #fff;
+    }
+    .jumbotron .lead {
+      color: #666;
+    }
+    .jumbotron .btn {
+      background-color: #563d7c;
+      border-color: #563d7c;
+    }
+    .jumbotron .btn:hover {
+      background-color: #6A528F;
+    }
 
     /* PrettyPrint */
     .com { color: #93a1a1; }
@@ -66,7 +83,7 @@
     .sample {
       letter-spacing: 0;
       font-size: 83px;
-      color: #CBE7FF;
+      color: #C9CDDA;
     }
     .sample span{
       color: #000;
@@ -86,6 +103,9 @@
   </script>
 </head>
 <body onload="prettyPrint()">
+  <a href="https://github.com/KarappoInc/jquery.kerning.js">
+      <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+  </a>
   <div class="container">
       <div class="header">
         <h3 class="text-muted">jquery.kerning.js</h3>
@@ -134,8 +154,9 @@
           <h4>Notice</h4>
           <br>
           <p>
-            字形はフォント毎に異なるため、jquery.kerning.jsに渡すjsonデータの作成が必要です。<br>
-            現時点では、ソースコードに付属している「<a href="http://mplus.font-face.jp/#mplus-2m-regular" target="_blank">M+ 2m Regular</a>」用に作成したカーニングデータ（mplus-2m-regular.json）を参考に、使用されるフォントに合わせたカーニングデータを作成して頂く必要があります。また、OTFデータから自動的にjsonデータを生成するツールを現在作成中です。
+            字形はフォント毎に異なるため、使用するフォントに合わせたカーニングデータの作成が必要です。<br>
+            現時点では、ソースコードに付属している「<a href="http://mplus.font-face.jp/#mplus-2m-regular" target="_blank">M+ 2m Regular</a>」用に作成したカーニングデータを参考に、使用されるフォントに合わせたカーニングデータを作成して頂く必要があります。<br>
+            ※ OTFデータから自動的にjsonデータを生成するツールを現在作成中です。
           </p>
           
           <br>
