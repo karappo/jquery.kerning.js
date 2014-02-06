@@ -1,4 +1,1 @@
-jquery.kerning.js
-=================
-
-kerning plugin using jquey
+[Documentation](http://karappoinc.github.io/jquery.kerning.js/)
