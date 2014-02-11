@@ -75,8 +75,12 @@
 					// for test
 					if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span>';
 
-					content += '<span style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
-
+					if(left!=0 || right!=0){
+						content += '<span style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
+					}else{
+						content += str;
+					}
+					
 					// for test
 					if(linebreak!=undefined) content += '<span style="display:inline-block;">'+linebreak+'</span><br>';
 				}
