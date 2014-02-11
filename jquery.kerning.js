@@ -7,17 +7,31 @@
 	// by Naokazu Terada
 	// 
 	// Usage
-	// $.getJSON("/script/kerning.json" , function(data) {
-	// 		kerningData = data;
-	// 		$('h2,h3,h4,h5').kerning({"data":kerningData});
+	// $.getJSON("/script/kerning-data.json" , function(data) {
+	// 		$('h2,h3,h4,h5').kerning({"data":data});
 	// });
 	//
 
 	$.fn.kerning=function(config){
 
-		var defaults = {};
+		var defaults = {
+			data: [
+				{
+			  	"kerning":{
+						 "、":{"L":0,"R":-0.4}
+						,"。":{"L":0,"R":-0.4}
+						,"「":{"L":-0.4,"R":0}
+						,"」":{"L":0,"R":-0.4}
+						,"（":{"L":-0.4,"R":0}
+						,"）":{"L":0,"R":-0.4}
+						,"・":{"L":-0.22,"R":-0.22}
+			  	}
+				}
+			]
+		};
 		var options=$.extend(defaults, config);
-		var kdata = config['data'][0]["kerning"];
+		console.log(options);
+		var kdata = options['data'][0]["kerning"];
 
 		return this.each(function(i){
 			
