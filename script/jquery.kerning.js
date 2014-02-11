@@ -4,13 +4,16 @@
 	// Kerning Plugin
 	// ::::::::::::::::
 	// 
-	// by Naokazu Terada
+	// Karappo Inc.
+	// 
+	// web: http://karappoinc.github.io/jquery.kerning.js/
+	// src: https://github.com/KarappoInc/jquery.kerning.js
 	// 
 	// Usage
 	// $.getJSON("/script/kerning-data.json" , function(data) {
 	// 		$('h2,h3,h4,h5').kerning({"data":data});
 	// });
-	//
+	// 
 
 	$.fn.kerning=function(config){
 
