@@ -8,7 +8,10 @@
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="./style/jumbotron-narrow.css">
   <style>
-    
+    body {
+      -webkit-font-smoothing: antialiased;
+    }
+
     .jumbotron {
       background-color: #C9CDDA;
     }
@@ -60,12 +63,30 @@
 
     @font-face {
       font-family:'mplus-2m-regular';
+      font-weight: normal;
       src: url('./fonts/mplus-2m-regular-sub.eot') format('eot');
       src: url('./fonts/mplus-2m-regular-sub.woff') format('woff');
       src: url('./fonts/mplus-2m-regular-sub.ttf') format('truetype');
     }
-    .webfont {
+    @font-face {
+      font-family:'hannari-mincho';
+      font-weight: normal;
+      src: url('./fonts/Hannari.otf') format('opentype');
+    }
+    @font-face {
+      font-family:'utsukushi-mincho';
+      font-weight: normal;
+      src: url('./fonts/UtsukushiFONT.otf') format('opentype');
+      src: url('./fonts/UtsukushiMincho.ttf') format('truetype');
+    }
+    .mplus {
       font-family: 'mplus-2m-regular';
+    }
+    .hannari {
+      font-family: 'hannari-mincho';
+    }
+    .utsukushi {
+      font-family: 'utsukushi-mincho';
     }
     .example {
       font-size: 20px;
@@ -78,10 +99,8 @@
       display: block;
       font-weight: normal;
     }
-    .kern {
-    }
     .sample {
-      letter-spacing: 0;
+      letter-spacing: 0 !important;
       font-size: 83px;
       color: #C9CDDA;
     }
@@ -97,7 +116,13 @@
   <script>
     $(function(){
       $.getJSON("./script/mplus-2m-regular.json" , function(data) {
-        $('.kern').kerning({"data":data});
+        $('.mplus.kern').kerning({"data":data});
+      });
+      $.getJSON("./script/hannari-mincho.json" , function(data) {
+        $('.hannari.kern').kerning({"data":data});
+      });
+      $.getJSON("./script/utsukushi-mincho.json" , function(data) {
+        $('.utsukushi.kern').kerning({"data":data});
       });
     });
   </script>
@@ -131,16 +156,28 @@
           
           <h4>Demo</h4>
           <br>
-
-          <h6>plain text</h6>
-          <b class="example webfont">ポラーノの広場</b>
-          <p class="example webfont">
+          
+          <h6>うつくし明朝 - plain text</h6>
+          <b class="example utsukushi">ポラーノの広場</b>
+          <p class="example utsukushi">
             あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
           </p>
 
-          <h6>jquery.kerning.js</h6>
-          <b class="example webfont kern">ポラーノの広場</b>
-          <p class="example webfont kern">
+          <h6>うつくし明朝 - jquery.kerning.js</h6>
+          <b class="example utsukushi kern">ポラーノの広場</b>
+          <p class="example utsukushi kern">
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          </p>
+
+          <h6>M+ 2m Regular - plain text</h6>
+          <b class="example mplus">ポラーノの広場</b>
+          <p class="example mplus">
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          </p>
+
+          <h6>M+ 2m Regular - jquery.kerning.js</h6>
+          <b class="example mplus kern">ポラーノの広場</b>
+          <p class="example mplus kern">
             あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
           </p>
           
@@ -167,19 +204,9 @@
             現時点では、ソースコードに付属している<a href="https://github.com/KarappoInc/jquery.kerning.js/blob/master/kerningdata-template.json" target="_blank">テンプレート</a>を参考に、使用するフォントに合わせたカーニングデータを別途作成する必要があります。<br>
             ※ フォントデータから自動的にjsonデータを生成するツールを試作中です。
           </p>
-          
           <br>
           <br>
-          <br>
-          <a href="http://mplus.font-face.jp/#mplus-2m-regular" target="_blank">M+ 2m Regular</a><br>
-          <small>letter-spacing: 0;</small>
-          <br>
-          <p class="sample webfont">█<span>あ</span>█<span>い</span>█<span>う</span>█<span>え</span>█<span>お</span>█</p>
-          <p class="sample webfont kern">█あ█い█う█え█お█</p>
-          
-          <br>
-          <br>
-          
+
           <h4>Case Study</h4>
           <br>
           <ul>
