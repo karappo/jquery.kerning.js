@@ -28,4 +28,4 @@ jQuery(function($) {
 
 
 ## Release History
-_(Nothing yet)_
+v0.1.0 - First release.

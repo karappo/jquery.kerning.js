@@ -1,5 +1,5 @@
 {
-  "name": "kerning",
+  "name": "jquery.kerning",
   "title": "Kerning",
   "description": "The jQuery kerning plugin specific with Japanese webfont.",
   "version": "0.1.0",
