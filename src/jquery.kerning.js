@@ -1,19 +1,17 @@
-(function($){
+/*
+ * kerning
+ * http://karappoinc.github.io/jquery.kerning.js/
+ *
+ * Copyright (c) 2014 Karappo Inc.
+ * Licensed under the MIT license.
+ * 
+ * $.getJSON("kerning-data.json" , function(_data) {
+ *    $('h2,h3,h4,h5').kerning({"data":_data});
+ * });
+ * 
+ */
 
-  // ::::::::::::::::
-  // Kerning Plugin
-  // ::::::::::::::::
-  // 
-  // Karappo Inc.
-  // 
-  // web: http://karappoinc.github.io/jquery.kerning.js/
-  // src: https://github.com/KarappoInc/jquery.kerning.js
-  // 
-  // Usage
-  // $.getJSON("/script/kerning-data.json" , function(data) {
-  //    $('h2,h3,h4,h5').kerning({"data":data});
-  // });
-  // 
+ (function($){
 
   $.fn.kerning=function(config){
 
