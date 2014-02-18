@@ -29,3 +29,6 @@ jQuery(function($) {
 
 ## Release History
 v0.1.0 - First release.
+
+
+[![Build Status](https://travis-ci.org/KarappoInc/jquery.kerning.js.png?branch=master)](https://travis-ci.org/KarappoInc/jquery.kerning.js)
