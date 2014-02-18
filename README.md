@@ -23,13 +23,9 @@ jQuery(function($) {
 <h1>美しい文字</h1>
 ```
 
-## Examples
+## Examples / Documentation
 [http://karappoinc.github.io/jquery.kerning.js/](http://karappoinc.github.io/jquery.kerning.js/)
 
 
-## Documentation
-[_(Coming soon)_]
-
-
 ## Release History
-_(Nothing yet)_
+v0.1.0 - First release.
