@@ -95,7 +95,6 @@
 
     setTimeout(function(){
       start();
-      console.log(target.kerning({data:keningdata}));
       strictEqual(target.find('[data-kerned]').length, 14);
     },100);
   });
