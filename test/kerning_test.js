@@ -96,7 +96,7 @@
     setTimeout(function(){
       start();
       strictEqual(target.find('[data-kerned]').length, 14);
-    },100);
+    },3000);
   });
 
   // test('Can destroy', function() {
