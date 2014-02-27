@@ -60,20 +60,26 @@
           container = me,
           strArray = me.html(),
           content = '';
-      
+      console.log(strArray);
       if(options.removeAnchorTags){
         // アンカー以外のタグ除去
         // TODO: タグ外の部分も対象に
         if(me.children('a').length){
           container = me.children('a');
           strArray = container.html().replace(/(<([^>]+)>)/ig,"").split('');
-        }else{
+        }
+        else{
           container = me;
           strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
         }
-      }else if(options.removeTags){
+      }
+      else if(options.removeTags){
         // 全タグ除去
         strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
+      }
+      else{
+        console.log('remove[data-kerned]',me.find('[data-kerned]').length);
+        me.find('[data-kerned]').empty();
       }
       
       // for test
@@ -98,7 +104,7 @@
           }
 
           if(left !== 0 || right !== 0){
-            content += '<span style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
+            content += '<span data-kerned style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
           }else{
             content += str;
           }

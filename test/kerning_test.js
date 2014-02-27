@@ -23,7 +23,7 @@
   module('jQuery#kerning', {
     // This will run before each test in this module.
     setup: function() {
-      this.elems = $('#qunit-fixture').children();
+      this.elems = $('#qunit1');
     }
   });
 
@@ -33,9 +33,14 @@
     strictEqual(this.elems.kerning(), this.elems, 'should be chainable');
   });
 
-  test('is awesome', function() {
+  test('is readable', function() {
     expect(1);
-    strictEqual(this.elems.kerning().text(), 'awesome0awesome1awesome2', 'should be awesome');
+    strictEqual(this.elems.kerning().text(), 'これは、テストです。', 'should be readable');
+  });
+
+  test('is kerned with no options', function() {
+    expect(1);
+    equal(this.elems.kerning().html(), 2, 'should be kerned with no options');
   });
 
   module('jQuery.kerning');
@@ -49,7 +54,7 @@
   module(':kerning selector', {
     // This will run before each test in this module.
     setup: function() {
-      this.elems = $('#qunit-fixture').children();
+      this.elems = $('#qunit-fixture');
     }
   });
 
