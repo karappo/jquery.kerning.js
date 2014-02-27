@@ -27,7 +27,7 @@ jQuery(function($) {
 [http://karappoinc.github.io/jquery.kerning.js/](http://karappoinc.github.io/jquery.kerning.js/)
 
 
-## Code status
+## Code Status
 
 master:
 
