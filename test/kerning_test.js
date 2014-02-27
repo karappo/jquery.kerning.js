@@ -20,48 +20,44 @@
       throws(block, [expected], [message])
   */
 
-  module('jQuery#kerning', {
+  module('jQuery.kerning', {
     // This will run before each test in this module.
     setup: function() {
-      this.elems = $('#qunit1');
+      this.h1 = $('h1');
+      this.h1_text = this.h1.text();
+      this.h2 = $('h2');
+      this.h2_text = this.h2.text();
     }
   });
 
   test('is chainable', function() {
-    expect(1);
+    expect(2);
     // Not a bad test to run on collection methods.
-    strictEqual(this.elems.kerning(), this.elems, 'should be chainable');
+    strictEqual(this.h1.kerning(), this.h1, 'should be chainable');
+    strictEqual(this.h2.kerning(), this.h2, 'should be chainable');
   });
 
   test('is readable', function() {
-    expect(1);
-    strictEqual(this.elems.kerning().text(), 'これは、テストです。', 'should be readable');
-  });
-
-  test('is kerned with no options', function() {
-    expect(1);
-    equal(this.elems.kerning().html(), 2, 'should be kerned with no options');
-  });
-
-  module('jQuery.kerning');
-
-  test('is awesome', function() {
     expect(2);
-    strictEqual($.kerning(), 'awesome.', 'should be awesome');
-    strictEqual($.kerning({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
+    strictEqual(this.h1.kerning().text(), this.h1_text, 'is readable');
+    strictEqual(this.h2.kerning().text(), this.h2_text, 'is readable');
   });
 
-  module(':kerning selector', {
-    // This will run before each test in this module.
-    setup: function() {
-      this.elems = $('#qunit-fixture');
-    }
+  test('Can use with no option', function() {
+    expect(2);
+    strictEqual(this.h1.kerning().find('[data-kerned]').length, 2, 'should be kerned with no options');
+    strictEqual(this.h2.kerning().find('[data-kerned]').length, 0, 'should be kerned with no options');
   });
 
-  test('is awesome', function() {
-    expect(1);
-    // Use deepEqual & .get() when comparing jQuery objects.
-    deepEqual(this.elems.filter(':kerning').get(), this.elems.last().get(), 'knows awesome when it sees it');
-  });
+  // test('Can destroy', function() {
+  //   expect(1);
+  //   strictEqual(this.elems.html(), this.elems.kerning().html(), 'should be kerned with no options');
+  // });
+  
+  // test('is awesome', function() {
+  //   expect(2);
+  //   strictEqual($.kerning(), 'awesome.', 'should be awesome');
+  //   strictEqual($.kerning({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
+  // });
 
 }(jQuery));

@@ -60,7 +60,7 @@
           container = me,
           strArray = me.html(),
           content = '';
-      console.log(strArray);
+      // console.log(strArray);
       if(options.removeAnchorTags){
         // アンカー以外のタグ除去
         // TODO: タグ外の部分も対象に
@@ -78,7 +78,7 @@
         strArray = me.html().replace(/(<([^>]+)>)/ig,"").split('');
       }
       else{
-        console.log('remove[data-kerned]',me.find('[data-kerned]').length);
+        // console.log('remove[data-kerned]',me.find('[data-kerned]').length);
         me.find('[data-kerned]').empty();
       }
       
