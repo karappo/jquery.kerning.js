@@ -27,8 +27,18 @@ jQuery(function($) {
 [http://karappoinc.github.io/jquery.kerning.js/](http://karappoinc.github.io/jquery.kerning.js/)
 
 
-## Release History
-v0.1.0 - First release.
+## Code status
 
+master:
+
+[![Build Status](https://travis-ci.org/KarappoInc/jquery.kerning.js.png?branch=master)](https://travis-ci.org/KarappoInc/jquery.kerning.js)
+
+develop:
 
 [![Build Status](https://travis-ci.org/KarappoInc/jquery.kerning.js.png?branch=develop)](https://travis-ci.org/KarappoInc/jquery.kerning.js)
+
+
+
+## Release History
+
+v0.1.0 - First release.
