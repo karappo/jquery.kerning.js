@@ -23,5 +23,5 @@
   "dependencies": {
     "jquery": "*"
   },
-  "keywords": ["kerning","webfont","japanese"]
+  "keywords": ["kern","kerning","webfont","japanese"]
 }
