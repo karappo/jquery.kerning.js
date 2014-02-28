@@ -1,58 +1,46 @@
-/*
- * kerning
- * http://karappoinc.github.io/jquery.kerning.js/
- *
- * Copyright (c) 2014 Karappo Inc.
- * Licensed under the MIT license.
- * 
- * $.getJSON("kerning-data.json" , function(_data) {
- *    $('h2,h3,h4,h5').kerning({"data":_data});
- * });
- * 
- */
-
- (function($){
+/*! Kerning - v0.1.0 - 2014-02-28
+* http://karappoinc.github.io/jquery.kerning.js/
+* Copyright (c) 2014 Karappo Inc.; Licensed MIT */
+(function($){
 
   $.fn.kerning=function(config){
 
     var defaults = {
       removeTags: false,
       removeAnchorTags: false,
-      data: [
-        {
-          "kerning":{
-            "、":{"L":0,"R":-0.4},
-            "。":{"L":0,"R":-0.4},
-            
-            "（":{"L":-0.4,"R":0},
-            "）":{"L":0,"R":-0.4},
-            "〔":{"L":-0.4,"R":0},
-            "〕":{"L":0,"R":-0.4},
-            "［":{"L":-0.4,"R":0},
-            "］":{"L":0,"R":-0.4},
-            "｛":{"L":-0.4,"R":0},
-            "｝":{"L":0,"R":-0.4},
-            "〈":{"L":-0.4,"R":0},
-            "〉":{"L":0,"R":-0.4},
-            "《":{"L":-0.4,"R":0},
-            "》":{"L":0,"R":-0.4},
-            "「":{"L":-0.4,"R":0},
-            "」":{"L":0,"R":-0.4},
-            "『":{"L":-0.4,"R":0},
-            "』":{"L":0,"R":-0.4},
-            "【":{"L":-0.4,"R":0},
-            "】":{"L":0,"R":-0.4},
+      data: {
+        "kerning":{
+          "、":[0,-0.4],
+          "。":[0,-0.4],
+          
+          "（":[-0.4,0],
+          "）":[0,-0.4],
+          "〔":[-0.4,0],
+          "〕":[0,-0.4],
+          "［":[-0.4,0],
+          "］":[0,-0.4],
+          "｛":[-0.4,0],
+          "｝":[0,-0.4],
+          "〈":[-0.4,0],
+          "〉":[0,-0.4],
+          "《":[-0.4,0],
+          "》":[0,-0.4],
+          "「":[-0.4,0],
+          "」":[0,-0.4],
+          "『":[-0.4,0],
+          "』":[0,-0.4],
+          "【":[-0.4,0],
+          "】":[0,-0.4],
 
-            "・":{"L":-0.22,"R":-0.22},
-            "：":{"L":-0.22,"R":-0.22},
-            "；":{"L":-0.22,"R":-0.22},
-            "｜":{"L":-0.22,"R":-0.22}
-          }
+          "・":[-0.22,-0.22],
+          "：":[-0.22,-0.22],
+          "；":[-0.22,-0.22],
+          "｜":[-0.22,-0.22]
         }
-      ]
+      }
     };
     var options = $.extend(defaults, config);
-    var kdata = options.data[0].kerning;
+    var kdata = options.data.kerning;
 
     return this.each(function(){
       
@@ -91,20 +79,20 @@
 
       for (var i = 0; i < strArray.length; i++) {
         var str = strArray[i];
-        var left = 0;
-        var right = 0;
+        var L = 0;
+        var R = 0;
         if(kdata[str]){
           // console.log(str,kdata[str]);
-          if(kdata[str].L){ left = kdata[str].L; }
-          if(kdata[str].R){ right = kdata[str].R; }
+          L = kdata[str][0];
+          R = kdata[str][1];
 
           // for test
           if(linebreak !== undefined){
             content += '<span style="display:inline-block;">'+linebreak+'</span>';
           }
 
-          if(left !== 0 || right !== 0){
-            content += '<span data-kerned style="display:inline-block;margin-left:'+left+'em;margin-right:'+right+'em;">'+str+'</span>';
+          if(L !== 0 || R !== 0){
+            content += '<span data-kerned style="display:inline-block;margin-left:'+L+'em;margin-right:'+R+'em;">'+str+'</span>';
           }else{
             content += str;
           }
@@ -117,7 +105,7 @@
         else{
           content += str;
         }
-        // console.log(str,left,right); 
+        // console.log(str,L,R); 
       }
 
       container.html(content);
