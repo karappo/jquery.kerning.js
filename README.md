@@ -41,5 +41,5 @@ develop:
 
 ## Release History
 
-v0.1.1 - Change data format simpler.
-v0.1.0 - First release.
+- v0.1.1 : Change data format simpler.
+- v0.1.0 : First release.
