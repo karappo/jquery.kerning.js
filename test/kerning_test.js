@@ -29,20 +29,17 @@
     }
   });
 
-  test('is chainable', function() {
-    expect(2);
+  test('is chainable', 2, function() {
     strictEqual(this.h1.kerning(), this.h1);
     strictEqual(this.h2.kerning(), this.h2);
   });
 
-  test('元のテキストと同じように読める', function() {
-    expect(2);
+  test('元のテキストと同じように読める', 2, function() {
     strictEqual(this.h1.kerning().text(), this.h1_text);
     strictEqual(this.h2.kerning().text(), this.h2_text);
   });
 
-  test('オプションなしの場合、約物のみカーニングする', function() {
-    expect(2);
+  test('オプションなしの場合、約物のみカーニングする', 2, function() {
     strictEqual(this.h1.kerning().find('[data-kerned]').length, 2);
     strictEqual(this.h2.kerning().find('[data-kerned]').length, 0);
   });
@@ -66,8 +63,7 @@
     }
   });
 
-  test('オプションでカーニングデータを指定できる', function() {
-    expect(3);
+  test('オプションでカーニングデータを指定できる', 3, function() {
     strictEqual(this.h1.kerning({data:this.kerningdata}).find('[data-kerned]').length, 0);
     strictEqual(this.h2.kerning({data:this.kerningdata}).find('[data-kerned]').length, 1);
     strictEqual(this.h3.kerning({data:this.kerningdata}).find('[data-kerned]').length, 5);
@@ -81,8 +77,7 @@
     }
   });
 
-  asyncTest( "jsonファイルを読み込んで使える", function() {
-    expect(1);
+  asyncTest( "jsonファイルを読み込んで使える", 1, function() {
     var target = this.p;
     $.getJSON("../data/mplus-2m-regular.json" , function(_data){
       start();
@@ -90,8 +85,7 @@
     });
   });
 
-  // test('Can destroy', function() {
-  //   expect(1);
+  // test('Can destroy', 1, function() {
   //   strictEqual(this.elems.html(), this.elems.kerning().html(), 'should be kerned with no options');
   // });
 
