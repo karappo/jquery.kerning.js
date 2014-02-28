@@ -20,8 +20,7 @@
       throws(block, [expected], [message])
   */
 
-  module('jQuery.kerning.js - with no option', {
-    // This will run before each test in this module.
+  module('No option', {
     setup: function() {
       this.h1 = $('h1');
       this.h1_text = this.h1.text();
@@ -32,7 +31,6 @@
 
   test('is chainable', function() {
     expect(2);
-    // Not a bad test to run on collection methods.
     strictEqual(this.h1.kerning(), this.h1);
     strictEqual(this.h2.kerning(), this.h2);
   });
@@ -49,21 +47,13 @@
     strictEqual(this.h2.kerning().find('[data-kerned]').length, 0);
   });
 
-  module('jQuery.kerning.js - with option', {
-    // This will run before each test in this module.
+  module('With option', {
     setup: function() {
       this.h1 = $('h1');
       this.h2 = $('h2');
       this.h3 = $('h3');
-      this.p = $('#paragraph');
-
-      $.getJSON("./data/mplus-2m-regular.json" , function(_data) {
-        $('.kern').kerning({"data":data});
-      });
-
       this.kerningdata = [
         {
-          "font":"M+ 1mn Regular",
           "kerning":{
             "あ":{"L":-0.1,"R":-0.1},
             "い":{"L":-0.1,"R":-0.08},
@@ -73,30 +63,31 @@
           }
         }
       ];
-
     }
   });
 
   test('オプションでカーニングデータを指定できる', function() {
     expect(3);
-    // Not a bad test to run on collection methods.
     strictEqual(this.h1.kerning({data:this.kerningdata}).find('[data-kerned]').length, 0);
     strictEqual(this.h2.kerning({data:this.kerningdata}).find('[data-kerned]').length, 1);
     strictEqual(this.h3.kerning({data:this.kerningdata}).find('[data-kerned]').length, 5);
   });
 
+
+
+  module('With option async', {
+    setup: function() {
+      this.p = $('#paragraph');
+    }
+  });
+
   asyncTest( "jsonファイルを読み込んで使える", function() {
     expect(1);
-    var keningdata,
-        target = this.p;
+    var target = this.p;
     $.getJSON("../data/mplus-2m-regular.json" , function(_data){
-      keningdata = _data;
-    });
-
-    setTimeout(function(){
       start();
-      strictEqual(target.find('[data-kerned]').length, 14);
-    },3000);
+      strictEqual(target.kerning({data:_data}).find('[data-kerned]').length, 14);
+    });
   });
 
   // test('Can destroy', function() {
