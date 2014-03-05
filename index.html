@@ -63,15 +63,15 @@
     @font-face {
       font-family:'mplus-2m-regular';
       font-weight: normal;
-      src: url('./fonts/mplus-2m-regular-sub.eot') format('eot');
-      src: url('./fonts/mplus-2m-regular-sub.woff') format('woff');
-      src: url('./fonts/mplus-2m-regular-sub.ttf') format('truetype');
+      src: url('./font/mplus-2m-regular-sub.eot') format('eot');
+      src: url('./font/mplus-2m-regular-sub.woff') format('woff');
+      src: url('./font/mplus-2m-regular-sub.ttf') format('truetype');
     }
     @font-face {
       font-family:'utsukushi-mincho';
       font-weight: normal;
-      src: url('./fonts/UtsukushiFONT.otf') format('opentype');
-      src: url('./fonts/UtsukushiMincho.ttf') format('truetype');
+      src: url('./font/UtsukushiFONT.otf') format('opentype');
+      src: url('./font/UtsukushiMincho.ttf') format('truetype');
     }
     .mplus {
       font-family: 'mplus-2m-regular';
@@ -111,10 +111,10 @@
   <script src="./script/jquery.kerning.js"></script>
   <script>
     $(function(){
-      $.getJSON("./script/mplus-2m-regular.json" , function(data) {
+      $.getJSON("./data/mplus-2m-regular.json" , function(data) {
         $('.mplus.kern').kerning({"data":data});
       });
-      $.getJSON("./script/utsukushi-mincho.json" , function(data) {
+      $.getJSON("./data/utsukushi-mincho.json" , function(data) {
         $('.utsukushi.kern').kerning({"data":data});
       });
       $('.feature.kern').kerning();
