@@ -18,6 +18,12 @@ var read = function(_size){
   pointer += _size;
   return data.subarray(start,pointer);
 }
+var move = function(_offset){
+  pointer = _offset;
+}
+var getOffset = function(){
+  return pointer;
+}
 
 function handleFileSelect(e) {
   e.stopPropagation();
@@ -30,8 +36,9 @@ function handleFileSelect(e) {
 
     var reader = new FileReader();
     reader.onload = function(theFile) {
-      data = new Int8Array(reader.result);
-      var FontInfo = {};
+      data = new Uint8Array(reader.result);
+      var i = 0,
+          FontInfo = {};
 
       FontInfo['OffsetTable'] = {};
       FontInfo.OffsetTable['version']       = u8ArrToStr(read(4));
@@ -41,18 +48,41 @@ function handleFileSelect(e) {
       FontInfo.OffsetTable['rangeShift']    = parseInt(u8ArrToStr(read(2)),16);
 
       FontInfo['TableDirectory'] = {};
-      console.log(FontInfo.OffsetTable.numTables);
-      for (var i = 0; i < FontInfo.OffsetTable.numTables; i++) {
+      for (i = 0; i < FontInfo.OffsetTable.numTables; i++) {
         var tag = String.fromCharCode.apply(null, read(4));
-
         FontInfo.TableDirectory[tag] = {};
-        FontInfo.TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4));
+        FontInfo.TableDirectory[tag]['checkSum'] = '0x'+u8ArrToStr(read(4));
         FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)),16);
         FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)),16);
       }
-      console.log('FontInfo',FontInfo);
-      console.log(data.subarray(FontInfo.TableDirectory.name.offset,FontInfo.TableDirectory.name.length));
+      
+      // move to "name"Table
+      move(FontInfo.TableDirectory.name.offset);
 
+      FontInfo['name'] = {};
+      FontInfo.name['format'] = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo.name['numberOfRecords'] = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo.name['records'] = [];
+      var storageOffset = getOffset()+(12*FontInfo.name.numberOfRecords); 
+      for (i = 0; i < FontInfo.name.numberOfRecords; i++) {
+        var obj = {};
+        obj['offset']     = parseInt(u8ArrToStr(read(2)),16);
+        obj['platformID'] = parseInt(u8ArrToStr(read(2)),16);
+        obj['encordingID']= parseInt(u8ArrToStr(read(2)),16);
+        obj['languageID'] = parseInt(u8ArrToStr(read(2)),16);
+        obj['nameID']     = parseInt(u8ArrToStr(read(2)),16);
+        obj['length']     = parseInt(u8ArrToStr(read(2)),16);
+        FontInfo.name.records.push(obj);
+      }
+      var storageOffset = FontInfo.TableDirectory.name.offset; // 文字ストレージの先頭
+      for (i = 0; i < FontInfo.name.numberOfRecords; i++) {
+        var _offset = storageOffset + FontInfo.name.records[i].offset;
+        move(_offset);
+        FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(u8ArrToStr(read(FontInfo.name.records[i].length)));
+      }
+
+
+      // output
       $('#output').html(JSON.stringify(FontInfo, null, '\t'));
     }
     reader.readAsArrayBuffer(f);
@@ -68,22 +98,69 @@ function handleDragOver(e) {
 // ++++++++++++++++++++++++++++++++++++++++++++
 // Utility
 
-function u8ArrToStr(u8array,_asLittleEndian){
-  var result='0x';
-  if(_asLittleEndian){
-    // u8array : little endian
-    for (var i=u8array.length-1; i >= 0; i--) {
-      result += ('00'+u8array[i].toString(16)).substr(-2);
-    }
+function u8ArrToStr(u8array){
+  // u8array : big endian
+  var result = '';
+  for (var i=0; i<u8array.length; i++) {
+    result += ('00'+u8array[i].toString(16)).substr(-2);
   }
-  else {
-    // u8array : big endian
-    for (var i=0; i<u8array.length; i++) {
-      result += ('00'+u8array[i].toString(16)).substr(-2);
+  return result;
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++
+
+// http://d.hatena.ne.jp/yasuhallabo/20140211/1392131668
+
+// UTF8の16進文字列を文字列に変換
+function utf8_hex_string_to_string(hex_str1){
+  var bytes2 = hex_string_to_bytes(hex_str1);
+  var str2 = utf8_bytes_to_string(bytes2);
+  return str2;
+}
+// バイト配列を16進文字列に変換
+function hex_string_to_bytes(hex_str){
+  var result = [];
+  for (var i = 0; i < hex_str.length; i+=2) {
+    result.push(hex_to_byte(hex_str.substr(i,2)));
+  }
+  return result;
+}
+// 16進文字列をバイト値に変換
+function hex_to_byte(hex_str){
+  return parseInt(hex_str, 16);
+}
+// UTF8のバイト配列を文字列に変換
+function  utf8_bytes_to_string  (arr){
+  if(arr == null) return null;
+  var result = "";
+  var i;
+  while(i = arr.shift()) {
+    if(i <= 0x7f) {
+      result += String.fromCharCode(i);
+    }
+    else if(i <= 0xdf) {
+      var c = ((i&0x1f)<<6);
+      c += arr.shift()&0x3f;
+      result += String.fromCharCode(c);
+    }
+    else if(i <= 0xe0) {
+      var c = ((arr.shift()&0x1f)<<6)|0x0800;
+      c += arr.shift()&0x3f;
+      result += String.fromCharCode(c);
+    }
+    else {
+      var c = ((i&0x0f)<<12);
+      c += (arr.shift()&0x3f)<<6;
+      c += arr.shift() & 0x3f;
+      result += String.fromCharCode(c);
     }
   }
   return result;
 }
+
+
+
+
 
 var cid = {
 "842":"ぁ",
