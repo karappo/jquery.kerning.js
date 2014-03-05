@@ -7,7 +7,7 @@ body {
 	padding: 30px;
 }
 #dropzone {
-	border: 2px dashed #bbb;
+	border: 1px dashed #bbb;
 	@include border-radius(5px);
 	padding: 25px;
 	margin-bottom: 30px;
@@ -20,4 +20,9 @@ body {
 #output {
 	width: 100%;
 	height: -webkit-calc(100% - 100px);
+	resize: none;
+	@include border-radius(5px);
+	background-color: #333;
+	color: #8A589E;
+	border-color: #bbb;
 }

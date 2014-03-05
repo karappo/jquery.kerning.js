@@ -222,7 +222,7 @@ body {
 }
 
 #dropzone {
-  border: 2px dashed #bbb;
+  border: 1px dashed #bbb;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -239,4 +239,13 @@ body {
 #output {
   width: 100%;
   height: -webkit-calc(100% - 100px);
+  resize: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #333;
+  color: #8A589E;
+  border-color: #bbb;
 }
