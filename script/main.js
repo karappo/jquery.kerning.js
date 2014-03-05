@@ -1,116 +1,116 @@
 $(window).resize(windowResize);
 $(function(){
-	windowResize();
-	
-	// loadData('/fonts/Yu Gothic Bold.otf', function(){
-	// 	console.log('Load data success !');
-	// });
-	
-	if (window.File && window.FileReader && window.FileList && window.Blob) {
-		
-		// Setup the dnd listeners.
-		var dropZone = document.getElementById('dropzone');
-		dropZone.addEventListener('dragover', handleDragOver, false);
-		dropZone.addEventListener('drop', handleFileSelect, false);
-		
-	} else {
-		alert('The File APIs are not fully supported in this browser.');
-	}
+  windowResize();
+  
+  // loadData('/fonts/Yu Gothic Bold.otf', function(){
+  //  console.log('Load data success !');
+  // });
+  
+  if (window.File && window.FileReader && window.FileList && window.Blob) {
+    
+    // Setup the dnd listeners.
+    var dropZone = document.getElementById('dropzone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+    
+  } else {
+    alert('The File APIs are not fully supported in this browser.');
+  }
 });
 
 var pointer = 0, data;
 var read = function(_size){
-	var start = pointer;
-	pointer += _size;
-	return data.subarray(start,pointer);
+  var start = pointer;
+  pointer += _size;
+  return data.subarray(start,pointer);
 }
 var readFrom = function(_offset, _size){
-	var start = pointer;
-	pointer += _size;
-	return data.subarray(start,pointer);
+  var start = pointer;
+  pointer += _size;
+  return data.subarray(start,pointer);
 }
 
 function handleFileSelect(e) {
-	e.stopPropagation();
-	e.preventDefault();
+  e.stopPropagation();
+  e.preventDefault();
 
-	var files = e.dataTransfer.files;
+  var files = e.dataTransfer.files;
 
-	// Loop through the FileList and render image files as thumbnails.
-	for (var i = 0, f; f = files[i]; i++) {
+  // Loop through the FileList and render image files as thumbnails.
+  for (var i = 0, f; f = files[i]; i++) {
 
-		var reader = new FileReader();
-		reader.onload = function(theFile) {
-			data = new Int8Array(reader.result);
-			var FontInfo = {};
+    var reader = new FileReader();
+    reader.onload = function(theFile) {
+      data = new Int8Array(reader.result);
+      var FontInfo = {};
 
-			FontInfo['OffsetTable'] = {};
-			FontInfo.OffsetTable['version'] 			= u8ArrToStr(read(4));
-			FontInfo.OffsetTable['numTables'] 		= parseInt(u8ArrToStr(read(2)));
-			FontInfo.OffsetTable['searchRange'] 	= parseInt(u8ArrToStr(read(2)));
-			FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)));
-			FontInfo.OffsetTable['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
+      FontInfo['OffsetTable'] = {};
+      FontInfo.OffsetTable['version']       = u8ArrToStr(read(4));
+      FontInfo.OffsetTable['numTables']     = parseInt(u8ArrToStr(read(2)));
+      FontInfo.OffsetTable['searchRange']   = parseInt(u8ArrToStr(read(2)));
+      FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)));
+      FontInfo.OffsetTable['rangeShift']    = parseInt(u8ArrToStr(read(2)));
 
-			FontInfo['TableDirectory'] = {};
-			for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
-				var tag = String.fromCharCode.apply(null, read(4));
+      FontInfo['TableDirectory'] = {};
+      for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
+        var tag = String.fromCharCode.apply(null, read(4));
 
-				FontInfo.TableDirectory[tag] = {};
-				FontInfo.TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4));
-				FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)));
-				FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)));
-			}
-			// console.log('FontInfo',FontInfo);
+        FontInfo.TableDirectory[tag] = {};
+        FontInfo.TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4));
+        FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)));
+        FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)));
+      }
+      // console.log('FontInfo',FontInfo);
 
-			console.log(data.subarray(FontInfo.TableDirectory.name.offset,FontInfo.TableDirectory.name.length));
+      console.log(data.subarray(FontInfo.TableDirectory.name.offset,FontInfo.TableDirectory.name.length));
 
-			$('#output').html(JSON.stringify(FontInfo, null, '\t'));
-		}
-		reader.readAsArrayBuffer(f);
-	}
+      $('#output').html(JSON.stringify(FontInfo, null, '\t'));
+    }
+    reader.readAsArrayBuffer(f);
+  }
 }
 
 function handleDragOver(e) {
-	e.stopPropagation();
-	e.preventDefault();
-	e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
 
 // function loadData(dataUrl, callback){
 
-// 	var req = new XMLHttpRequest();
+//  var req = new XMLHttpRequest();
 
-// 	req.open('GET', dataUrl, true);
-// 	req.responseType = 'arraybuffer';
-// 	req.onload = function (oEvent) {
-// 		var arrayBuffer = req.response;
-// 		if (arrayBuffer) {
-// 			var data	= new Uint8Array(arrayBuffer);
-			
-// 			var thumbnailMagic = String.fromCharCode.apply(null, data.subarray(0,4)); // convert to string
-// 			// if(thumbnailMagic==='jatm'){
-// 				var samplesPerThumbSampleDSD 	= u8ArrToStr(data.subarray(4,6)),
-// 				samplesPerThumbSamplePCM 	= u8ArrToStr(data.subarray(6,8)),
-// 				totalSamples							= u8ArrToStr(data.subarray(8,16)),
-// 				numFinishedSamples				= u8ArrToStr(data.subarray(16,24)),
-// 				numThumbnailSamples 			= u8ArrToStr(data.subarray(24,28)),
-// 				numChannels								= u8ArrToStr(data.subarray(28,32)),
-// 				sampleRate								= u8ArrToStr(data.subarray(32,36)),
-// 						// future										= data.subarray(36,52), // reserved area
-// 						thumbnailSamples					= new Int8Array(data.subarray(52));
+//  req.open('GET', dataUrl, true);
+//  req.responseType = 'arraybuffer';
+//  req.onload = function (oEvent) {
+//    var arrayBuffer = req.response;
+//    if (arrayBuffer) {
+//      var data  = new Uint8Array(arrayBuffer);
+      
+//      var thumbnailMagic = String.fromCharCode.apply(null, data.subarray(0,4)); // convert to string
+//      // if(thumbnailMagic==='jatm'){
+//        var samplesPerThumbSampleDSD  = u8ArrToStr(data.subarray(4,6)),
+//        samplesPerThumbSamplePCM  = u8ArrToStr(data.subarray(6,8)),
+//        totalSamples              = u8ArrToStr(data.subarray(8,16)),
+//        numFinishedSamples        = u8ArrToStr(data.subarray(16,24)),
+//        numThumbnailSamples       = u8ArrToStr(data.subarray(24,28)),
+//        numChannels               = u8ArrToStr(data.subarray(28,32)),
+//        sampleRate                = u8ArrToStr(data.subarray(32,36)),
+//            // future                   = data.subarray(36,52), // reserved area
+//            thumbnailSamples          = new Int8Array(data.subarray(52));
 
-// 				// success
-// 				console.log(sampleRate);
-				
-// 				callback();
-// 			// }else{
-// 			// 	// Not allowed file type
-// 			// 	console.error('Wrog waveform file format.');
-// 			// }
-// 		}
-// 	};
-// 	req.send(null);
+//        // success
+//        console.log(sampleRate);
+        
+//        callback();
+//      // }else{
+//      //  // Not allowed file type
+//      //  console.error('Wrog waveform file format.');
+//      // }
+//    }
+//  };
+//  req.send(null);
 // }
 
 function windowResize(){
@@ -121,20 +121,20 @@ function windowResize(){
 // Utility
 
 function u8ArrToStr(u8array,_asLittleEndian){
-	var result='0x';
-	if(_asLittleEndian){
-		// u8array : little endian
-		for (var i=u8array.length-1; i >= 0; i--) {
-			result += ('00'+u8array[i].toString(16)).substr(-2);
-		}
-	}
-	else {
-		// u8array : big endian
-		for (var i=0; i<u8array.length; i++) {
-			result += ('00'+u8array[i].toString(16)).substr(-2);
-		}
-	}
-	return result;
+  var result='0x';
+  if(_asLittleEndian){
+    // u8array : little endian
+    for (var i=u8array.length-1; i >= 0; i--) {
+      result += ('00'+u8array[i].toString(16)).substr(-2);
+    }
+  }
+  else {
+    // u8array : big endian
+    for (var i=0; i<u8array.length; i++) {
+      result += ('00'+u8array[i].toString(16)).substr(-2);
+    }
+  }
+  return result;
 }
 
 var cid = {
