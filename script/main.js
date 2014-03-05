@@ -1,10 +1,4 @@
-$(window).resize(windowResize);
 $(function(){
-  windowResize();
-  
-  // loadData('/fonts/Yu Gothic Bold.otf', function(){
-  //  console.log('Load data success !');
-  // });
   
   if (window.File && window.FileReader && window.FileList && window.Blob) {
     
@@ -20,11 +14,6 @@ $(function(){
 
 var pointer = 0, data;
 var read = function(_size){
-  var start = pointer;
-  pointer += _size;
-  return data.subarray(start,pointer);
-}
-var readFrom = function(_offset, _size){
   var start = pointer;
   pointer += _size;
   return data.subarray(start,pointer);
@@ -46,22 +35,22 @@ function handleFileSelect(e) {
 
       FontInfo['OffsetTable'] = {};
       FontInfo.OffsetTable['version']       = u8ArrToStr(read(4));
-      FontInfo.OffsetTable['numTables']     = parseInt(u8ArrToStr(read(2)));
-      FontInfo.OffsetTable['searchRange']   = parseInt(u8ArrToStr(read(2)));
-      FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)));
-      FontInfo.OffsetTable['rangeShift']    = parseInt(u8ArrToStr(read(2)));
+      FontInfo.OffsetTable['numTables']     = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo.OffsetTable['searchRange']   = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo.OffsetTable['rangeShift']    = parseInt(u8ArrToStr(read(2)),16);
 
       FontInfo['TableDirectory'] = {};
-      for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
+      console.log(FontInfo.OffsetTable.numTables);
+      for (var i = 0; i < FontInfo.OffsetTable.numTables; i++) {
         var tag = String.fromCharCode.apply(null, read(4));
 
         FontInfo.TableDirectory[tag] = {};
         FontInfo.TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4));
-        FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)));
-        FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)));
+        FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)),16);
+        FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)),16);
       }
-      // console.log('FontInfo',FontInfo);
-
+      console.log('FontInfo',FontInfo);
       console.log(data.subarray(FontInfo.TableDirectory.name.offset,FontInfo.TableDirectory.name.length));
 
       $('#output').html(JSON.stringify(FontInfo, null, '\t'));
