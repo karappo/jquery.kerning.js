@@ -19,5 +19,5 @@ body {
 
 #output {
 	width: 100%;
-	height: 400px;
+	height: -webkit-calc(100% - 100px);
 }

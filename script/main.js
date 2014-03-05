@@ -24,6 +24,12 @@ var read = function(_size){
 	pointer += _size;
 	return data.subarray(start,pointer);
 }
+var readFrom = function(_offset, _size){
+	var start = pointer;
+	pointer += _size;
+	return data.subarray(start,pointer);
+}
+
 function handleFileSelect(e) {
 	e.stopPropagation();
 	e.preventDefault();
@@ -39,22 +45,24 @@ function handleFileSelect(e) {
 			var FontInfo = {};
 
 			FontInfo['OffsetTable'] = {};
-			FontInfo['OffsetTable']['version'] 				= u8ArrToStr(read(4));
-			FontInfo['OffsetTable']['numTables'] 			= parseInt(u8ArrToStr(read(2)));
-			FontInfo['OffsetTable']['searchRange'] 		= parseInt(u8ArrToStr(read(2)));
-			FontInfo['OffsetTable']['entrySelector'] 	= parseInt(u8ArrToStr(read(2)));
-			FontInfo['OffsetTable']['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
+			FontInfo.OffsetTable['version'] 			= u8ArrToStr(read(4));
+			FontInfo.OffsetTable['numTables'] 		= parseInt(u8ArrToStr(read(2)));
+			FontInfo.OffsetTable['searchRange'] 	= parseInt(u8ArrToStr(read(2)));
+			FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)));
+			FontInfo.OffsetTable['rangeShift'] 		= parseInt(u8ArrToStr(read(2)));
 
 			FontInfo['TableDirectory'] = {};
 			for (var i = 0; i < FontInfo['OffsetTable']['numTables']; i++) {
 				var tag = String.fromCharCode.apply(null, read(4));
 
-				FontInfo['TableDirectory'][tag] = {};
-				FontInfo['TableDirectory'][tag]['checkSum'] = u8ArrToStr(read(4),true);
-				FontInfo['TableDirectory'][tag]['offset'] = parseInt(u8ArrToStr(read(4),true));
-				FontInfo['TableDirectory'][tag]['length'] = u8ArrToStr(read(4));
+				FontInfo.TableDirectory[tag] = {};
+				FontInfo.TableDirectory[tag]['checkSum'] = u8ArrToStr(read(4));
+				FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)));
+				FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)));
 			}
-			console.log('FontInfo',FontInfo);
+			// console.log('FontInfo',FontInfo);
+
+			console.log(data.subarray(FontInfo.TableDirectory.name.offset,FontInfo.TableDirectory.name.length));
 
 			$('#output').html(JSON.stringify(FontInfo, null, '\t'));
 		}
