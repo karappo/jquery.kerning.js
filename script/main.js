@@ -12,18 +12,31 @@ $(function(){
   }
 });
 
+// ++++++++++++++++++++++++++++++++++++++++++++
+// Utility
+
 var pointer = 0, data;
-var read = function(_size){
+
+function move(_offset){ pointer = _offset; }
+function read(_size){
   var start = pointer;
   pointer += _size;
   return data.subarray(start,pointer);
 }
-var move = function(_offset){
-  pointer = _offset;
+function u8ArrToStr(u8array){
+  // u8array : big endian
+  var result = '';
+  for (var i=0; i<u8array.length; i++) {
+    result += ('00'+u8array[i].toString(16)).substr(-2);
+  }
+  return result;
 }
-var getOffset = function(){
-  return pointer;
-}
+function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
+function readULONG() { var n = u8ArrToStr(read(4)); console.log(parseInt(n,16), n); return parseInt(n,16); }
+function readULONG_STR() { return '0x'+u8ArrToStr(read(4)); }
+function readFIXED() { return parseFloat(u8ArrToStr(read(4)),16); }
+
+// ++++++++++++++++++++++++++++++++++++++++++++
 
 function handleFileSelect(e) {
   e.stopPropagation();
@@ -38,10 +51,11 @@ function handleFileSelect(e) {
     reader.onload = function(theFile) {
       data = new Uint8Array(reader.result);
       var i = 0,
+          obj = {},
           FontInfo = {};
 
       FontInfo['OffsetTable']               = {};
-      FontInfo.OffsetTable['version']       = readULONG(true);
+      FontInfo.OffsetTable['version']       = readULONG_STR();
       FontInfo.OffsetTable['numTables']     = readUSHORT();
       FontInfo.OffsetTable['searchRange']   = readUSHORT();
       FontInfo.OffsetTable['entrySelector'] = readUSHORT();
@@ -51,9 +65,9 @@ function handleFileSelect(e) {
       for (i = 0; i < FontInfo.OffsetTable.numTables; i++) {
         var tag = String.fromCharCode.apply(null, read(4));
         FontInfo.TableDirectory[tag] = {};
-        FontInfo.TableDirectory[tag]['checkSum'] = readULONG(true);
-        FontInfo.TableDirectory[tag]['offset'] = readULONG();
-        FontInfo.TableDirectory[tag]['length'] = readULONG();
+        FontInfo.TableDirectory[tag]['checkSum'] = readULONG_STR();
+        FontInfo.TableDirectory[tag]['offset']   = readULONG();
+        FontInfo.TableDirectory[tag]['length']   = readULONG();
       }
       
       // "name" Table =========================
@@ -67,7 +81,7 @@ function handleFileSelect(e) {
       FontInfo.name['offset'] = readUSHORT();
       FontInfo.name['records']= [];
       for (i = 0; i < FontInfo.name.count; i++) {
-        var obj = {};
+        obj = {};
         obj['platformId'] = readUSHORT();
         obj['encordingId']= readUSHORT();
         obj['languageId'] = readUSHORT();
@@ -93,14 +107,68 @@ function handleFileSelect(e) {
 
       // "cmap" Table =========================
 
-      // FontInfo['cmap'] = {};
+      FontInfo['cmap'] = {};
             
-      // move(FontInfo.TableDirectory.cmap.offset);
+      move(FontInfo.TableDirectory.cmap.offset);
 
-      // FontInfo.name['version']        = readUSHORT();
-      // FontInfo.name['numTables']      = readUSHORT();
-      // FontInfo.name['encodingRecords']= [];
+      FontInfo.cmap['version']         = readUSHORT();
+      FontInfo.cmap['numTables']       = readUSHORT();
 
+      FontInfo.cmap['encodingRecords'] = [];
+      for (i = 0; i < FontInfo.cmap.numTables; i++) {
+        obj = {};
+        obj['platformId']  = readUSHORT();
+        obj['encordingId'] = readUSHORT();
+        obj['offset']      = readULONG();
+        FontInfo.cmap.encodingRecords.push(obj);
+      }
+      // TODO: read encoding sub tables
+
+      // "GPOS" Table =========================
+
+      FontInfo['GPOS'] = {};
+      
+      move(FontInfo.TableDirectory.GPOS.offset);
+
+      FontInfo.GPOS['version']           = readFIXED();
+      FontInfo.GPOS['scriptListOffset']  = readUSHORT();
+      FontInfo.GPOS['featureListOffset'] = readUSHORT();
+      FontInfo.GPOS['lookupListOffset']  = readUSHORT();
+
+      // script list
+      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.scriptListOffset);
+      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.scriptListOffset);
+      FontInfo.GPOS['scriptListCount']  = readUSHORT();
+      FontInfo.GPOS['scriptList'] = [];
+      for (i = 0; i < FontInfo.GPOS.scriptListCount; i++) {
+        obj = {};
+        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
+        obj['num'] = u8ArrToStr(read(2));
+        FontInfo.GPOS.scriptList.push(obj);
+      }
+
+      // feature list
+      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.featureListOffset);
+      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.featureListOffset);
+      FontInfo.GPOS['featureListCount']  = readUSHORT();
+      FontInfo.GPOS['featureList'] = [];
+      for (i = 0; i < FontInfo.GPOS.featureListCount; i++) {
+        obj = {};
+        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
+        obj['num'] = u8ArrToStr(read(2));
+        FontInfo.GPOS.featureList.push(obj);
+      }
+
+      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.lookupListOffset);
+      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.lookupListOffset);
+      FontInfo.GPOS['lookupListCount']  = readUSHORT();
+      FontInfo.GPOS['lookupList'] = [];
+      for (i = 0; i < FontInfo.GPOS.lookupListCount; i++) {
+        obj = {};
+        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
+        obj['num'] = u8ArrToStr(read(2));
+        FontInfo.GPOS.lookupList.push(obj);
+      }
 
       // =======================================
 
@@ -111,26 +179,14 @@ function handleFileSelect(e) {
   }
 }
 
+function logg(num){
+  console.log('-', num, (num).toString(16));
+}
 function handleDragOver(e) {
   e.stopPropagation();
   e.preventDefault();
   e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
-
-// ++++++++++++++++++++++++++++++++++++++++++++
-// Utility
-
-function u8ArrToStr(u8array){
-  // u8array : big endian
-  var result = '';
-  for (var i=0; i<u8array.length; i++) {
-    result += ('00'+u8array[i].toString(16)).substr(-2);
-  }
-  return result;
-}
-
-function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
-function readULONG(_str) { return (_str!=null && _str==true) ? '0x'+u8ArrToStr(read(4)) : parseInt(u8ArrToStr(read(4)),16); }
 
 // ++++++++++++++++++++++++++++++++++++++++++++
 
