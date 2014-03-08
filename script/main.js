@@ -40,47 +40,69 @@ function handleFileSelect(e) {
       var i = 0,
           FontInfo = {};
 
-      FontInfo['OffsetTable'] = {};
-      FontInfo.OffsetTable['version']       = u8ArrToStr(read(4));
-      FontInfo.OffsetTable['numTables']     = parseInt(u8ArrToStr(read(2)),16);
-      FontInfo.OffsetTable['searchRange']   = parseInt(u8ArrToStr(read(2)),16);
-      FontInfo.OffsetTable['entrySelector'] = parseInt(u8ArrToStr(read(2)),16);
-      FontInfo.OffsetTable['rangeShift']    = parseInt(u8ArrToStr(read(2)),16);
+      FontInfo['OffsetTable']               = {};
+      FontInfo.OffsetTable['version']       = readULONG(true);
+      FontInfo.OffsetTable['numTables']     = readUSHORT();
+      FontInfo.OffsetTable['searchRange']   = readUSHORT();
+      FontInfo.OffsetTable['entrySelector'] = readUSHORT();
+      FontInfo.OffsetTable['rangeShift']    = readUSHORT();
 
       FontInfo['TableDirectory'] = {};
       for (i = 0; i < FontInfo.OffsetTable.numTables; i++) {
         var tag = String.fromCharCode.apply(null, read(4));
         FontInfo.TableDirectory[tag] = {};
-        FontInfo.TableDirectory[tag]['checkSum'] = '0x'+u8ArrToStr(read(4));
-        FontInfo.TableDirectory[tag]['offset'] = parseInt(u8ArrToStr(read(4)),16);
-        FontInfo.TableDirectory[tag]['length'] = parseInt(u8ArrToStr(read(4)),16);
+        FontInfo.TableDirectory[tag]['checkSum'] = readULONG(true);
+        FontInfo.TableDirectory[tag]['offset'] = readULONG();
+        FontInfo.TableDirectory[tag]['length'] = readULONG();
       }
       
-      // move to "name"Table
+      // "name" Table =========================
+      
+      FontInfo['name'] = {};
+
       move(FontInfo.TableDirectory.name.offset);
 
-      FontInfo['name'] = {};
-      FontInfo.name['format'] = parseInt(u8ArrToStr(read(2)),16);
-      FontInfo.name['numberOfRecords'] = parseInt(u8ArrToStr(read(2)),16);
-      FontInfo.name['records'] = [];
-      var storageOffset = getOffset()+(12*FontInfo.name.numberOfRecords); 
-      for (i = 0; i < FontInfo.name.numberOfRecords; i++) {
+      FontInfo.name['format'] = readUSHORT();
+      FontInfo.name['count']  = readUSHORT();
+      FontInfo.name['offset'] = readUSHORT();
+      FontInfo.name['records']= [];
+      for (i = 0; i < FontInfo.name.count; i++) {
         var obj = {};
-        obj['offset']     = parseInt(u8ArrToStr(read(2)),16);
-        obj['platformID'] = parseInt(u8ArrToStr(read(2)),16);
-        obj['encordingID']= parseInt(u8ArrToStr(read(2)),16);
-        obj['languageID'] = parseInt(u8ArrToStr(read(2)),16);
-        obj['nameID']     = parseInt(u8ArrToStr(read(2)),16);
-        obj['length']     = parseInt(u8ArrToStr(read(2)),16);
+        obj['platformId'] = readUSHORT();
+        obj['encordingId']= readUSHORT();
+        obj['languageId'] = readUSHORT();
+        obj['nameId']     = readUSHORT();
+        obj['length']     = readUSHORT();
+        obj['offset']     = readUSHORT();
         FontInfo.name.records.push(obj);
       }
-      var storageOffset = FontInfo.TableDirectory.name.offset; // 文字ストレージの先頭
-      for (i = 0; i < FontInfo.name.numberOfRecords; i++) {
+      var storageOffset = FontInfo.TableDirectory.name.offset + FontInfo.name.offset; // 文字ストレージの先頭
+      for (i = 0; i < FontInfo.name.count; i++) {
         var _offset = storageOffset + FontInfo.name.records[i].offset;
         move(_offset);
         FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(u8ArrToStr(read(FontInfo.name.records[i].length)));
       }
 
+
+      for(i =0; i < FontInfo.name.records.length; i++){
+        if(FontInfo.name.records[i].languageId==0 && FontInfo.name.records[i].nameId==4){
+          // Font Name
+          console.log(FontInfo.name.records[i].nameString);
+        }
+      }
+
+      // "cmap" Table =========================
+
+      // FontInfo['cmap'] = {};
+            
+      // move(FontInfo.TableDirectory.cmap.offset);
+
+      // FontInfo.name['version']        = readUSHORT();
+      // FontInfo.name['numTables']      = readUSHORT();
+      // FontInfo.name['encodingRecords']= [];
+
+
+      // =======================================
 
       // output
       $('#output').html(JSON.stringify(FontInfo, null, '\t'));
@@ -106,6 +128,9 @@ function u8ArrToStr(u8array){
   }
   return result;
 }
+
+function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
+function readULONG(_str) { return (_str!=null && _str==true) ? '0x'+u8ArrToStr(read(4)) : parseInt(u8ArrToStr(read(4)),16); }
 
 // ++++++++++++++++++++++++++++++++++++++++++++
 
