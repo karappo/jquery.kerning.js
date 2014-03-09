@@ -1,23 +1,67 @@
-$(function(){
-  
-  if (window.File && window.FileReader && window.FileList && window.Blob) {
-    
-    // Setup the dnd listeners.
-    var dropZone = document.getElementById('dropzone');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('drop', handleFileSelect, false);
-    
-  } else {
-    alert('The File APIs are not fully supported in this browser.');
+// ++++++++++++++++++++++++++++++++++++++++++++
+
+// http://d.hatena.ne.jp/yasuhallabo/20140211/1392131668
+
+// UTF8のバイト配列を文字列に変換
+function  utf8_bytes_to_string(arr){
+  if(arr == null){ 
+    return null;
   }
-});
+
+  var result = "";
+  var i;
+  while(i = arr.shift()) {
+    var c;
+    if(i <= 0x7f) {
+      result += String.fromCharCode(i);
+    }
+    else if(i <= 0xdf) {
+      c = ((i&0x1f)<<6);
+      c += arr.shift()&0x3f;
+      result += String.fromCharCode(c);
+    }
+    else if(i <= 0xe0) {
+      c = ((arr.shift()&0x1f)<<6)|0x0800;
+      c += arr.shift()&0x3f;
+      result += String.fromCharCode(c);
+    }
+    else {
+      c = ((i&0x0f)<<12);
+      c += (arr.shift()&0x3f)<<6;
+      c += arr.shift() & 0x3f;
+      result += String.fromCharCode(c);
+    }
+  }
+  return result;
+}
+// 16進文字列をバイト値に変換
+function hex_to_byte(hex_str){
+  return parseInt(hex_str, 16);
+}
+// バイト配列を16進文字列に変換
+function hex_string_to_bytes(hex_str){
+  var result = [];
+  for (var i = 0; i < hex_str.length; i+=2) {
+    result.push(hex_to_byte(hex_str.substr(i,2)));
+  }
+  return result;
+}
+// UTF8の16進文字列を文字列に変換
+function utf8_hex_string_to_string(hex_str1){
+  var bytes2 = hex_string_to_bytes(hex_str1);
+  var str2 = utf8_bytes_to_string(bytes2);
+  return str2;
+}
 
 // ++++++++++++++++++++++++++++++++++++++++++++
 // Utility
 
 var pointer = 0, data;
 
-function move(_offset){ pointer = _offset; }
+function move(_offset){ 
+  console.log('move', _offset, (_offset).toString(16));
+  pointer = _offset;
+}
 function read(_size){
   var start = pointer;
   pointer += _size;
@@ -35,8 +79,16 @@ function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
 function readULONG() { var n = u8ArrToStr(read(4)); console.log(parseInt(n,16), n); return parseInt(n,16); }
 function readULONG_STR() { return '0x'+u8ArrToStr(read(4)); }
 function readFIXED() { return parseFloat(u8ArrToStr(read(4)),16); }
+function readTAG() { return utf8_hex_string_to_string(u8ArrToStr(read(4))); }
+
 
 // ++++++++++++++++++++++++++++++++++++++++++++
+
+function handleDragOver(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+}
 
 function handleFileSelect(e) {
   e.stopPropagation();
@@ -45,13 +97,15 @@ function handleFileSelect(e) {
   var files = e.dataTransfer.files;
 
   // Loop through the FileList and render image files as thumbnails.
-  for (var i = 0, f; f = files[i]; i++) {
+  for (var h = 0, f; f = files[h]; h++) {
 
     var reader = new FileReader();
-    reader.onload = function(theFile) {
+    reader.onload = function() {
       data = new Uint8Array(reader.result);
-      var i = 0,
-          obj = {},
+      var i,
+          j,
+          obj,
+          obj2,
           FontInfo = {};
 
       FontInfo['OffsetTable']               = {};
@@ -99,7 +153,7 @@ function handleFileSelect(e) {
 
 
       for(i =0; i < FontInfo.name.records.length; i++){
-        if(FontInfo.name.records[i].languageId==0 && FontInfo.name.records[i].nameId==4){
+        if(FontInfo.name.records[i].languageId === 0 && FontInfo.name.records[i].nameId === 4){
           // Font Name
           console.log(FontInfo.name.records[i].nameString);
         }
@@ -131,118 +185,87 @@ function handleFileSelect(e) {
       move(FontInfo.TableDirectory.GPOS.offset);
 
       FontInfo.GPOS['version']           = readFIXED();
-      FontInfo.GPOS['scriptListOffset']  = readUSHORT();
-      FontInfo.GPOS['featureListOffset'] = readUSHORT();
-      FontInfo.GPOS['lookupListOffset']  = readUSHORT();
+      FontInfo.GPOS['ScriptListOffset']  = readUSHORT();
+      FontInfo.GPOS['FeatureListOffset'] = readUSHORT();
+      FontInfo.GPOS['LookupListOffset']  = readUSHORT();
 
-      // script list
-      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.scriptListOffset);
-      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.scriptListOffset);
-      FontInfo.GPOS['scriptListCount']  = readUSHORT();
-      FontInfo.GPOS['scriptList'] = [];
-      for (i = 0; i < FontInfo.GPOS.scriptListCount; i++) {
+      // Script List Table
+      var ScriptListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.ScriptListOffset;
+      move(ScriptListOffset);
+      FontInfo.GPOS['ScriptList'] = {};
+      FontInfo.GPOS.ScriptList['count']  = readUSHORT();
+      FontInfo.GPOS.ScriptList['records'] = [];
+      var _p = pointer;
+      for (i = 0; i < FontInfo.GPOS.ScriptList.count; i++) {
         obj = {};
-        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
-        obj['num'] = u8ArrToStr(read(2));
-        FontInfo.GPOS.scriptList.push(obj);
+        pointer = _p;
+        obj['tag']    = readTAG();
+        obj['offset'] = readUSHORT(); // offset
+        _p = pointer;
+
+        // Script Table
+        obj['ScriptTable'] = {};
+        move(ScriptListOffset + obj.offset);
+        obj.ScriptTable['DefaultLangSys'] = readUSHORT();
+        obj.ScriptTable['LangSysCount'] = readUSHORT();
+        obj.ScriptTable['LangSysRecord'] = readUSHORT();
+        for (j = 0; j < obj.ScriptTable.LangSysCount; j++) {
+          obj2 = {};
+          obj2['LangSysTag'] = readTAG();
+          obj2['LangSys'] = readUSHORT(); // offset
+          obj.push(obj2);
+        }
+        FontInfo.GPOS.ScriptList.records.push(obj);
       }
 
-      // feature list
-      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.featureListOffset);
-      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.featureListOffset);
-      FontInfo.GPOS['featureListCount']  = readUSHORT();
-      FontInfo.GPOS['featureList'] = [];
-      for (i = 0; i < FontInfo.GPOS.featureListCount; i++) {
+      // Feature List Table
+      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.FeatureListOffset);
+      FontInfo.GPOS['FeatureList'] = {};
+      FontInfo.GPOS.FeatureList['count']  = readUSHORT();
+      FontInfo.GPOS.FeatureList['records'] = [];
+      for (i = 0; i < FontInfo.GPOS.FeatureList.count; i++) {
         obj = {};
-        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
-        obj['num'] = u8ArrToStr(read(2));
-        FontInfo.GPOS.featureList.push(obj);
+        obj['tag'] = readTAG();
+        obj['offset'] = u8ArrToStr(read(2));
+        FontInfo.GPOS.FeatureList.records.push(obj);
       }
 
-      logg(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.lookupListOffset);
-      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.lookupListOffset);
-      FontInfo.GPOS['lookupListCount']  = readUSHORT();
-      FontInfo.GPOS['lookupList'] = [];
-      for (i = 0; i < FontInfo.GPOS.lookupListCount; i++) {
+      // Lookup List Table
+      move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.LookupListOffset);
+      FontInfo.GPOS['LookupList'] = {};
+      FontInfo.GPOS.LookupList['count']  = readUSHORT();
+      FontInfo.GPOS.LookupList['records'] = [];
+      for (i = 0; i < FontInfo.GPOS.LookupList.count; i++) {
         obj = {};
-        obj['string'] = utf8_hex_string_to_string(u8ArrToStr(read(4)));
-        obj['num'] = u8ArrToStr(read(2));
-        FontInfo.GPOS.lookupList.push(obj);
+        obj['tag'] = readTAG();
+        obj['offset'] = u8ArrToStr(read(2));
+        FontInfo.GPOS.LookupList.records.push(obj);
       }
 
       // =======================================
 
       // output
       $('#output').html(JSON.stringify(FontInfo, null, '\t'));
-    }
+    };
+
     reader.readAsArrayBuffer(f);
   }
 }
 
-function logg(num){
-  console.log('-', num, (num).toString(16));
-}
-function handleDragOver(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-}
 
-// ++++++++++++++++++++++++++++++++++++++++++++
-
-// http://d.hatena.ne.jp/yasuhallabo/20140211/1392131668
-
-// UTF8の16進文字列を文字列に変換
-function utf8_hex_string_to_string(hex_str1){
-  var bytes2 = hex_string_to_bytes(hex_str1);
-  var str2 = utf8_bytes_to_string(bytes2);
-  return str2;
-}
-// バイト配列を16進文字列に変換
-function hex_string_to_bytes(hex_str){
-  var result = [];
-  for (var i = 0; i < hex_str.length; i+=2) {
-    result.push(hex_to_byte(hex_str.substr(i,2)));
+$(function(){
+  if (window.File && window.FileReader && window.FileList && window.Blob) {
+    // Setup the dnd listeners.
+    var dropZone = document.getElementById('dropzone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
   }
-  return result;
-}
-// 16進文字列をバイト値に変換
-function hex_to_byte(hex_str){
-  return parseInt(hex_str, 16);
-}
-// UTF8のバイト配列を文字列に変換
-function  utf8_bytes_to_string  (arr){
-  if(arr == null) return null;
-  var result = "";
-  var i;
-  while(i = arr.shift()) {
-    if(i <= 0x7f) {
-      result += String.fromCharCode(i);
-    }
-    else if(i <= 0xdf) {
-      var c = ((i&0x1f)<<6);
-      c += arr.shift()&0x3f;
-      result += String.fromCharCode(c);
-    }
-    else if(i <= 0xe0) {
-      var c = ((arr.shift()&0x1f)<<6)|0x0800;
-      c += arr.shift()&0x3f;
-      result += String.fromCharCode(c);
-    }
-    else {
-      var c = ((i&0x0f)<<12);
-      c += (arr.shift()&0x3f)<<6;
-      c += arr.shift() & 0x3f;
-      result += String.fromCharCode(c);
-    }
+  else {
+    console.error('The File APIs are not fully supported in this browser.');
   }
-  return result;
-}
+});
 
-
-
-
-
+/*
 var cid = {
 "842":"ぁ",
 "843":"あ",
@@ -363,4 +386,5 @@ var cid = {
 "958":"ヂ",
 "959":"ッ"
 };
+*/
 
