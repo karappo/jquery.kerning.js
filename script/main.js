@@ -84,6 +84,9 @@ function u8ArrToStr(u8array){
   return result;
 }
 function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
+function readUSHORT_STR(){ return '0x'+u8ArrToStr(read(2)); }
+function readUINT16(){ return parseInt(u8ArrToStr(read(4)),16); }
+function readUINT16_STR(){ return '0x'+u8ArrToStr(read(4)); }
 function readULONG() { var n = u8ArrToStr(read(4)); console.log(parseInt(n,16), n); return parseInt(n,16); }
 function readULONG_STR() { return '0x'+u8ArrToStr(read(4)); }
 function readFIXED() { return parseFloat(u8ArrToStr(read(4)),16); }
@@ -144,8 +147,8 @@ function handleFileSelect(e) {
       FontInfo.name['records'] = [];
       for (i = 0; i < FontInfo.name.count; i++) {
         obj = {};
-        obj['platformId']  = readUSHORT();
-        obj['encordingId'] = readUSHORT();
+        obj['platformID']  = readUSHORT();
+        obj['encordingID'] = readUSHORT();
         obj['languageId']  = readUSHORT();
         obj['nameId']      = readUSHORT();
         obj['length']      = readUSHORT();
@@ -179,8 +182,8 @@ function handleFileSelect(e) {
       FontInfo.cmap['encodingRecords'] = [];
       for (i = 0; i < FontInfo.cmap.numTables; i++) {
         obj = {};
-        obj['platformId']  = readUSHORT();
-        obj['encordingId'] = readUSHORT();
+        obj['platformID']  = readUSHORT();
+        obj['encordingID'] = readUSHORT();
         obj['offset']      = readULONG();
         FontInfo.cmap.encodingRecords.push(obj);
       }
@@ -192,77 +195,117 @@ function handleFileSelect(e) {
       
       _move(FontInfo.TableDirectory.GPOS.offset);
 
-      FontInfo.GPOS['version']           = readFIXED();
-      FontInfo.GPOS['ScriptListOffset']  = readUSHORT();
-      FontInfo.GPOS['FeatureListOffset'] = readUSHORT();
-      FontInfo.GPOS['LookupListOffset']  = readUSHORT();
+      // GPOS header
+      FontInfo.GPOS['Header'] = {};
 
-      // Script List Table
-      var ScriptListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.ScriptListOffset;
+      FontInfo.GPOS.Header['Version']     = readFIXED();
+      FontInfo.GPOS.Header['ScriptList']  = readUSHORT(); // offset
+      FontInfo.GPOS.Header['FeatureList'] = readUSHORT(); // offset
+      FontInfo.GPOS.Header['LookupList']  = readUSHORT(); // offset
+
+      // Script List
+      FontInfo.GPOS['ScriptList'] = {};
+
+      var ScriptListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.ScriptList;
       _move(ScriptListOffset);
-      FontInfo.GPOS['ScriptList']         = {};
-      FontInfo.GPOS.ScriptList['count']   = readUSHORT();
-      FontInfo.GPOS.ScriptList['records'] = [];
-      for (i = 0; i < FontInfo.GPOS.ScriptList.count; i++) {
-        obj = {};
+
+      FontInfo.GPOS.ScriptList['ScriptCount']   = readUSHORT();
+      FontInfo.GPOS.ScriptList['ScriptRecord'] = [];
+      
+      for (i = 0; i < FontInfo.GPOS.ScriptList.ScriptCount; i++) {
+        var ScriptRecord = {};
         
-        obj['tag']    = readTAG();
-        obj['offset'] = readUSHORT(); // offset
+        ScriptRecord['ScriptTag']    = readTAG();
+        ScriptRecord['ScriptOffset'] = readUSHORT();
 
-        // Script Table
-        obj['ScriptTable'] = {};
+        // Script
+        ScriptRecord['Script'] = {};
 
-        var ScriptTableOffset = ScriptListOffset + obj.offset;
+        var ScriptTableOffset = ScriptListOffset + ScriptRecord.ScriptOffset;
         _push();
         _move(ScriptTableOffset);
-        obj.ScriptTable['DefaultLangSys'] = readUSHORT();
-        obj.ScriptTable['LangSysCount']   = readUSHORT();
-        obj.ScriptTable['LangSysRecord']  = [];
-        for (j = 0; j < obj.ScriptTable.LangSysCount; j++) {
-          obj2 = {};
-          obj2['LangSysTag']    = readTAG();
-          obj2['LangSysOffset'] = readUSHORT(); // offset
+        
+        ScriptRecord.Script['DefaultLangSys'] = readUSHORT();
+        ScriptRecord.Script['LangSysCount']   = readUSHORT();
+        ScriptRecord.Script['LangSysRecord']  = [];
 
-          // LangSys Table
-          obj2['LangSys'] = {};
+        for (j = 0; j < ScriptRecord.Script.LangSysCount; j++) {
+          var LangSysRecord = {};
+          LangSysRecord['LangSysTag']    = readTAG();
+          LangSysRecord['LangSysOffset'] = readUSHORT();
+
+          // LangSys
+          LangSysRecord['LangSys'] = {};
+
           _push();
-          _move(ScriptTableOffset+obj2.LangSysOffset);
-          obj2.LangSys['LookupOrder']     = readUSHORT();
-          obj2.LangSys['ReqFeatureIndex'] = readUSHORT();
-          obj2.LangSys['FeatureCount']    = readUSHORT();
-          obj2.LangSys['FeatureIndex']    = [];
+          _move(ScriptTableOffset+LangSysRecord.LangSysOffset);
+          LangSysRecord.LangSys['LookupOrder']     = readUSHORT();
+          LangSysRecord.LangSys['ReqFeatureIndex'] = readUSHORT();
+          LangSysRecord.LangSys['FeatureCount']    = readUSHORT();
+          LangSysRecord.LangSys['FeatureIndex']    = [];
 
-          obj.ScriptTable['LangSysRecord'].push(obj2);
+          ScriptRecord.Script['LangSysRecord'].push(LangSysRecord);
+          _pop();
         }
+
+        FontInfo.GPOS.ScriptList.ScriptRecord.push(ScriptRecord);
         _pop();
-        FontInfo.GPOS.ScriptList.records.push(obj);
       }
 
-      // Feature List Table
-      _move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.FeatureListOffset);
-      FontInfo.GPOS['FeatureList']         = {};
-      FontInfo.GPOS.FeatureList['count']   = readUSHORT();
-      FontInfo.GPOS.FeatureList['records'] = [];
-      for (i = 0; i < FontInfo.GPOS.FeatureList.count; i++) {
-        obj           = {};
-        obj['tag']    = readTAG();
-        obj['offset'] = u8ArrToStr(read(2));
-        FontInfo.GPOS.FeatureList.records.push(obj);
+      // Feature List
+      FontInfo.GPOS['FeatureList'] = {};
+
+      var FeatureListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.FeatureList;
+      _move(FeatureListOffset);
+
+      FontInfo.GPOS.FeatureList['FeatureCount']  = readUSHORT();
+      FontInfo.GPOS.FeatureList['FeatureRecord'] = [];
+
+      for (i = 0; i < FontInfo.GPOS.FeatureList.FeatureCount; i++) {
+        var FeatureRecord = {};
+        FeatureRecord['FeatureTag']    = readTAG();
+        FeatureRecord['FeatureOffset'] = readUSHORT(); // offset
+
+        // Feature
+        FeatureRecord['Feature'] = {};
+
+        _push();
+        _move(FeatureListOffset+FeatureRecord.FeatureOffset);
+        FeatureRecord.Feature['FeatureParams']   = readUSHORT();
+        FeatureRecord.Feature['LookupCount']     = readUSHORT();
+        FeatureRecord.Feature['LookupListIndex'] = readUSHORT();
+
+        FontInfo.GPOS.FeatureList.FeatureRecord.push(FeatureRecord);
+        _pop();
       }
 
-      // Lookup List Table
-      _move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.LookupListOffset);
-      FontInfo.GPOS['LookupList']         = {};
-      FontInfo.GPOS.LookupList['count']   = readUSHORT();
-      FontInfo.GPOS.LookupList['records'] = [];
-      for (i = 0; i < FontInfo.GPOS.LookupList.count; i++) {
-        obj = {};
-        obj['LookupType']    = readUSHORT();
-        obj['LookupFlag']    = readUSHORT();
-        obj['SubTableCount'] = readUSHORT();
-        obj['SubTable']      = []
-        obj['offset']        = u8ArrToStr(read(2));
-        FontInfo.GPOS.LookupList.records.push(obj);
+      // Lookup List
+      FontInfo.GPOS['LookupList'] = {};
+
+      _move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.LookupList);
+
+      FontInfo.GPOS.LookupList['LookupCount']   = readUSHORT();
+      FontInfo.GPOS.LookupList['Lookup'] = [];
+      pointer += 8; // TODO: ここでなぜずれるのか調べる
+      for (i = 0; i < FontInfo.GPOS.LookupList.LookupCount; i++) {
+        var Lookup = {};
+        Lookup['LookupType']       = readUSHORT();
+        Lookup['LookupFlag']       = readUSHORT_STR();
+        Lookup['SubTableCount']    = readUSHORT();
+        Lookup['SubTable']         = [];
+        for (j = 0; j < Lookup.SubTableCount; j++) {
+          var subtable = {};
+          subtable['CoverageFormat'] = readUSHORT(); // TODO: ここが1,2でフォーマットが変わるっぽい
+          subtable['GlyphCount']     = readUSHORT();
+          subtable['GlyphArray']     = [];
+          // console.log('format',subtable.CoverageFormat);
+          // for (j = 0; j < Lookup.SubTableCount; j++) {
+
+          // }
+          Lookup.SubTable.push(subtable);
+        }
+        Lookup['MarkFilteringSet'] = readUSHORT();
+        FontInfo.GPOS.LookupList.Lookup.push(Lookup);
       }
 
       // =======================================
