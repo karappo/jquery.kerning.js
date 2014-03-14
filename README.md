@@ -33,7 +33,6 @@ jQuery(function($) {
 - develop : [![Build Status](https://travis-ci.org/KarappoInc/jquery.kerning.js.png?branch=develop)](https://travis-ci.org/KarappoInc/jquery.kerning.js)
 
 
-
 ## Release History
 
 - v0.1.1 : Change data format simpler.
