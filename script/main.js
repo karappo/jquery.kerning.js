@@ -273,40 +273,76 @@ function handleFileSelect(e) {
         _move(FeatureListOffset+FeatureRecord.FeatureOffset);
         FeatureRecord.Feature['FeatureParams']   = readUSHORT();
         FeatureRecord.Feature['LookupCount']     = readUSHORT();
-        FeatureRecord.Feature['LookupListIndex'] = readUSHORT();
-
+        FeatureRecord.Feature['LookupListIndex'] = [];
+        for (j = 0; j < FeatureRecord.Feature.LookupCount; j++) {
+          FeatureRecord.Feature.LookupListIndex.push(readUSHORT());
+        }
         FontInfo.GPOS.FeatureList.FeatureRecord.push(FeatureRecord);
         _pop();
       }
 
       // Lookup List
       FontInfo.GPOS['LookupList'] = {};
-
-      _move(FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.LookupList);
+      
+      var LookupListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.LookupList;
+      _move(LookupListOffset);
 
       FontInfo.GPOS.LookupList['LookupCount']   = readUSHORT();
       FontInfo.GPOS.LookupList['Lookup'] = [];
-      pointer += 8; // TODO: ここでなぜずれるのか調べる
       for (i = 0; i < FontInfo.GPOS.LookupList.LookupCount; i++) {
+        FontInfo.GPOS.LookupList.Lookup.push(readUSHORT());
+      }
+
+      FontInfo.GPOS['Lookups'] = [];
+      for (i = 0; i < FontInfo.GPOS.LookupList.LookupCount; i++) {
+
+        var LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i];
+        _move(LookupOffset);
+
+        // Lookup
         var Lookup = {};
+        
         Lookup['LookupType']       = readUSHORT();
         Lookup['LookupFlag']       = readUSHORT_STR();
         Lookup['SubTableCount']    = readUSHORT();
         Lookup['SubTable']         = [];
         for (j = 0; j < Lookup.SubTableCount; j++) {
-          var subtable = {};
-          subtable['CoverageFormat'] = readUSHORT(); // TODO: ここが1,2でフォーマットが変わるっぽい
-          subtable['GlyphCount']     = readUSHORT();
-          subtable['GlyphArray']     = [];
-          // console.log('format',subtable.CoverageFormat);
-          // for (j = 0; j < Lookup.SubTableCount; j++) {
-
-          // }
-          Lookup.SubTable.push(subtable);
+          var SubtableOffset = readUSHORT();
+          _push();
+          _move(LookupOffset+SubtableOffset);
+          
+          Lookup.SubTable.push(readUSHORT()); // offsets
         }
         Lookup['MarkFilteringSet'] = readUSHORT();
-        FontInfo.GPOS.LookupList.Lookup.push(Lookup);
+
+        FontInfo.GPOS.Lookups.push(Lookup);
       }
+      
+
+      // Coverage Subtable
+      // var Coverage = {};
+      // Coverage['CoverageFormat'] = readUSHORT(); // TODO: ここが1,2でフォーマットが変わるっぽい
+      // if(Coverage.CoverageFormat === 1){
+      //   Coverage['GlyphCount'] = readUSHORT();
+      //   Coverage['GlyphArray'] = [];
+      //   for (j = 0; j < Coverage.GlyphCount; j++) {
+      //     Coverage.GlyphArray.push(readUSHORT());
+      //   }
+      // }
+      // else if(Coverage.CoverageFormat === 2){
+      //   Coverage['RangeCount']  = readUSHORT();
+      //   Coverage['RangeRecord'] = [];
+      //   for (j = 0; j < Coverage.RangeCount; j++) {
+      //     var RangeRecord = {};
+      //     RangeRecord['Start'] = readUSHORT();
+      //     RangeRecord['End']   = readUSHORT();
+      //     RangeRecord['StartCoverageIndex'] = readUSHORT();
+      //     Coverage.RangeRecord.push(RangeRecord);
+      //   }
+      // }
+      // else{
+      //   console.error('CoverageFormat:'+Coverage.CoverageFormat+' is not allowed.');
+      // }
 
       // =======================================
 
