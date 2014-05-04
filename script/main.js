@@ -61,7 +61,7 @@ var pointer = 0,
     data;
 
 function _move(_offset){ 
-  console.log('_move', _offset, (_offset).toString(16));
+  // console.log('_move', _offset, (_offset).toString(16));
   pointer = _offset;
 }
 function _push(){
@@ -83,15 +83,22 @@ function u8ArrToStr(u8array){
   }
   return result;
 }
-function readUSHORT(){ return parseInt(u8ArrToStr(read(2)),16); }
+function readUSHORT(_log){ 
+  var n = u8ArrToStr(read(2));
+  if(_log) console.log(parseInt(n,16), n);
+  return parseInt(n,16);
+}
 function readUSHORT_STR(){ return '0x'+u8ArrToStr(read(2)); }
 function readUINT16(){ return parseInt(u8ArrToStr(read(4)),16); }
 function readUINT16_STR(){ return '0x'+u8ArrToStr(read(4)); }
-function readULONG() { var n = u8ArrToStr(read(4)); console.log(parseInt(n,16), n); return parseInt(n,16); }
+function readULONG(_log) { 
+  var n = u8ArrToStr(read(4));
+  if(_log) console.log(parseInt(n,16), n);
+  return parseInt(n,16);
+}
 function readULONG_STR() { return '0x'+u8ArrToStr(read(4)); }
 function readFIXED() { return parseFloat(u8ArrToStr(read(4)),16); }
 function readTAG() { return utf8_hex_string_to_string(u8ArrToStr(read(4))); }
-
 
 // ++++++++++++++++++++++++++++++++++++++++++++
 
@@ -296,58 +303,69 @@ function handleFileSelect(e) {
       FontInfo.GPOS['Lookups'] = [];
       for (i = 0; i < FontInfo.GPOS.LookupList.LookupCount; i++) {
 
-        var LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i];
-        _move(LookupOffset);
-
         // Lookup
         var Lookup = {};
+
+        var LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i];
+        _move(LookupOffset);
         
         Lookup['LookupType']       = readUSHORT();
         Lookup['LookupFlag']       = readUSHORT_STR();
         Lookup['SubTableCount']    = readUSHORT();
-        Lookup['SubTable']         = [];
+
+        var SubTableOffsets = [];
         for (j = 0; j < Lookup.SubTableCount; j++) {
-          var SubtableOffset = readUSHORT();
-          _push();
-          _move(LookupOffset+SubtableOffset);
-          
-          Lookup.SubTable.push(readUSHORT()); // offsets
+          SubTableOffsets.push(readUSHORT()); // offsets
         }
+        
         Lookup['MarkFilteringSet'] = readUSHORT();
+
+        _push();
+
+        Lookup['SubTable'] = [];
+        for (k = 0; k < Lookup.SubTableCount; k++) {
+          var SubtableOffset = SubTableOffsets[k];
+          _move(LookupOffset+SubtableOffset);
+
+          // Coverage Subtable
+          var Coverage = {};
+          Coverage['CoverageFormat'] = readUSHORT(); // TODO: ここが1,2でフォーマットが変わるっぽい
+          console.log('-');
+          if(Coverage.CoverageFormat === 1){
+            Coverage['GlyphCount'] = readUSHORT(true);
+            Coverage['GlyphArray'] = [];
+            for (j = 0; j < Coverage.GlyphCount; j++) {
+              Coverage.GlyphArray.push(readUSHORT());
+              // readUSHORT();
+            }
+          }
+          else if(Coverage.CoverageFormat === 2){
+            Coverage['RangeCount']  = readUSHORT();
+            Coverage['RangeRecord'] = [];
+            for (j = 0; j < Coverage.RangeCount; j++) {
+              var RangeRecord = {};
+              RangeRecord['Start'] = readUSHORT();
+              RangeRecord['End']   = readUSHORT();
+              RangeRecord['StartCoverageIndex'] = readUSHORT();
+              Coverage.RangeRecord.push(RangeRecord);
+            }
+          }
+          else{
+            console.error('CoverageFormat:'+Coverage.CoverageFormat+' is not allowed.');
+          }
+
+          Lookup.SubTable.push(Coverage);
+        }
+        _pop();
 
         FontInfo.GPOS.Lookups.push(Lookup);
       }
-      
-
-      // Coverage Subtable
-      // var Coverage = {};
-      // Coverage['CoverageFormat'] = readUSHORT(); // TODO: ここが1,2でフォーマットが変わるっぽい
-      // if(Coverage.CoverageFormat === 1){
-      //   Coverage['GlyphCount'] = readUSHORT();
-      //   Coverage['GlyphArray'] = [];
-      //   for (j = 0; j < Coverage.GlyphCount; j++) {
-      //     Coverage.GlyphArray.push(readUSHORT());
-      //   }
-      // }
-      // else if(Coverage.CoverageFormat === 2){
-      //   Coverage['RangeCount']  = readUSHORT();
-      //   Coverage['RangeRecord'] = [];
-      //   for (j = 0; j < Coverage.RangeCount; j++) {
-      //     var RangeRecord = {};
-      //     RangeRecord['Start'] = readUSHORT();
-      //     RangeRecord['End']   = readUSHORT();
-      //     RangeRecord['StartCoverageIndex'] = readUSHORT();
-      //     Coverage.RangeRecord.push(RangeRecord);
-      //   }
-      // }
-      // else{
-      //   console.error('CoverageFormat:'+Coverage.CoverageFormat+' is not allowed.');
-      // }
 
       // =======================================
 
       // output
-      $('#output').html(JSON.stringify(FontInfo, null, '\t'));
+      $('#output').html(JSON.stringify(FontInfo.GPOS, null, '\t'));
+      console.log(FontInfo.GPOS);
     };
 
     reader.readAsArrayBuffer(f);
