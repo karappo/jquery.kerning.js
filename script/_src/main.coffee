@@ -47,24 +47,24 @@ utf8_hex_string_to_string = (hex_str1) ->
 # ++++++++++++++++++++++++++++++++++++++++++++
 # Utility
 
-pointer = 0
-pointerHistory = []
-data
+window.pointer = 0
+window.pointerHistory = []
+window.data = null
 
 _move = (_offset) ->
   # console.log('_move', _offset, (_offset).toString(16));
-  pointer = _offset
+  window.pointer = _offset
 
 _push = ->
-  pointerHistory.push(pointer)
+  window.pointerHistory.push(window.pointer)
 
 _pop = ->
-  pointer = pointerHistory.pop()
+  window.pointer = window.pointerHistory.pop()
 
 read = (_size) ->
-  start = pointer
-  pointer += _size
-  data.subarray(start,pointer)
+  start = window.pointer
+  window.pointer += _size
+  window.data.subarray(start,window.pointer)
 
 u8ArrToStr = (u8array) ->
   # u8array : big endian
@@ -119,7 +119,7 @@ handleFileSelect = (e) ->
     reader = new FileReader()
     reader.onload = ->
       
-      data = new Uint8Array(reader.result)
+      window.data = new Uint8Array(reader.result)
 
       FontInfo = {}
 
@@ -352,14 +352,14 @@ handleFileSelect = (e) ->
     reader.readAsArrayBuffer(f)
 
 
-$ ->
-  if window.File and window.FileReader and window.FileList and window.Blob
-    # Setup the dnd listeners.
-    dropZone = document.getElementById('dropzone')
-    dropZone.addEventListener('dragover', handleDragOver, false)
-    dropZone.addEventListener('drop', handleFileSelect, false)
-  else
-    console.error('The File APIs are not fully supported in this browser.')
+# $ ->
+#   if window.File and window.FileReader and window.FileList and window.Blob
+#     # Setup the dnd listeners.
+#     dropZone = document.getElementById('dropzone')
+#     dropZone.addEventListener('dragover', handleDragOver, false)
+#     dropZone.addEventListener('drop', handleFileSelect, false)
+#   else
+#     console.error('The File APIs are not fully supported in this browser.')
 
 ###
 cid = {

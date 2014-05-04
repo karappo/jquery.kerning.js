@@ -5,6 +5,8 @@ module.exports = (grunt)->
       files: ['**/*.coffee']
       tasks: 'coffee'
     coffee:
+      options:
+        sourceMap : true
       compile:
         files: [
           expand: true

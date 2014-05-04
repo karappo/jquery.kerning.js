@@ -1,5 +1,5 @@
 (function() {
-  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, pointer, pointerHistory, read, readFIXED, readTAG, readUINT16, readUINT16_STR, readULONG, readULONG_STR, readUSHORT, readUSHORT_STR, u8ArrToStr, utf8_bytes_to_string, utf8_hex_string_to_string, _move, _pop, _push;
+  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, read, readFIXED, readTAG, readUINT16, readUINT16_STR, readULONG, readULONG_STR, readUSHORT, readUSHORT_STR, u8ArrToStr, utf8_bytes_to_string, utf8_hex_string_to_string, _move, _pop, _push;
 
   utf8_bytes_to_string = function(arr) {
     var c, i, result;
@@ -50,29 +50,29 @@
     return str2;
   };
 
-  pointer = 0;
+  window.pointer = 0;
 
-  pointerHistory = [];
+  window.pointerHistory = [];
 
-  data;
+  window.data = null;
 
   _move = function(_offset) {
-    return pointer = _offset;
+    return window.pointer = _offset;
   };
 
   _push = function() {
-    return pointerHistory.push(pointer);
+    return window.pointerHistory.push(window.pointer);
   };
 
   _pop = function() {
-    return pointer = pointerHistory.pop();
+    return window.pointer = window.pointerHistory.pop();
   };
 
   read = function(_size) {
     var start;
-    start = pointer;
-    pointer += _size;
-    return data.subarray(start, pointer);
+    start = window.pointer;
+    window.pointer += _size;
+    return window.data.subarray(start, window.pointer);
   };
 
   u8ArrToStr = function(u8array) {
@@ -145,8 +145,8 @@
       f = files[h];
       reader = new FileReader();
       reader.onload = function() {
-        var Coverage, FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, RangeRecord, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, data, i, j, k, obj, storageOffset, tag, _j, _k, _l, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w, _x;
-        data = new Uint8Array(reader.result);
+        var Coverage, FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, RangeRecord, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, obj, storageOffset, tag, _j, _k, _l, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w, _x;
+        window.data = new Uint8Array(reader.result);
         FontInfo = {};
         FontInfo['OffsetTable'] = {};
         FontInfo.OffsetTable['version'] = readULONG_STR();
@@ -323,17 +323,6 @@
     return _results;
   };
 
-  $(function() {
-    var dropZone;
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-      dropZone = document.getElementById('dropzone');
-      dropZone.addEventListener('dragover', handleDragOver, false);
-      return dropZone.addEventListener('drop', handleFileSelect, false);
-    } else {
-      return console.error('The File APIs are not fully supported in this browser.');
-    }
-  });
-
 
   /*
   cid = {
@@ -459,3 +448,5 @@
    */
 
 }).call(this);
+
+//# sourceMappingURL=main.js.map
