@@ -1,3 +1,3 @@
 #server: 	python -m SimpleHTTPServer
-#grunt:		grunt watch
+grunt:		grunt
 compass:	subcontract -d ./style/_src -- compass watch
