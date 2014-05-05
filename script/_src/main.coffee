@@ -131,7 +131,7 @@ handleFileSelect = (e) ->
       FontInfo['TableDirectory'] = {}
       
       for i in [0...FontInfo.OffsetTable.numTables]
-        tag = String.fromCharCode.apply(null, read(4))
+        tag = String.fromCharCode.apply(null, read(4)).replace(' ','')
         FontInfo.TableDirectory[tag] = {}
         FontInfo.TableDirectory[tag]['checkSum'] = readULONG_STR()
         FontInfo.TableDirectory[tag]['offset']   = readULONG()
