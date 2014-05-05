@@ -5,7 +5,7 @@
 # UTF8のバイト配列を文字列に変換
 utf8_bytes_to_string = (arr) ->
   
-  return null if arr?
+  return null if arr == null
 
   result = ""
   while i = arr.shift()
@@ -33,9 +33,8 @@ hex_to_byte = (hex_str) ->
 # バイト配列を16進文字列に変換
 hex_string_to_bytes = (hex_str) ->
   result = []
-  for i in hex_str
+  for i in [0...hex_str.length] by 2
     result.push(hex_to_byte(hex_str.substr(i,2)))
-    i+=2
   return result
 
 # UTF8の16進文字列を文字列に変換
@@ -69,7 +68,7 @@ read = (_size) ->
 u8ArrToStr = (u8array) ->
   # u8array : big endian
   result = ''
-  for i in u8array.length
+  for i in [0...u8array.length]
     result += ('00'+u8array[i].toString(16)).substr(-2)
   return result
 
@@ -114,8 +113,7 @@ handleFileSelect = (e) ->
 
   files = e.dataTransfer.files
 
-  for h in files
-    f = files[h]
+  for file in files
     reader = new FileReader()
     reader.onload = ->
       
@@ -131,7 +129,8 @@ handleFileSelect = (e) ->
       FontInfo.OffsetTable['rangeShift']    = readUSHORT()
 
       FontInfo['TableDirectory'] = {}
-      for i in [0..FontInfo.OffsetTable.numTables]
+      
+      for i in [0...FontInfo.OffsetTable.numTables]
         tag = String.fromCharCode.apply(null, read(4))
         FontInfo.TableDirectory[tag] = {}
         FontInfo.TableDirectory[tag]['checkSum'] = readULONG_STR()
@@ -141,14 +140,13 @@ handleFileSelect = (e) ->
       # "name" Table =========================
       
       FontInfo['name'] = {}
-
       _move(FontInfo.TableDirectory.name.offset)
 
       FontInfo.name['format']  = readUSHORT()
       FontInfo.name['count']   = readUSHORT()
       FontInfo.name['offset']  = readUSHORT()
       FontInfo.name['records'] = []
-      for i in [0..FontInfo.name.count]
+      for i in [0...FontInfo.name.count]
         obj = {}
         obj['platformID']  = readUSHORT()
         obj['encordingID'] = readUSHORT()
@@ -159,15 +157,16 @@ handleFileSelect = (e) ->
         FontInfo.name.records.push(obj)
 
       storageOffset = FontInfo.TableDirectory.name.offset + FontInfo.name.offset # 文字ストレージの先頭
-      for i in [0..FontInfo.name.count]
+      for i in [0...FontInfo.name.count]
         _offset = storageOffset + FontInfo.name.records[i].offset
         _move(_offset)
         FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(u8ArrToStr(read(FontInfo.name.records[i].length)))
-
-      for i in [0..FontInfo.name.records.length]
-        if FontInfo.name.records[i].languageId == 0 && FontInfo.name.records[i].nameId == 4
+      
+      for record in FontInfo.name.records.length
+        console.log(record)
+        if record.languageId == 0  and record.nameId == 4
           # Font Name
-          console.log(FontInfo.name.records[i].nameString)
+          console.log(record.nameString)
 
       # "cmap" Table =========================
 
@@ -179,7 +178,7 @@ handleFileSelect = (e) ->
       FontInfo.cmap['numTables'] = readUSHORT()
 
       FontInfo.cmap['encodingRecords'] = []
-      for i in [0..FontInfo.cmap.numTables]
+      for i in [0...FontInfo.cmap.numTables]
         obj = {}
         obj['platformID']  = readUSHORT()
         obj['encordingID'] = readUSHORT()
@@ -211,7 +210,7 @@ handleFileSelect = (e) ->
       FontInfo.GPOS.ScriptList['ScriptCount']   = readUSHORT()
       FontInfo.GPOS.ScriptList['ScriptRecord'] = []
       
-      for i in [0..FontInfo.GPOS.ScriptList.ScriptCount]
+      for i in [0...FontInfo.GPOS.ScriptList.ScriptCount]
         ScriptRecord = {}
         
         ScriptRecord['ScriptTag']    = readTAG();
@@ -228,7 +227,7 @@ handleFileSelect = (e) ->
         ScriptRecord.Script['LangSysCount']   = readUSHORT()
         ScriptRecord.Script['LangSysRecord']  = []
 
-        for j in [0..ScriptRecord.Script.LangSysCount]
+        for j in [0...ScriptRecord.Script.LangSysCount]
           LangSysRecord = {}
           LangSysRecord['LangSysTag']    = readTAG()
           LangSysRecord['LangSysOffset'] = readUSHORT()
@@ -258,7 +257,7 @@ handleFileSelect = (e) ->
       FontInfo.GPOS.FeatureList['FeatureCount']  = readUSHORT()
       FontInfo.GPOS.FeatureList['FeatureRecord'] = []
 
-      for i in [0..FontInfo.GPOS.FeatureList.FeatureCount]
+      for i in [0...FontInfo.GPOS.FeatureList.FeatureCount]
         FeatureRecord = {}
         FeatureRecord['FeatureTag']    = readTAG()
         FeatureRecord['FeatureOffset'] = readUSHORT() # offset
@@ -271,7 +270,7 @@ handleFileSelect = (e) ->
         FeatureRecord.Feature['FeatureParams']   = readUSHORT()
         FeatureRecord.Feature['LookupCount']     = readUSHORT()
         FeatureRecord.Feature['LookupListIndex'] = []
-        for j in [0..FeatureRecord.Feature.LookupCount]
+        for j in [0...FeatureRecord.Feature.LookupCount]
           FeatureRecord.Feature.LookupListIndex.push(readUSHORT())
         
         FontInfo.GPOS.FeatureList.FeatureRecord.push(FeatureRecord)
@@ -285,11 +284,11 @@ handleFileSelect = (e) ->
 
       FontInfo.GPOS.LookupList['LookupCount'] = readUSHORT()
       FontInfo.GPOS.LookupList['Lookup'] = []
-      for i in [0..FontInfo.GPOS.LookupList.LookupCount]
+      for i in [0...FontInfo.GPOS.LookupList.LookupCount]
         FontInfo.GPOS.LookupList.Lookup.push(readUSHORT())
       
       FontInfo.GPOS['Lookups'] = []
-      for i in [0..FontInfo.GPOS.LookupList.LookupCount]
+      for i in [0...FontInfo.GPOS.LookupList.LookupCount]
 
         # Lookup
         Lookup = {}
@@ -302,7 +301,7 @@ handleFileSelect = (e) ->
         Lookup['SubTableCount']    = readUSHORT()
 
         SubTableOffsets = []
-        for j in [0..Lookup.SubTableCount]
+        for j in [0...Lookup.SubTableCount]
           SubTableOffsets.push(readUSHORT()); # offsets
         
         
@@ -311,24 +310,24 @@ handleFileSelect = (e) ->
         _push()
 
         Lookup['SubTable'] = []
-        for k in [0..Lookup.SubTableCount]
+        for k in [0...Lookup.SubTableCount]
           SubtableOffset = SubTableOffsets[k]
           _move(LookupOffset+SubtableOffset)
 
           # Coverage Subtable
           Coverage = {}
           Coverage['CoverageFormat'] = readUSHORT() # TODO: ここが1,2でフォーマットが変わるっぽい
-          console.log('-')
+          # console.log('-')
           if(Coverage.CoverageFormat == 1)
-            Coverage['GlyphCount'] = readUSHORT(true)
+            Coverage['GlyphCount'] = readUSHORT()
             Coverage['GlyphArray'] = []
-            for j in [0..Coverage.GlyphCount]
+            for j in [0...Coverage.GlyphCount]
               Coverage.GlyphArray.push(readUSHORT())
               # readUSHORT()
           else if(Coverage.CoverageFormat == 2)
             Coverage['RangeCount']  = readUSHORT()
             Coverage['RangeRecord'] = []
-            for j in [0..Coverage.RangeCount]
+            for j in [0...Coverage.RangeCount]
               RangeRecord = {}
               RangeRecord['Start'] = readUSHORT()
               RangeRecord['End']   = readUSHORT()
@@ -349,17 +348,17 @@ handleFileSelect = (e) ->
       $('#output').html(JSON.stringify(FontInfo.GPOS, null, '\t'))
       console.log(FontInfo.GPOS)
     
-    reader.readAsArrayBuffer(f)
+    reader.readAsArrayBuffer(file)
 
 
-# $ ->
-#   if window.File and window.FileReader and window.FileList and window.Blob
-#     # Setup the dnd listeners.
-#     dropZone = document.getElementById('dropzone')
-#     dropZone.addEventListener('dragover', handleDragOver, false)
-#     dropZone.addEventListener('drop', handleFileSelect, false)
-#   else
-#     console.error('The File APIs are not fully supported in this browser.')
+$ ->
+  if window.File and window.FileReader and window.FileList and window.Blob
+    # Setup the dnd listeners.
+    dropZone = document.getElementById('dropzone')
+    dropZone.addEventListener('dragover', handleDragOver, false)
+    dropZone.addEventListener('drop', handleFileSelect, false)
+  else
+    console.error('The File APIs are not fully supported in this browser.')
 
 ###
 cid = {
