@@ -315,28 +315,27 @@ handleFileSelect = (e) ->
           _move(LookupOffset+SubtableOffset)
 
           # Coverage Subtable
-          Coverage = {}
-          Coverage['CoverageFormat'] = readUSHORT() # TODO: ここが1,2でフォーマットが変わるっぽい
-          # console.log('-')
-          if(Coverage.CoverageFormat == 1)
-            Coverage['GlyphCount'] = readUSHORT()
-            Coverage['GlyphArray'] = []
-            for j in [0...Coverage.GlyphCount]
-              Coverage.GlyphArray.push(readUSHORT())
-              # readUSHORT()
-          else if(Coverage.CoverageFormat == 2)
-            Coverage['RangeCount']  = readUSHORT()
-            Coverage['RangeRecord'] = []
-            for j in [0...Coverage.RangeCount]
-              RangeRecord = {}
-              RangeRecord['Start'] = readUSHORT()
-              RangeRecord['End']   = readUSHORT()
-              RangeRecord['StartCoverageIndex'] = readUSHORT()
-              Coverage.RangeRecord.push(RangeRecord)
-          else
-            console.error('CoverageFormat:'+Coverage.CoverageFormat+' is not allowed.')
-          
-          Lookup.SubTable.push(Coverage)
+          # Coverage = {}
+          # Coverage['CoverageFormat'] = readUSHORT() # TODO: ここが1,2でフォーマットが変わるっぽい
+          # # console.log('-')
+          # if(Coverage.CoverageFormat == 1)
+          #   Coverage['GlyphCount'] = readUSHORT()
+          #   Coverage['GlyphArray'] = []
+          #   for j in [0...Coverage.GlyphCount]
+          #     Coverage.GlyphArray.push(readUSHORT())
+          #     # readUSHORT()
+          # else if(Coverage.CoverageFormat == 2)
+          #   Coverage['RangeCount']  = readUSHORT()
+          #   Coverage['RangeRecord'] = []
+          #   for j in [0...Coverage.RangeCount]
+          #     RangeRecord = {}
+          #     RangeRecord['Start'] = readUSHORT()
+          #     RangeRecord['End']   = readUSHORT()
+          #     RangeRecord['StartCoverageIndex'] = readUSHORT()
+          #     Coverage.RangeRecord.push(RangeRecord)
+          # else
+          #   console.error('CoverageFormat:'+Coverage.CoverageFormat+' is not allowed.')
+          # Lookup.SubTable.push(Coverage)
 
         _pop()
 
@@ -345,8 +344,8 @@ handleFileSelect = (e) ->
       # =======================================
 
       # output
-      $('#output').html(JSON.stringify(FontInfo.GPOS, null, '\t'))
-      console.log(FontInfo.GPOS)
+      $('#output').html(JSON.stringify(FontInfo, null, '\t'))
+      # console.log(FontInfo)
     
     reader.readAsArrayBuffer(file)
 
