@@ -50,8 +50,8 @@ window.pointer = 0
 window.pointerHistory = []
 window.data = null
 
-_move = (_offset) ->
-  # console.log('_move', _offset, (_offset).toString(16));
+_move = (_offset, _log) ->
+  console.log('_move', _offset, (_offset).toString(16)) if _log
   window.pointer = _offset
 
 _push = ->
@@ -139,9 +139,9 @@ handleFileSelect = (e) ->
       
       # "name" Table =========================
       
-      FontInfo['name'] = {}
-      _move(FontInfo.TableDirectory.name.offset)
+      _move FontInfo.TableDirectory.name.offset
 
+      FontInfo['name'] = {}
       FontInfo.name['format']  = readUSHORT()
       FontInfo.name['count']   = readUSHORT()
       FontInfo.name['offset']  = readUSHORT()
@@ -171,7 +171,7 @@ handleFileSelect = (e) ->
       # "cmap" Table =========================
 
       FontInfo['cmap'] = {}
-            
+      
       _move(FontInfo.TableDirectory.cmap.offset)
 
       FontInfo.cmap['version']   = readUSHORT()
