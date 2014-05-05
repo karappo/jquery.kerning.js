@@ -187,6 +187,43 @@ handleFileSelect = (e) ->
 
       # TODO: read encoding sub tables
 
+      # "CFF" Table =========================
+
+      _move FontInfo.TableDirectory.CFF.offset
+
+      # TODO: 値をちゃんと取得
+      FontInfo['CFF'] = {
+        TopDictionary:{
+          version: readUSHORT()
+          Notice: readUSHORT()
+          Copyright: readUSHORT()
+          CIDFontName: readUSHORT()
+          FullName: readUSHORT()
+          FamilyName: readUSHORT()
+          Weight: readUSHORT()
+          isFixedPitch: readUSHORT()
+          ItalicAngle: readUSHORT()
+          UnderlinePosition: readUSHORT()
+          UnderlineThickness: readUSHORT()
+          UniqueID: readUSHORT()
+          FontBBox:
+            left:   readUSHORT()
+            bottom: readUSHORT()
+            right:  readUSHORT()
+            top:    readUSHORT()
+          StrokeWidth: readUSHORT()
+          XUID: readUSHORT()
+          charset: readUSHORT()
+          Encoding: readUSHORT()
+          CharStrings: readUSHORT()
+          Private: readUSHORT()
+          SyntheticBase: readUSHORT()
+          PostScript: readUSHORT()
+          BaseFontName: readUSHORT()
+          BaseFontBlend: readUSHORT()
+        }
+      }
+
       # "GPOS" Table =========================
 
       FontInfo['GPOS'] = {}

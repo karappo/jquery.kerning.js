@@ -54,7 +54,10 @@
 
   window.data = null;
 
-  _move = function(_offset) {
+  _move = function(_offset, _log) {
+    if (_log) {
+      console.log('_move', _offset, _offset.toString(16));
+    }
     return window.pointer = _offset;
   };
 
@@ -140,7 +143,7 @@
       file = files[_i];
       reader = new FileReader();
       reader.onload = function() {
-        var Coverage, FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, RangeRecord, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, obj, record, storageOffset, tag, _j, _k, _l, _len1, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w, _x;
+        var FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, obj, record, storageOffset, tag, _j, _k, _l, _len1, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v;
         window.data = new Uint8Array(reader.result);
         FontInfo = {};
         FontInfo['OffsetTable'] = {};
@@ -151,14 +154,14 @@
         FontInfo.OffsetTable['rangeShift'] = readUSHORT();
         FontInfo['TableDirectory'] = {};
         for (i = _j = 0, _ref = FontInfo.OffsetTable.numTables; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
-          tag = String.fromCharCode.apply(null, read(4));
+          tag = String.fromCharCode.apply(null, read(4)).replace(' ', '');
           FontInfo.TableDirectory[tag] = {};
           FontInfo.TableDirectory[tag]['checkSum'] = readULONG_STR();
           FontInfo.TableDirectory[tag]['offset'] = readULONG();
           FontInfo.TableDirectory[tag]['length'] = readULONG();
         }
-        FontInfo['name'] = {};
         _move(FontInfo.TableDirectory.name.offset);
+        FontInfo['name'] = {};
         FontInfo.name['format'] = readUSHORT();
         FontInfo.name['count'] = readUSHORT();
         FontInfo.name['offset'] = readUSHORT();
@@ -199,6 +202,39 @@
           obj['offset'] = readULONG();
           FontInfo.cmap.encodingRecords.push(obj);
         }
+        _move(FontInfo.TableDirectory.CFF.offset);
+        FontInfo['CFF'] = {
+          TopDictionary: {
+            version: readUSHORT(),
+            Notice: readUSHORT(),
+            Copyright: readUSHORT(),
+            CIDFontName: readUSHORT(),
+            FullName: readUSHORT(),
+            FamilyName: readUSHORT(),
+            Weight: readUSHORT(),
+            isFixedPitch: readUSHORT(),
+            ItalicAngle: readUSHORT(),
+            UnderlinePosition: readUSHORT(),
+            UnderlineThickness: readUSHORT(),
+            UniqueID: readUSHORT(),
+            FontBBox: {
+              left: readUSHORT(),
+              bottom: readUSHORT(),
+              right: readUSHORT(),
+              top: readUSHORT()
+            },
+            StrokeWidth: readUSHORT(),
+            XUID: readUSHORT(),
+            charset: readUSHORT(),
+            Encoding: readUSHORT(),
+            CharStrings: readUSHORT(),
+            Private: readUSHORT(),
+            SyntheticBase: readUSHORT(),
+            PostScript: readUSHORT(),
+            BaseFontName: readUSHORT(),
+            BaseFontBlend: readUSHORT()
+          }
+        };
         FontInfo['GPOS'] = {};
         _move(FontInfo.TableDirectory.GPOS.offset);
         FontInfo.GPOS['Header'] = {};
@@ -286,34 +322,11 @@
           for (k = _v = 0, _ref12 = Lookup.SubTableCount; 0 <= _ref12 ? _v < _ref12 : _v > _ref12; k = 0 <= _ref12 ? ++_v : --_v) {
             SubtableOffset = SubTableOffsets[k];
             _move(LookupOffset + SubtableOffset);
-            Coverage = {};
-            Coverage['CoverageFormat'] = readUSHORT();
-            if (Coverage.CoverageFormat === 1) {
-              Coverage['GlyphCount'] = readUSHORT();
-              Coverage['GlyphArray'] = [];
-              for (j = _w = 0, _ref13 = Coverage.GlyphCount; 0 <= _ref13 ? _w < _ref13 : _w > _ref13; j = 0 <= _ref13 ? ++_w : --_w) {
-                Coverage.GlyphArray.push(readUSHORT());
-              }
-            } else if (Coverage.CoverageFormat === 2) {
-              Coverage['RangeCount'] = readUSHORT();
-              Coverage['RangeRecord'] = [];
-              for (j = _x = 0, _ref14 = Coverage.RangeCount; 0 <= _ref14 ? _x < _ref14 : _x > _ref14; j = 0 <= _ref14 ? ++_x : --_x) {
-                RangeRecord = {};
-                RangeRecord['Start'] = readUSHORT();
-                RangeRecord['End'] = readUSHORT();
-                RangeRecord['StartCoverageIndex'] = readUSHORT();
-                Coverage.RangeRecord.push(RangeRecord);
-              }
-            } else {
-              console.error('CoverageFormat:' + Coverage.CoverageFormat + ' is not allowed.');
-            }
-            Lookup.SubTable.push(Coverage);
           }
           _pop();
           FontInfo.GPOS.Lookups.push(Lookup);
         }
-        $('#output').html(JSON.stringify(FontInfo.GPOS, null, '\t'));
-        return console.log(FontInfo.GPOS);
+        return $('#output').html(JSON.stringify(FontInfo, null, '\t'));
       };
       _results.push(reader.readAsArrayBuffer(file));
     }
