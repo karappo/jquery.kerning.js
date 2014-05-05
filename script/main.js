@@ -185,7 +185,6 @@
         _ref3 = FontInfo.name.records.length;
         for (_m = 0, _len1 = _ref3.length; _m < _len1; _m++) {
           record = _ref3[_m];
-          console.log(record);
           if (record.languageId === 0 && record.nameId === 4) {
             console.log(record.nameString);
           }

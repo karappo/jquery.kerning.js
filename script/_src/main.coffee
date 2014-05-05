@@ -163,10 +163,8 @@ handleFileSelect = (e) ->
         FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(u8ArrToStr(read(FontInfo.name.records[i].length)))
       
       for record in FontInfo.name.records.length
-        console.log(record)
         if record.languageId == 0  and record.nameId == 4
-          # Font Name
-          console.log(record.nameString)
+          console.log(record.nameString) # Font Name
 
       # "cmap" Table =========================
 
