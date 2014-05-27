@@ -13,7 +13,7 @@
     "grunt-contrib-watch": "~0.4.4"
   },
   "devDependencies": {
-    "grunt-contrib-coffee": "~0.10.1"
+    "grunt-contrib-coffee": "^0.10.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
