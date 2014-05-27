@@ -1,5 +1,5 @@
 (function() {
-  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, read, readFIXED, readTAG, readUINT16, readUINT16_STR, readULONG, readULONG_STR, readUSHORT, readUSHORT_STR, u8ArrToStr, utf8_bytes_to_string, utf8_hex_string_to_string, _move, _pop, _push;
+  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, utf8_bytes_to_string, utf8_hex_string_to_string, _Card8, _FIXED, _TAG, _ULONG, _ULONG_STR, _USHORT, _USHORT_STR, __read, __readByte, _move, _pop, _push, _u8ArrToStr;
 
   utf8_bytes_to_string = function(arr) {
     var c, i, result;
@@ -69,14 +69,40 @@
     return window.pointer = window.pointerHistory.pop();
   };
 
-  read = function(_size) {
-    var start;
-    start = window.pointer;
-    window.pointer += _size;
-    return window.data.subarray(start, window.pointer);
+  _Card8 = function(_log) {
+    return __readByte(1, _log);
   };
 
-  u8ArrToStr = function(u8array) {
+  _USHORT = function(_log) {
+    return __readByte(2, _log);
+  };
+
+  _ULONG = function(_log) {
+    return __readByte(4, _log);
+  };
+
+  _FIXED = function(_log) {
+    var n;
+    n = _u8ArrToStr(__read(4));
+    if (_log) {
+      console.log(parseInt(n, 16), n);
+    }
+    return parseFloat(n, 16);
+  };
+
+  _USHORT_STR = function() {
+    return '0x' + _u8ArrToStr(__read(2));
+  };
+
+  _ULONG_STR = function() {
+    return '0x' + _u8ArrToStr(__read(4));
+  };
+
+  _TAG = function() {
+    return utf8_hex_string_to_string(_u8ArrToStr(__read(4)));
+  };
+
+  _u8ArrToStr = function(u8array) {
     var i, result, _i, _ref;
     result = '';
     for (i = _i = 0, _ref = u8array.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -85,46 +111,20 @@
     return result;
   };
 
-  readUSHORT = function(_log) {
+  __read = function(_size) {
+    var start;
+    start = window.pointer;
+    window.pointer += _size;
+    return window.data.subarray(start, window.pointer);
+  };
+
+  __readByte = function(_num, _log) {
     var n;
-    n = u8ArrToStr(read(2));
+    n = _u8ArrToStr(__read(_num));
     if (_log) {
       console.log(parseInt(n, 16), n);
     }
     return parseInt(n, 16);
-  };
-
-  readUSHORT_STR = function() {
-    return '0x' + u8ArrToStr(read(2));
-  };
-
-  readUINT16 = function() {
-    return parseInt(u8ArrToStr(read(4)), 16);
-  };
-
-  readUINT16_STR = function() {
-    return '0x' + u8ArrToStr(read(4));
-  };
-
-  readULONG = function(_log) {
-    var n;
-    n = u8ArrToStr(read(4));
-    if (_log) {
-      console.log(parseInt(n, 16), n);
-    }
-    return parseInt(n, 16);
-  };
-
-  readULONG_STR = function() {
-    return '0x' + u8ArrToStr(read(4));
-  };
-
-  readFIXED = function() {
-    return parseFloat(u8ArrToStr(read(4)), 16);
-  };
-
-  readTAG = function() {
-    return utf8_hex_string_to_string(u8ArrToStr(read(4)));
   };
 
   handleDragOver = function(e) {
@@ -143,44 +143,46 @@
       file = files[_i];
       reader = new FileReader();
       reader.onload = function() {
-        var FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, obj, record, storageOffset, tag, _j, _k, _l, _len1, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v;
+        var FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, record, storageOffset, tag, _j, _k, _l, _len1, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v;
         window.data = new Uint8Array(reader.result);
         FontInfo = {};
-        FontInfo['OffsetTable'] = {};
-        FontInfo.OffsetTable['version'] = readULONG_STR();
-        FontInfo.OffsetTable['numTables'] = readUSHORT();
-        FontInfo.OffsetTable['searchRange'] = readUSHORT();
-        FontInfo.OffsetTable['entrySelector'] = readUSHORT();
-        FontInfo.OffsetTable['rangeShift'] = readUSHORT();
+        FontInfo['OffsetTable'] = {
+          version: _ULONG_STR(),
+          numTables: _USHORT(),
+          searchRange: _USHORT(),
+          entrySelector: _USHORT(),
+          rangeShift: _USHORT()
+        };
         FontInfo['TableDirectory'] = {};
         for (i = _j = 0, _ref = FontInfo.OffsetTable.numTables; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
-          tag = String.fromCharCode.apply(null, read(4)).replace(' ', '');
+          tag = String.fromCharCode.apply(null, __read(4)).replace(' ', '');
           FontInfo.TableDirectory[tag] = {};
-          FontInfo.TableDirectory[tag]['checkSum'] = readULONG_STR();
-          FontInfo.TableDirectory[tag]['offset'] = readULONG();
-          FontInfo.TableDirectory[tag]['length'] = readULONG();
+          FontInfo.TableDirectory[tag]['checkSum'] = _ULONG_STR();
+          FontInfo.TableDirectory[tag]['offset'] = _ULONG();
+          FontInfo.TableDirectory[tag]['length'] = _ULONG();
         }
         _move(FontInfo.TableDirectory.name.offset);
-        FontInfo['name'] = {};
-        FontInfo.name['format'] = readUSHORT();
-        FontInfo.name['count'] = readUSHORT();
-        FontInfo.name['offset'] = readUSHORT();
-        FontInfo.name['records'] = [];
+        FontInfo['name'] = {
+          format: _USHORT(),
+          count: _USHORT(),
+          offset: _USHORT(),
+          records: []
+        };
         for (i = _k = 0, _ref1 = FontInfo.name.count; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
-          obj = {};
-          obj['platformID'] = readUSHORT();
-          obj['encordingID'] = readUSHORT();
-          obj['languageId'] = readUSHORT();
-          obj['nameId'] = readUSHORT();
-          obj['length'] = readUSHORT();
-          obj['offset'] = readUSHORT();
-          FontInfo.name.records.push(obj);
+          FontInfo.name.records.push({
+            platformID: _USHORT(),
+            encordingID: _USHORT(),
+            languageId: _USHORT(),
+            nameId: _USHORT(),
+            length: _USHORT(),
+            offset: _USHORT()
+          });
         }
         storageOffset = FontInfo.TableDirectory.name.offset + FontInfo.name.offset;
         for (i = _l = 0, _ref2 = FontInfo.name.count; 0 <= _ref2 ? _l < _ref2 : _l > _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
           _offset = storageOffset + FontInfo.name.records[i].offset;
           _move(_offset);
-          FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(u8ArrToStr(read(FontInfo.name.records[i].length)));
+          FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(_u8ArrToStr(__read(FontInfo.name.records[i].length)));
         }
         _ref3 = FontInfo.name.records.length;
         for (_m = 0, _len1 = _ref3.length; _m < _len1; _m++) {
@@ -189,133 +191,148 @@
             console.log(record.nameString);
           }
         }
-        FontInfo['cmap'] = {};
         _move(FontInfo.TableDirectory.cmap.offset);
-        FontInfo.cmap['version'] = readUSHORT();
-        FontInfo.cmap['numTables'] = readUSHORT();
-        FontInfo.cmap['encodingRecords'] = [];
+        FontInfo['cmap'] = {
+          version: _USHORT(),
+          numTables: _USHORT(),
+          encodingRecords: []
+        };
         for (i = _n = 0, _ref4 = FontInfo.cmap.numTables; 0 <= _ref4 ? _n < _ref4 : _n > _ref4; i = 0 <= _ref4 ? ++_n : --_n) {
-          obj = {};
-          obj['platformID'] = readUSHORT();
-          obj['encordingID'] = readUSHORT();
-          obj['offset'] = readULONG();
-          FontInfo.cmap.encodingRecords.push(obj);
+          FontInfo.cmap.encodingRecords.push({
+            platformID: _USHORT(),
+            encordingID: _USHORT(),
+            offset: _ULONG()
+          });
         }
         _move(FontInfo.TableDirectory.CFF.offset);
         FontInfo['CFF'] = {
           TopDictionary: {
-            version: readUSHORT(),
-            Notice: readUSHORT(),
-            Copyright: readUSHORT(),
-            CIDFontName: readUSHORT(),
-            FullName: readUSHORT(),
-            FamilyName: readUSHORT(),
-            Weight: readUSHORT(),
-            isFixedPitch: readUSHORT(),
-            ItalicAngle: readUSHORT(),
-            UnderlinePosition: readUSHORT(),
-            UnderlineThickness: readUSHORT(),
-            UniqueID: readUSHORT(),
+            version: _USHORT(),
+            Notice: _USHORT(),
+            Copyright: _USHORT(),
+            CIDFontName: _USHORT(),
+            FullName: _USHORT(),
+            FamilyName: _USHORT(),
+            Weight: _USHORT(),
+            isFixedPitch: _USHORT(),
+            ItalicAngle: _USHORT(),
+            UnderlinePosition: _USHORT(),
+            UnderlineThickness: _USHORT(),
+            UniqueID: _USHORT(),
             FontBBox: {
-              left: readUSHORT(),
-              bottom: readUSHORT(),
-              right: readUSHORT(),
-              top: readUSHORT()
+              left: _USHORT(),
+              bottom: _USHORT(),
+              right: _USHORT(),
+              top: _USHORT()
             },
-            StrokeWidth: readUSHORT(),
-            XUID: readUSHORT(),
-            charset: readUSHORT(),
-            Encoding: readUSHORT(),
-            CharStrings: readUSHORT(),
-            Private: readUSHORT(),
-            SyntheticBase: readUSHORT(),
-            PostScript: readUSHORT(),
-            BaseFontName: readUSHORT(),
-            BaseFontBlend: readUSHORT()
+            StrokeWidth: _USHORT(),
+            XUID: _USHORT(),
+            charset: _USHORT(),
+            Encoding: _USHORT(),
+            CharStrings: _USHORT(),
+            Private: _USHORT(),
+            SyntheticBase: _USHORT(),
+            PostScript: _USHORT(),
+            BaseFontName: _USHORT(),
+            BaseFontBlend: _USHORT()
           }
         };
         FontInfo['GPOS'] = {};
         _move(FontInfo.TableDirectory.GPOS.offset);
-        FontInfo.GPOS['Header'] = {};
-        FontInfo.GPOS.Header['Version'] = readFIXED();
-        FontInfo.GPOS.Header['ScriptList'] = readUSHORT();
-        FontInfo.GPOS.Header['FeatureList'] = readUSHORT();
-        FontInfo.GPOS.Header['LookupList'] = readUSHORT();
-        FontInfo.GPOS['ScriptList'] = {};
+        FontInfo.GPOS['Header'] = {
+          Version: _FIXED(),
+          ScriptList: _USHORT(),
+          FeatureList: _USHORT(),
+          LookupList: _USHORT()
+        };
         ScriptListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.ScriptList;
         _move(ScriptListOffset);
-        FontInfo.GPOS.ScriptList['ScriptCount'] = readUSHORT();
-        FontInfo.GPOS.ScriptList['ScriptRecord'] = [];
+        FontInfo.GPOS['ScriptList'] = {
+          ScriptCount: _USHORT(),
+          ScriptRecord: []
+        };
         for (i = _o = 0, _ref5 = FontInfo.GPOS.ScriptList.ScriptCount; 0 <= _ref5 ? _o < _ref5 : _o > _ref5; i = 0 <= _ref5 ? ++_o : --_o) {
-          ScriptRecord = {};
-          ScriptRecord['ScriptTag'] = readTAG();
-          ScriptRecord['ScriptOffset'] = readUSHORT();
-          ScriptRecord['Script'] = {};
+          ScriptRecord = {
+            ScriptTag: _TAG(),
+            ScriptOffset: _USHORT(),
+            Script: {}
+          };
           ScriptTableOffset = ScriptListOffset + ScriptRecord.ScriptOffset;
           _push();
           _move(ScriptTableOffset);
-          ScriptRecord.Script['DefaultLangSys'] = readUSHORT();
-          ScriptRecord.Script['LangSysCount'] = readUSHORT();
-          ScriptRecord.Script['LangSysRecord'] = [];
+          ScriptRecord.Script = {
+            DefaultLangSys: _USHORT(),
+            LangSysCount: _USHORT(),
+            LangSysRecord: []
+          };
           for (j = _p = 0, _ref6 = ScriptRecord.Script.LangSysCount; 0 <= _ref6 ? _p < _ref6 : _p > _ref6; j = 0 <= _ref6 ? ++_p : --_p) {
-            LangSysRecord = {};
-            LangSysRecord['LangSysTag'] = readTAG();
-            LangSysRecord['LangSysOffset'] = readUSHORT();
-            LangSysRecord['LangSys'] = {};
+            LangSysRecord = {
+              LangSysTag: _TAG(),
+              LangSysOffset: _USHORT(),
+              LangSys: {}
+            };
             _push();
             _move(ScriptTableOffset + LangSysRecord.LangSysOffset);
-            LangSysRecord.LangSys['LookupOrder'] = readUSHORT();
-            LangSysRecord.LangSys['ReqFeatureIndex'] = readUSHORT();
-            LangSysRecord.LangSys['FeatureCount'] = readUSHORT();
-            LangSysRecord.LangSys['FeatureIndex'] = [];
+            LangSysRecord.LangSys = {
+              LookupOrder: _USHORT(),
+              ReqFeatureIndex: _USHORT(),
+              FeatureCount: _USHORT(),
+              FeatureIndex: []
+            };
             ScriptRecord.Script['LangSysRecord'].push(LangSysRecord);
             _pop();
           }
           FontInfo.GPOS.ScriptList.ScriptRecord.push(ScriptRecord);
           _pop();
         }
-        FontInfo.GPOS['FeatureList'] = {};
         FeatureListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.FeatureList;
         _move(FeatureListOffset);
-        FontInfo.GPOS.FeatureList['FeatureCount'] = readUSHORT();
-        FontInfo.GPOS.FeatureList['FeatureRecord'] = [];
+        FontInfo.GPOS['FeatureList'] = {
+          FeatureCount: _USHORT(),
+          FeatureRecord: []
+        };
         for (i = _q = 0, _ref7 = FontInfo.GPOS.FeatureList.FeatureCount; 0 <= _ref7 ? _q < _ref7 : _q > _ref7; i = 0 <= _ref7 ? ++_q : --_q) {
-          FeatureRecord = {};
-          FeatureRecord['FeatureTag'] = readTAG();
-          FeatureRecord['FeatureOffset'] = readUSHORT();
-          FeatureRecord['Feature'] = {};
+          FeatureRecord = {
+            FeatureTag: _TAG(),
+            FeatureOffset: _USHORT(),
+            Feature: {}
+          };
           _push();
           _move(FeatureListOffset + FeatureRecord.FeatureOffset);
-          FeatureRecord.Feature['FeatureParams'] = readUSHORT();
-          FeatureRecord.Feature['LookupCount'] = readUSHORT();
-          FeatureRecord.Feature['LookupListIndex'] = [];
+          FeatureRecord.Feature = {
+            FeatureParams: _USHORT(),
+            LookupCount: _USHORT(),
+            LookupListIndex: []
+          };
           for (j = _r = 0, _ref8 = FeatureRecord.Feature.LookupCount; 0 <= _ref8 ? _r < _ref8 : _r > _ref8; j = 0 <= _ref8 ? ++_r : --_r) {
-            FeatureRecord.Feature.LookupListIndex.push(readUSHORT());
+            FeatureRecord.Feature.LookupListIndex.push(_USHORT());
           }
           FontInfo.GPOS.FeatureList.FeatureRecord.push(FeatureRecord);
           _pop();
         }
-        FontInfo.GPOS['LookupList'] = {};
         LookupListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.LookupList;
         _move(LookupListOffset);
-        FontInfo.GPOS.LookupList['LookupCount'] = readUSHORT();
-        FontInfo.GPOS.LookupList['Lookup'] = [];
+        FontInfo.GPOS['LookupList'] = {
+          LookupCount: _USHORT(),
+          Lookup: []
+        };
         for (i = _s = 0, _ref9 = FontInfo.GPOS.LookupList.LookupCount; 0 <= _ref9 ? _s < _ref9 : _s > _ref9; i = 0 <= _ref9 ? ++_s : --_s) {
-          FontInfo.GPOS.LookupList.Lookup.push(readUSHORT());
+          FontInfo.GPOS.LookupList.Lookup.push(_USHORT());
         }
         FontInfo.GPOS['Lookups'] = [];
         for (i = _t = 0, _ref10 = FontInfo.GPOS.LookupList.LookupCount; 0 <= _ref10 ? _t < _ref10 : _t > _ref10; i = 0 <= _ref10 ? ++_t : --_t) {
-          Lookup = {};
           LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i];
           _move(LookupOffset);
-          Lookup['LookupType'] = readUSHORT();
-          Lookup['LookupFlag'] = readUSHORT_STR();
-          Lookup['SubTableCount'] = readUSHORT();
+          Lookup = {
+            LookupType: _USHORT(),
+            LookupFlag: _USHORT_STR(),
+            SubTableCount: _USHORT()
+          };
           SubTableOffsets = [];
           for (j = _u = 0, _ref11 = Lookup.SubTableCount; 0 <= _ref11 ? _u < _ref11 : _u > _ref11; j = 0 <= _ref11 ? ++_u : --_u) {
-            SubTableOffsets.push(readUSHORT());
+            SubTableOffsets.push(_USHORT());
           }
-          Lookup['MarkFilteringSet'] = readUSHORT();
+          Lookup['MarkFilteringSet'] = _USHORT();
           _push();
           Lookup['SubTable'] = [];
           for (k = _v = 0, _ref12 = Lookup.SubTableCount; 0 <= _ref12 ? _v < _ref12 : _v > _ref12; k = 0 <= _ref12 ? ++_v : --_v) {
