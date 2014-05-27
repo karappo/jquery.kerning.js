@@ -63,7 +63,7 @@ _pop = ->
 _Card8 = (_log) ->
   __readByte(1, _log)
 
-_USHORT = (_log) ->
+_Card16 = _USHORT = (_log) ->
   __readByte(2, _log)
 
 _ULONG = (_log) ->
@@ -90,6 +90,22 @@ _u8ArrToStr = (u8array) ->
     result += ('00'+u8array[i].toString(16)).substr(-2)
   return result
 
+_INDEX = (_offsetSize) ->
+  count = _Card16()
+  return {count:0} if count is 0
+
+  offsetSize = _Card8(true)
+  offset = []
+  for i in [0..count]
+    offset.push(__readByte(offsetSize))
+
+  {
+    count: count
+    offsetSize: offsetSize
+    offset: offset
+    # data: _USHORT()
+  }
+
 # +++++++++++++++++++++++++++++++++++++++++++
 
 __read = (_size) ->
@@ -99,7 +115,7 @@ __read = (_size) ->
 
 __readByte = (_num,_log) ->
   n = _u8ArrToStr(__read(_num))
-  console.log(parseInt(n,16), n) if _log
+  console.log(window.pointer, parseInt(n,16), n) if _log
   parseInt(n,16)
 
 # ++++++++++++++++++++++++++++++++++++++++++++
@@ -172,8 +188,6 @@ handleFileSelect = (e) ->
           console.log(record.nameString) # Font Name
 
       # "cmap" Table =========================
-
-      
       
       _move(FontInfo.TableDirectory.cmap.offset)
 
@@ -199,36 +213,46 @@ handleFileSelect = (e) ->
 
       # TODO: 値をちゃんと取得
       FontInfo['CFF'] = {
-        TopDictionary:{
-          version: _USHORT()
-          Notice: _USHORT()
-          Copyright: _USHORT()
-          CIDFontName: _USHORT()
-          FullName: _USHORT()
-          FamilyName: _USHORT()
-          Weight: _USHORT()
-          isFixedPitch: _USHORT()
-          ItalicAngle: _USHORT()
-          UnderlinePosition: _USHORT()
-          UnderlineThickness: _USHORT()
-          UniqueID: _USHORT()
-          FontBBox:
-            left:   _USHORT()
-            bottom: _USHORT()
-            right:  _USHORT()
-            top:    _USHORT()
-          StrokeWidth: _USHORT()
-          XUID: _USHORT()
-          charset: _USHORT()
-          Encoding: _USHORT()
-          CharStrings: _USHORT()
-          Private: _USHORT()
-          SyntheticBase: _USHORT()
-          PostScript: _USHORT()
-          BaseFontName: _USHORT()
-          BaseFontBlend: _USHORT()
-        }
+        Header:
+          major: _Card8()
+          minor: _Card8()
+          headerSize: _Card8()
+          offsetSize: _USHORT()
       }
+
+      FontInfo.CFF['Name'] = _INDEX(FontInfo.CFF.Header.offSize)
+
+      # FontInfo['CFF'] = {
+      #   TopDictionary:{
+      #     version: _USHORT()
+      #     Notice: _USHORT()
+      #     Copyright: _USHORT()
+      #     CIDFontName: _USHORT()
+      #     FullName: _USHORT()
+      #     FamilyName: _USHORT()
+      #     Weight: _USHORT()
+      #     isFixedPitch: _USHORT()
+      #     ItalicAngle: _USHORT()
+      #     UnderlinePosition: _USHORT()
+      #     UnderlineThickness: _USHORT()
+      #     UniqueID: _USHORT()
+      #     FontBBox:
+      #       left:   _USHORT()
+      #       bottom: _USHORT()
+      #       right:  _USHORT()
+      #       top:    _USHORT()
+      #     StrokeWidth: _USHORT()
+      #     XUID: _USHORT()
+      #     charset: _USHORT()
+      #     Encoding: _USHORT()
+      #     CharStrings: _USHORT()
+      #     Private: _USHORT()
+      #     SyntheticBase: _USHORT()
+      #     PostScript: _USHORT()
+      #     BaseFontName: _USHORT()
+      #     BaseFontBlend: _USHORT()
+      #   }
+      # }
 
       # "GPOS" Table =========================
 
@@ -392,7 +416,8 @@ handleFileSelect = (e) ->
       # =======================================
 
       # output
-      $('#output').html(JSON.stringify(FontInfo, null, '\t'))
+      $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'))
+      # $('#output').html(JSON.stringify(FontInfo, null, '\t'))
       # console.log(FontInfo)
     
     reader.readAsArrayBuffer(file)

@@ -1,5 +1,5 @@
 (function() {
-  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, utf8_bytes_to_string, utf8_hex_string_to_string, _Card8, _FIXED, _TAG, _ULONG, _ULONG_STR, _USHORT, _USHORT_STR, __read, __readByte, _move, _pop, _push, _u8ArrToStr;
+  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, utf8_bytes_to_string, utf8_hex_string_to_string, _Card16, _Card8, _FIXED, _INDEX, _TAG, _ULONG, _ULONG_STR, _USHORT, _USHORT_STR, __read, __readByte, _move, _pop, _push, _u8ArrToStr;
 
   utf8_bytes_to_string = function(arr) {
     var c, i, result;
@@ -73,7 +73,7 @@
     return __readByte(1, _log);
   };
 
-  _USHORT = function(_log) {
+  _Card16 = _USHORT = function(_log) {
     return __readByte(2, _log);
   };
 
@@ -111,6 +111,26 @@
     return result;
   };
 
+  _INDEX = function(_offsetSize) {
+    var count, i, offset, offsetSize, _i;
+    count = _Card16();
+    if (count === 0) {
+      return {
+        count: 0
+      };
+    }
+    offsetSize = _Card8(true);
+    offset = [];
+    for (i = _i = 0; 0 <= count ? _i <= count : _i >= count; i = 0 <= count ? ++_i : --_i) {
+      offset.push(__readByte(offsetSize));
+    }
+    return {
+      count: count,
+      offsetSize: offsetSize,
+      offset: offset
+    };
+  };
+
   __read = function(_size) {
     var start;
     start = window.pointer;
@@ -122,7 +142,7 @@
     var n;
     n = _u8ArrToStr(__read(_num));
     if (_log) {
-      console.log(parseInt(n, 16), n);
+      console.log(window.pointer, parseInt(n, 16), n);
     }
     return parseInt(n, 16);
   };
@@ -206,37 +226,14 @@
         }
         _move(FontInfo.TableDirectory.CFF.offset);
         FontInfo['CFF'] = {
-          TopDictionary: {
-            version: _USHORT(),
-            Notice: _USHORT(),
-            Copyright: _USHORT(),
-            CIDFontName: _USHORT(),
-            FullName: _USHORT(),
-            FamilyName: _USHORT(),
-            Weight: _USHORT(),
-            isFixedPitch: _USHORT(),
-            ItalicAngle: _USHORT(),
-            UnderlinePosition: _USHORT(),
-            UnderlineThickness: _USHORT(),
-            UniqueID: _USHORT(),
-            FontBBox: {
-              left: _USHORT(),
-              bottom: _USHORT(),
-              right: _USHORT(),
-              top: _USHORT()
-            },
-            StrokeWidth: _USHORT(),
-            XUID: _USHORT(),
-            charset: _USHORT(),
-            Encoding: _USHORT(),
-            CharStrings: _USHORT(),
-            Private: _USHORT(),
-            SyntheticBase: _USHORT(),
-            PostScript: _USHORT(),
-            BaseFontName: _USHORT(),
-            BaseFontBlend: _USHORT()
+          Header: {
+            major: _Card8(),
+            minor: _Card8(),
+            headerSize: _Card8(),
+            offsetSize: _USHORT()
           }
         };
+        FontInfo.CFF['Name'] = _INDEX(FontInfo.CFF.Header.offSize);
         FontInfo['GPOS'] = {};
         _move(FontInfo.TableDirectory.GPOS.offset);
         FontInfo.GPOS['Header'] = {
@@ -342,7 +339,7 @@
           _pop();
           FontInfo.GPOS.Lookups.push(Lookup);
         }
-        return $('#output').html(JSON.stringify(FontInfo, null, '\t'));
+        return $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'));
       };
       _results.push(reader.readAsArrayBuffer(file));
     }
