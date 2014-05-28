@@ -189,15 +189,16 @@
       reader.onload = function() {
         var FeatureListOffset, FeatureRecord, FontInfo, LangSysRecord, Lookup, LookupListOffset, LookupOffset, ScriptListOffset, ScriptRecord, ScriptTableOffset, SubTableOffsets, SubtableOffset, i, j, k, record, storageOffset, tag, _j, _k, _l, _len1, _m, _n, _o, _offset, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v;
         window.data = new Uint8Array(reader.result);
-        FontInfo = {};
-        FontInfo['OffsetTable'] = {
-          version: _ULONG_STR(),
-          numTables: _USHORT(),
-          searchRange: _USHORT(),
-          entrySelector: _USHORT(),
-          rangeShift: _USHORT()
+        FontInfo = {
+          OffsetTable: {
+            version: _ULONG_STR(),
+            numTables: _USHORT(),
+            searchRange: _USHORT(),
+            entrySelector: _USHORT(),
+            rangeShift: _USHORT()
+          },
+          TableDirectory: {}
         };
-        FontInfo['TableDirectory'] = {};
         for (i = _j = 0, _ref = FontInfo.OffsetTable.numTables; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
           tag = String.fromCharCode.apply(null, __read(4)).replace(' ', '');
           FontInfo.TableDirectory[tag] = {

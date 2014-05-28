@@ -171,17 +171,15 @@ handleFileSelect = (e) ->
       
       window.data = new Uint8Array(reader.result)
 
-      FontInfo = {}
-
-      FontInfo['OffsetTable'] = {
-        version:       _ULONG_STR()
-        numTables:     _USHORT()
-        searchRange:   _USHORT()
-        entrySelector: _USHORT()
-        rangeShift:    _USHORT()
+      FontInfo = {
+        OffsetTable:
+          version:       _ULONG_STR()
+          numTables:     _USHORT()
+          searchRange:   _USHORT()
+          entrySelector: _USHORT()
+          rangeShift:    _USHORT()
+        TableDirectory: {}
       }
-
-      FontInfo['TableDirectory'] = {}
       
       for i in [0...FontInfo.OffsetTable.numTables]
         tag = String.fromCharCode.apply(null, __read(4)).replace(' ','')
