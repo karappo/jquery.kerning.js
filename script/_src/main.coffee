@@ -302,6 +302,9 @@ handleFileSelect = (e) ->
           FeatureList: _USHORT() # offset
           LookupList:  _USHORT() # offset
         ScriptList: null
+        FeatureList: null
+        LookupList: null
+        Lookups: []
       }
 
       # Script List
@@ -356,7 +359,7 @@ handleFileSelect = (e) ->
       FeatureListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.FeatureList
       _move(FeatureListOffset)
 
-      FontInfo.GPOS['FeatureList'] = {
+      FontInfo.GPOS.FeatureList = {
         FeatureCount:  _USHORT()
         FeatureRecord: []
       }
@@ -387,7 +390,7 @@ handleFileSelect = (e) ->
       LookupListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.LookupList
       _move(LookupListOffset)
 
-      FontInfo.GPOS['LookupList'] = {
+      FontInfo.GPOS.LookupList = {
         LookupCount: _USHORT()
         Lookup:      []
       }
@@ -395,7 +398,8 @@ handleFileSelect = (e) ->
       for i in [0...FontInfo.GPOS.LookupList.LookupCount]
         FontInfo.GPOS.LookupList.Lookup.push(_USHORT())
       
-      FontInfo.GPOS['Lookups'] = []
+
+      # Lookups
       for i in [0...FontInfo.GPOS.LookupList.LookupCount]
 
         # Lookup
@@ -406,18 +410,18 @@ handleFileSelect = (e) ->
           LookupType:    _USHORT()
           LookupFlag:    _USHORT_STR()
           SubTableCount: _USHORT()
+          MarkFilteringSet: null
+          SubTable: []
         }
 
         SubTableOffsets = []
         for j in [0...Lookup.SubTableCount]
           SubTableOffsets.push(_USHORT()) # offsets
         
-        
-        Lookup['MarkFilteringSet'] = _USHORT()
+        Lookup.MarkFilteringSet = _USHORT()
 
         _push()
 
-        Lookup['SubTable'] = []
         for k in [0...Lookup.SubTableCount]
           SubtableOffset = SubTableOffsets[k]
           _move(LookupOffset+SubtableOffset)
@@ -452,8 +456,8 @@ handleFileSelect = (e) ->
       # =======================================
 
       # output
-      $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'))
-      # $('#output').html(JSON.stringify(FontInfo, null, '\t'))
+      # $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'))
+      $('#output').html(JSON.stringify(FontInfo, null, '\t'))
       # console.log(FontInfo)
     
     reader.readAsArrayBuffer(file)

@@ -260,17 +260,22 @@
           Name: null
         };
         FontInfo.CFF.Name = _INDEX(FontInfo.CFF.Header.offsetSize);
-        FontInfo['GPOS'] = {};
         _move(FontInfo.TableDirectory.GPOS.offset);
-        FontInfo.GPOS['Header'] = {
-          Version: _FIXED(),
-          ScriptList: _USHORT(),
-          FeatureList: _USHORT(),
-          LookupList: _USHORT()
+        FontInfo['GPOS'] = {
+          Header: {
+            Version: _FIXED(),
+            ScriptList: _USHORT(),
+            FeatureList: _USHORT(),
+            LookupList: _USHORT()
+          },
+          ScriptList: null,
+          FeatureList: null,
+          LookupList: null,
+          Lookups: []
         };
         ScriptListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.ScriptList;
         _move(ScriptListOffset);
-        FontInfo.GPOS['ScriptList'] = {
+        FontInfo.GPOS.ScriptList = {
           ScriptCount: _USHORT(),
           ScriptRecord: []
         };
@@ -310,7 +315,7 @@
         }
         FeatureListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.FeatureList;
         _move(FeatureListOffset);
-        FontInfo.GPOS['FeatureList'] = {
+        FontInfo.GPOS.FeatureList = {
           FeatureCount: _USHORT(),
           FeatureRecord: []
         };
@@ -335,29 +340,29 @@
         }
         LookupListOffset = FontInfo.TableDirectory.GPOS.offset + FontInfo.GPOS.Header.LookupList;
         _move(LookupListOffset);
-        FontInfo.GPOS['LookupList'] = {
+        FontInfo.GPOS.LookupList = {
           LookupCount: _USHORT(),
           Lookup: []
         };
         for (i = _s = 0, _ref9 = FontInfo.GPOS.LookupList.LookupCount; 0 <= _ref9 ? _s < _ref9 : _s > _ref9; i = 0 <= _ref9 ? ++_s : --_s) {
           FontInfo.GPOS.LookupList.Lookup.push(_USHORT());
         }
-        FontInfo.GPOS['Lookups'] = [];
         for (i = _t = 0, _ref10 = FontInfo.GPOS.LookupList.LookupCount; 0 <= _ref10 ? _t < _ref10 : _t > _ref10; i = 0 <= _ref10 ? ++_t : --_t) {
           LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i];
           _move(LookupOffset);
           Lookup = {
             LookupType: _USHORT(),
             LookupFlag: _USHORT_STR(),
-            SubTableCount: _USHORT()
+            SubTableCount: _USHORT(),
+            MarkFilteringSet: null,
+            SubTable: []
           };
           SubTableOffsets = [];
           for (j = _u = 0, _ref11 = Lookup.SubTableCount; 0 <= _ref11 ? _u < _ref11 : _u > _ref11; j = 0 <= _ref11 ? ++_u : --_u) {
             SubTableOffsets.push(_USHORT());
           }
-          Lookup['MarkFilteringSet'] = _USHORT();
+          Lookup.MarkFilteringSet = _USHORT();
           _push();
-          Lookup['SubTable'] = [];
           for (k = _v = 0, _ref12 = Lookup.SubTableCount; 0 <= _ref12 ? _v < _ref12 : _v > _ref12; k = 0 <= _ref12 ? ++_v : --_v) {
             SubtableOffset = SubTableOffsets[k];
             _move(LookupOffset + SubtableOffset);
@@ -365,7 +370,7 @@
           _pop();
           FontInfo.GPOS.Lookups.push(Lookup);
         }
-        return $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'));
+        return $('#output').html(JSON.stringify(FontInfo, null, '\t'));
       };
       _results.push(reader.readAsArrayBuffer(file));
     }
