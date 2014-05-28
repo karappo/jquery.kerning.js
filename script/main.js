@@ -69,13 +69,24 @@
     return window.pointer = window.pointerHistory.pop();
   };
 
+  _u8ArrToStr = function(u8array) {
+    var i, result, _i, _ref;
+    result = '';
+    for (i = _i = 0, _ref = u8array.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      result += ('00' + u8array[i].toString(16)).substr(-2);
+    }
+    return result;
+  };
+
   _Card8 = function(_log) {
     return __readByte(1, _log);
   };
 
-  _Card16 = _USHORT = function(_log) {
+  _Card16 = function(_log) {
     return __readByte(2, _log);
   };
+
+  _USHORT = _Card16;
 
   _ULONG = function(_log) {
     return __readByte(4, _log);
@@ -100,15 +111,6 @@
 
   _TAG = function() {
     return utf8_hex_string_to_string(_u8ArrToStr(__read(4)));
-  };
-
-  _u8ArrToStr = function(u8array) {
-    var i, result, _i, _ref;
-    result = '';
-    for (i = _i = 0, _ref = u8array.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      result += ('00' + u8array[i].toString(16)).substr(-2);
-    }
-    return result;
   };
 
   _INDEX = function(_offsetSize) {
@@ -176,10 +178,11 @@
         FontInfo['TableDirectory'] = {};
         for (i = _j = 0, _ref = FontInfo.OffsetTable.numTables; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
           tag = String.fromCharCode.apply(null, __read(4)).replace(' ', '');
-          FontInfo.TableDirectory[tag] = {};
-          FontInfo.TableDirectory[tag]['checkSum'] = _ULONG_STR();
-          FontInfo.TableDirectory[tag]['offset'] = _ULONG();
-          FontInfo.TableDirectory[tag]['length'] = _ULONG();
+          FontInfo.TableDirectory[tag] = {
+            checkSum: _ULONG_STR(),
+            offset: _ULONG(),
+            length: _ULONG()
+          };
         }
         _move(FontInfo.TableDirectory.name.offset);
         FontInfo['name'] = {

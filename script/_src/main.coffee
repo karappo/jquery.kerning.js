@@ -50,6 +50,8 @@ window.pointer = 0
 window.pointerHistory = []
 window.data = null
 
+
+
 _move = (_offset, _log) ->
   console.log('_move', _offset, (_offset).toString(16)) if _log
   window.pointer = _offset
@@ -60,11 +62,26 @@ _push = ->
 _pop = ->
   window.pointer = window.pointerHistory.pop()
 
+
+
+_u8ArrToStr = (u8array) ->
+  # u8array : big endian
+  result = ''
+  for i in [0...u8array.length]
+    result += ('00'+u8array[i].toString(16)).substr(-2)
+  return result
+
+
+
+# read bytes by data types
+
 _Card8 = (_log) ->
   __readByte(1, _log)
 
-_Card16 = _USHORT = (_log) ->
+_Card16 = (_log) ->
   __readByte(2, _log)
+
+_USHORT = _Card16
 
 _ULONG = (_log) ->
   __readByte(4, _log)
@@ -82,13 +99,6 @@ _ULONG_STR = ->
 
 _TAG = ->
   utf8_hex_string_to_string(_u8ArrToStr(__read(4)))
-
-_u8ArrToStr = (u8array) ->
-  # u8array : big endian
-  result = ''
-  for i in [0...u8array.length]
-    result += ('00'+u8array[i].toString(16)).substr(-2)
-  return result
 
 _INDEX = (_offsetSize) ->
   count = _Card16()
@@ -113,7 +123,7 @@ __read = (_size) ->
   window.pointer += _size
   window.data.subarray(start,window.pointer)
 
-__readByte = (_num,_log) ->
+__readByte = (_num, _log) ->
   n = _u8ArrToStr(__read(_num))
   console.log(window.pointer, parseInt(n,16), n) if _log
   parseInt(n,16)
@@ -151,10 +161,11 @@ handleFileSelect = (e) ->
       
       for i in [0...FontInfo.OffsetTable.numTables]
         tag = String.fromCharCode.apply(null, __read(4)).replace(' ','')
-        FontInfo.TableDirectory[tag] = {}
-        FontInfo.TableDirectory[tag]['checkSum'] = _ULONG_STR()
-        FontInfo.TableDirectory[tag]['offset']   = _ULONG()
-        FontInfo.TableDirectory[tag]['length']   = _ULONG()
+        FontInfo.TableDirectory[tag] = {
+          checkSum: _ULONG_STR()
+          offset:   _ULONG()
+          length:   _ULONG()
+        }
       
       # "name" Table =========================
       
