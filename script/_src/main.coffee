@@ -53,7 +53,7 @@ window.data = null
 
 
 _move = (_offset, _log) ->
-  console.log('_move', _offset, (_offset).toString(16)) if _log
+  console.log('_move', _offset, _hexStr(_offset)) if _log
   window.pointer = _offset
 
 _push = ->
@@ -62,6 +62,8 @@ _push = ->
 _pop = ->
   window.pointer = window.pointerHistory.pop()
 
+_logPointer = ->
+  console.log('pointer', _hexStr(window.pointer))
 
 
 _u8ArrToStr = (u8array) ->
@@ -70,6 +72,10 @@ _u8ArrToStr = (u8array) ->
   for i in [0...u8array.length]
     result += ('00'+u8array[i].toString(16)).substr(-2)
   return result
+
+# e.g. 51488 -> "0xC920"
+_hexStr = (_num) ->
+  '0x'+(_num).toString(16).toUpperCase()
 
 
 
@@ -98,23 +104,41 @@ _ULONG_STR = ->
   '0x'+_u8ArrToStr(__read(4))
 
 _TAG = ->
-  utf8_hex_string_to_string(_u8ArrToStr(__read(4)))
+  _STRING(4)
 
-_INDEX = (_offsetSize) ->
+
+_STRING = (_len) ->
+  utf8_hex_string_to_string(_u8ArrToStr(__read(_len)))
+
+
+_INDEX = ->
   count = _Card16()
-  return {count:0} if count is 0
 
-  offsetSize = _Card8(true)
-  offset = []
-  for i in [0..count]
-    offset.push(__readByte(offsetSize))
+  if count is 0
+    { count:0 }
 
-  {
-    count: count
-    offsetSize: offsetSize
-    offset: offset
-    # data: _USHORT()
-  }
+  else
+    offsetSize = _Card8()
+
+    offset = []
+    for i in [0..count]
+      offset.push(__readByte(offsetSize))
+    
+    _data_start = window.pointer
+
+    data = []
+    for i in [0...count]
+      _off = offset[i] - 1 
+      _len = offset[i+1] - offset[i]
+      _move(_data_start+_off)
+      data.push(_STRING(_len))
+
+    {
+      count: count
+      offsetSize: offsetSize
+      offset: offset
+      data: data
+    }
 
 # +++++++++++++++++++++++++++++++++++++++++++
 
@@ -125,7 +149,7 @@ __read = (_size) ->
 
 __readByte = (_num, _log) ->
   n = _u8ArrToStr(__read(_num))
-  console.log(window.pointer, parseInt(n,16), n) if _log
+  console.log(window.pointer, _hexStr(window.pointer), parseInt(n,16), n) if _log
   parseInt(n,16)
 
 # ++++++++++++++++++++++++++++++++++++++++++++
@@ -192,7 +216,7 @@ handleFileSelect = (e) ->
       for i in [0...FontInfo.name.count]
         _offset = storageOffset + FontInfo.name.records[i].offset
         _move(_offset)
-        FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(_u8ArrToStr(__read(FontInfo.name.records[i].length)))
+        FontInfo.name.records[i]['nameString'] = _STRING(FontInfo.name.records[i].length)
       
       for record in FontInfo.name.records.length
         if record.languageId == 0  and record.nameId == 4
@@ -228,10 +252,11 @@ handleFileSelect = (e) ->
           major: _Card8()
           minor: _Card8()
           headerSize: _Card8()
-          offsetSize: _USHORT()
+          offsetSize: _Card8()
+        Name: null
       }
-
-      FontInfo.CFF['Name'] = _INDEX(FontInfo.CFF.Header.offSize)
+      
+      FontInfo.CFF.Name = _INDEX(FontInfo.CFF.Header.offsetSize)
 
       # FontInfo['CFF'] = {
       #   TopDictionary:{

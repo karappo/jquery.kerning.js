@@ -1,5 +1,5 @@
 (function() {
-  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, utf8_bytes_to_string, utf8_hex_string_to_string, _Card16, _Card8, _FIXED, _INDEX, _TAG, _ULONG, _ULONG_STR, _USHORT, _USHORT_STR, __read, __readByte, _move, _pop, _push, _u8ArrToStr;
+  var handleDragOver, handleFileSelect, hex_string_to_bytes, hex_to_byte, utf8_bytes_to_string, utf8_hex_string_to_string, _Card16, _Card8, _FIXED, _INDEX, _STRING, _TAG, _ULONG, _ULONG_STR, _USHORT, _USHORT_STR, __read, __readByte, _hexStr, _logPointer, _move, _pop, _push, _u8ArrToStr;
 
   utf8_bytes_to_string = function(arr) {
     var c, i, result;
@@ -56,7 +56,7 @@
 
   _move = function(_offset, _log) {
     if (_log) {
-      console.log('_move', _offset, _offset.toString(16));
+      console.log('_move', _offset, _hexStr(_offset));
     }
     return window.pointer = _offset;
   };
@@ -69,6 +69,10 @@
     return window.pointer = window.pointerHistory.pop();
   };
 
+  _logPointer = function() {
+    return console.log('pointer', _hexStr(window.pointer));
+  };
+
   _u8ArrToStr = function(u8array) {
     var i, result, _i, _ref;
     result = '';
@@ -76,6 +80,10 @@
       result += ('00' + u8array[i].toString(16)).substr(-2);
     }
     return result;
+  };
+
+  _hexStr = function(_num) {
+    return '0x' + _num.toString(16).toUpperCase();
   };
 
   _Card8 = function(_log) {
@@ -110,27 +118,41 @@
   };
 
   _TAG = function() {
-    return utf8_hex_string_to_string(_u8ArrToStr(__read(4)));
+    return _STRING(4);
   };
 
-  _INDEX = function(_offsetSize) {
-    var count, i, offset, offsetSize, _i;
+  _STRING = function(_len) {
+    return utf8_hex_string_to_string(_u8ArrToStr(__read(_len)));
+  };
+
+  _INDEX = function() {
+    var count, data, i, offset, offsetSize, _data_start, _i, _j, _len, _off;
     count = _Card16();
     if (count === 0) {
       return {
         count: 0
       };
+    } else {
+      offsetSize = _Card8();
+      offset = [];
+      for (i = _i = 0; 0 <= count ? _i <= count : _i >= count; i = 0 <= count ? ++_i : --_i) {
+        offset.push(__readByte(offsetSize));
+      }
+      _data_start = window.pointer;
+      data = [];
+      for (i = _j = 0; 0 <= count ? _j < count : _j > count; i = 0 <= count ? ++_j : --_j) {
+        _off = offset[i] - 1;
+        _len = offset[i + 1] - offset[i];
+        _move(_data_start + _off);
+        data.push(_STRING(_len));
+      }
+      return {
+        count: count,
+        offsetSize: offsetSize,
+        offset: offset,
+        data: data
+      };
     }
-    offsetSize = _Card8(true);
-    offset = [];
-    for (i = _i = 0; 0 <= count ? _i <= count : _i >= count; i = 0 <= count ? ++_i : --_i) {
-      offset.push(__readByte(offsetSize));
-    }
-    return {
-      count: count,
-      offsetSize: offsetSize,
-      offset: offset
-    };
   };
 
   __read = function(_size) {
@@ -144,7 +166,7 @@
     var n;
     n = _u8ArrToStr(__read(_num));
     if (_log) {
-      console.log(window.pointer, parseInt(n, 16), n);
+      console.log(window.pointer, _hexStr(window.pointer), parseInt(n, 16), n);
     }
     return parseInt(n, 16);
   };
@@ -205,7 +227,7 @@
         for (i = _l = 0, _ref2 = FontInfo.name.count; 0 <= _ref2 ? _l < _ref2 : _l > _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
           _offset = storageOffset + FontInfo.name.records[i].offset;
           _move(_offset);
-          FontInfo.name.records[i]['nameString'] = utf8_hex_string_to_string(_u8ArrToStr(__read(FontInfo.name.records[i].length)));
+          FontInfo.name.records[i]['nameString'] = _STRING(FontInfo.name.records[i].length);
         }
         _ref3 = FontInfo.name.records.length;
         for (_m = 0, _len1 = _ref3.length; _m < _len1; _m++) {
@@ -233,10 +255,11 @@
             major: _Card8(),
             minor: _Card8(),
             headerSize: _Card8(),
-            offsetSize: _USHORT()
-          }
+            offsetSize: _Card8()
+          },
+          Name: null
         };
-        FontInfo.CFF['Name'] = _INDEX(FontInfo.CFF.Header.offSize);
+        FontInfo.CFF.Name = _INDEX(FontInfo.CFF.Header.offsetSize);
         FontInfo['GPOS'] = {};
         _move(FontInfo.TableDirectory.GPOS.offset);
         FontInfo.GPOS['Header'] = {
