@@ -292,23 +292,23 @@ handleFileSelect = (e) ->
 
       # "GPOS" Table =========================
 
-      FontInfo['GPOS'] = {}
       
       _move(FontInfo.TableDirectory.GPOS.offset)
 
-      # GPOS header
-      FontInfo.GPOS['Header'] = {
-        Version:     _FIXED()
-        ScriptList:  _USHORT() # offset
-        FeatureList: _USHORT() # offset
-        LookupList:  _USHORT() # offset
+      FontInfo['GPOS'] = {
+        Header:
+          Version:     _FIXED()
+          ScriptList:  _USHORT() # offset
+          FeatureList: _USHORT() # offset
+          LookupList:  _USHORT() # offset
+        ScriptList: null
       }
 
       # Script List
       ScriptListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.ScriptList
       _move(ScriptListOffset)
 
-      FontInfo.GPOS['ScriptList'] = {
+      FontInfo.GPOS.ScriptList = {
         ScriptCount:  _USHORT()
         ScriptRecord: []
       }
