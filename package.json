@@ -1,7 +1,7 @@
 {
   "name": "jquery.kerning.js",
   "version": "0.0.0",
-  "description": "",
+  "description": "kerning data maker",
   "main": "main.js",
   "dependencies": {
     "grunt": "~0.4.2",
