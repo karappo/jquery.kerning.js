@@ -254,7 +254,7 @@ handleFileSelect = (e) ->
         Name: null
       }
       
-      FontInfo.CFF.Name = _INDEX(FontInfo.CFF.Header.offsetSize)
+      FontInfo.CFF.Name = _INDEX()
 
       # FontInfo['CFF'] = {
       #   TopDictionary:{
@@ -454,8 +454,8 @@ handleFileSelect = (e) ->
       # =======================================
 
       # output
-      # $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'))
-      $('#output').html(JSON.stringify(FontInfo, null, '\t'))
+      $('#output').html(JSON.stringify(FontInfo['CFF'], null, '\t'))
+      # $('#output').html(JSON.stringify(FontInfo, null, '\t'))
       # console.log(FontInfo)
     
     reader.readAsArrayBuffer(file)
