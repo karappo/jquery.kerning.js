@@ -3,10 +3,8 @@ module.exports = (grunt)->
     pkg: grunt.file.readJSON 'package.json'
     watch:
       files: ['**/*.coffee']
-      tasks: 'coffee'
+      tasks: ['coffee','uglify']
     coffee:
-      options:
-        sourceMap : true
       compile:
         files: [
           expand: true
@@ -15,8 +13,21 @@ module.exports = (grunt)->
           dest: 'script/'
           ext: '.js'
         ]
+    uglify:
+      compress_target:
+        options:
+          sourceMap: (fileName) ->
+            fileName.replace /\.js$/, '.js.map'
+        files: [
+          expand: true
+          cwd: 'script/'
+          src: ['**/*.exp.js']
+          dest: 'script/'
+          ext: '.min.js'
+        ]
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.registerTask 'default', ['watch']
   return
