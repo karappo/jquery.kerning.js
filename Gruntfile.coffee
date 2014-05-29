@@ -6,6 +6,8 @@ module.exports = (grunt)->
       tasks: ['coffee','uglify','clean']
     coffee:
       compile:
+        # options:
+        #   sourceMap: true
         files: [
           expand: true
           cwd: 'script/_src/'
