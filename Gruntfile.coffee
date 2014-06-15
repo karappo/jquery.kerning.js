@@ -1,9 +1,20 @@
 module.exports = (grunt)->
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
+
+    connect: 
+      site: {}
+      # site:
+        # options:
+          # hostname: '*'
+          # port: 8000
+    
     watch:
-      files: ['**/*.coffee']
+      files: ['**/*.coffee','**/*.html']
       tasks: ['coffee','uglify','clean']
+      options:
+        livereload: true
+    
     coffee:
       compile:
         # options:
@@ -15,6 +26,7 @@ module.exports = (grunt)->
           dest: 'script/'
           ext: '.exp.js'
         ]
+    
     uglify:
       compress_target:
         options:
@@ -27,6 +39,7 @@ module.exports = (grunt)->
           dest: 'script/'
           ext: '.js'
         ]
+    
     clean:
       src:['**/*.exp.js']
 
@@ -34,5 +47,6 @@ module.exports = (grunt)->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-clean'
-  grunt.registerTask 'default', ['watch']
+  grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.registerTask 'default', ['connect','watch']
   return
