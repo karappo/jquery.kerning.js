@@ -11,14 +11,15 @@ module.exports = (grunt)->
     
     watch:
       files: ['**/*.coffee','**/*.html']
-      tasks: ['coffee','uglify','clean']
+      tasks: ['coffee']
+      # tasks: ['coffee','uglify','clean']
       options:
         livereload: true
     
     coffee:
       compile:
-        # options:
-        #   sourceMap: true
+        options:
+          sourceMap: true
         files: [
           expand: true
           cwd: 'script/_src/'
@@ -29,9 +30,9 @@ module.exports = (grunt)->
     
     uglify:
       compress_target:
-        options:
-          sourceMap: (fileName) ->
-            fileName.replace /\.js$/, '.js.map'
+        # options:
+        #   sourceMap: (fileName) ->
+        #     fileName.replace /\.js$/, '.js.map'
         files: [
           expand: true
           cwd: 'script/'

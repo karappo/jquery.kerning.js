@@ -111,14 +111,14 @@ _STRING = (_len) ->
   utf8_hex_string_to_string(_u8ArrToStr(__read(_len)))
 
 
-_INDEX = ->
-  count = _Card16()
+_INDEX = (_log) ->
+  count = _Card16(_log)
 
   if count is 0
     { count:0 }
 
   else
-    offsetSize = _Card8()
+    offsetSize = _Card8(_log)
 
     offset = []
     for i in [0..count]
@@ -252,9 +252,11 @@ handleFileSelect = (e) ->
           headerSize: _Card8()
           offsetSize: _Card8()
         Name: null
+        Top: null
       }
       
-      FontInfo.CFF.Name = _INDEX()
+      FontInfo.CFF.Name = _INDEX(true)
+      FontInfo.CFF.Top = _INDEX()
 
       # FontInfo['CFF'] = {
       #   TopDictionary:{
