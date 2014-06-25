@@ -38,15 +38,30 @@ module.exports = (grunt)->
       #     jshintrc: 'test/.jshintrc'
       #   src: ['test/**/*.js']
     watch:
-      gruntfile:
-        files: '<%= jshint.gruntfile.src %>'
-        tasks: 'jshint:gruntfile'
-      src:
-        files: '<%= jshint.src.src %>'
-        tasks: ['jshint:src', 'qunit']
-      test:
-        files: '<%= jshint.test.src %>'
-        tasks: ['jshint:test', 'qunit']
+      files: ['**/*.coffee','**/*.html']
+      tasks: ['coffee']
+      options:
+        livereload: true
+    coffee:
+      compile:
+        options:
+          bare: true
+          # sourceMap: true
+        files: [
+          expand: true
+          cwd: 'src/'
+          src: ['**/jquery.*.coffee']
+          dest: 'dist/'
+          rename: (dest, src) -> 
+            dest + src.replace('.coffee', '.js')
+        ]
+    connect:
+      site: {}
+      # site:
+      #   options:
+      #     port: 3000
+      #     keepalive: true
+      #     hostname: 'localhost'
 
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -54,6 +69,9 @@ module.exports = (grunt)->
   grunt.loadNpmTasks 'grunt-contrib-qunit'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
 
-  grunt.registerTask 'default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']
-  # grunt.registerTask 'default', ['jshint', 'clean', 'concat', 'uglify']
+  grunt.registerTask 'default', ['connect','watch']
+  grunt.registerTask 'build', ['coffee','jshint','qunit','clean','concat','uglify']
+  # grunt.registerTask 'default', ['jshint','clean','concat','uglify']
