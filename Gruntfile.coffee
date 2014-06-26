@@ -7,23 +7,19 @@ module.exports = (grunt)->
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
 
-    clean:
-      files: 'dist'
-    concat:
-      options:
-        banner: '<%= banner %>'
-        stripBanners: true
-      dist:
-        src: 'src/jquery.kerning.js'
-        dest: 'dist/jquery.kerning.js'
-    uglify:
-      options:
-        banner: '<%= banner %>'
-      dist:
-        src: '<%= concat.dist.dest %>'
-        dest: 'dist/jquery.kerning.min.js'
-    qunit:
-      files: 'test/**/*.html'
+    coffee:
+      compile:
+        options:
+          bare: true
+          # sourceMap: true
+        files: [
+          expand: true
+          cwd: 'src/'
+          src: ['**/jquery.*.coffee']
+          dest: 'src/'
+          rename: (dest, src) -> 
+            dest + src.replace('.coffee', '.js')
+        ]
     jshint:
       gruntfile:
         options:
@@ -37,24 +33,28 @@ module.exports = (grunt)->
       #   options:
       #     jshintrc: 'test/.jshintrc'
       #   src: ['test/**/*.js']
+    qunit:
+      files: 'test/**/*.html'
+    concat:
+      options:
+        banner: '<%= banner %>'
+        stripBanners: true
+      dist:
+        src: 'src/jquery.kerning.js'
+        dest: 'dist/jquery.kerning.js'
+    uglify:
+      options:
+        banner: '<%= banner %>'
+      dist:
+        src: '<%= concat.dist.dest %>'
+        dest: 'dist/jquery.kerning.min.js'
+    clean:
+      files: 'dist'
     watch:
       files: ['**/*.coffee','**/*.html']
       tasks: ['coffee']
       options:
         livereload: true
-    coffee:
-      compile:
-        options:
-          bare: true
-          # sourceMap: true
-        files: [
-          expand: true
-          cwd: 'src/'
-          src: ['**/jquery.*.coffee']
-          dest: 'dist/'
-          rename: (dest, src) -> 
-            dest + src.replace('.coffee', '.js')
-        ]
     connect:
       site: {}
       # site:
@@ -73,5 +73,5 @@ module.exports = (grunt)->
   grunt.loadNpmTasks 'grunt-contrib-connect'
 
   grunt.registerTask 'default', ['connect','watch']
-  grunt.registerTask 'build', ['coffee','jshint','qunit','clean','concat','uglify']
+  grunt.registerTask 'build', ['coffee','qunit','clean','concat','uglify']
   # grunt.registerTask 'default', ['jshint','clean','concat','uglify']
