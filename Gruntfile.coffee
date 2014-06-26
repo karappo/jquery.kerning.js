@@ -20,19 +20,6 @@ module.exports = (grunt)->
           rename: (dest, src) -> 
             dest + src.replace('.coffee', '.js')
         ]
-    jshint:
-      gruntfile:
-        options:
-          jshintrc: '.jshintrc'
-        src: 'Gruntfile.js'
-      src:
-        options:
-          jshintrc: 'src/.jshintrc'
-        src: 'src/**/*.js'
-      # test:
-      #   options:
-      #     jshintrc: 'test/.jshintrc'
-      #   src: ['test/**/*.js']
     qunit:
       files: 'test/**/*.html'
     concat:

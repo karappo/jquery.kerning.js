@@ -1,11 +1,15 @@
 {
   "name": "jquery.kerning.js",
   "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:KarappoInc/jquery.kerning.js.git"
+  },
   "engines": {
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "grunt jshint qunit"
+    "test": "grunt qunit"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.0",
