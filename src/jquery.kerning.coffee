@@ -30,13 +30,14 @@ do ($ = jQuery) ->
         "；":[-0.22,-0.22]
         "｜":[-0.22,-0.22]
 
-  $.fn.kerning = (config) ->
-
+  $.fn.kerning = (config, deep_extending = false) ->
+    
     return @each ->
       me = $(this)
       container = me
       strArray = me.html()
       content = ''
+      options = kdata = null
 
       # remove kerned tags
       destroy = ->
@@ -51,9 +52,13 @@ do ($ = jQuery) ->
       if me.find('[data-kerned]').length
         destroy()
 
-      options = $.extend(defaults, config)
+      if deep_extending
+        options = $.extend(true, {}, defaults, config)
+      else
+        options = $.extend({}, defaults, config)
+      
       kdata = options.data.kerning
-
+      
       if(options.removeAnchorTags)
         # アンカー以外のタグ除去
         # TODO: タグ外の部分も対象に

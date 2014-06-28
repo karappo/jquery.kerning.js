@@ -20,7 +20,7 @@ do ($ = jQuery) ->
 
 
   # ---------------------------------
-  
+
   module 'No option',
     setup: ->
       this.h1 = $ 'h1'
@@ -36,7 +36,7 @@ do ($ = jQuery) ->
     strictEqual this.h1.kerning().text(), this.h1_text
     strictEqual this.h2.kerning().text(), this.h2_text
 
-  test 'オプションなしの場合、約物のみカーニングする', 2, ->
+  test 'オプションなしの場合、約物のみカーニングされる', 2, ->
     strictEqual this.h1.kerning().find('[data-kerned]').length, 2
     strictEqual this.h2.kerning().find('[data-kerned]').length, 0
 
@@ -108,3 +108,29 @@ do ($ = jQuery) ->
 
   test '1回と4回を比較', 1, ->
     strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html()
+
+
+  # ---------------------------------
+
+  module 'Deep Extending',
+    setup: ->
+      this.el = $ '#deep_extend'
+      this.el.kerning('destroy')
+      this.data =
+        kerning:
+          "あ":[-0.1,-0.1]
+    teardown: ->
+      this.el.kerning('destroy')
+
+  test 'デフォルトでは、約物のみカーニングされる', 2, ->
+    strictEqual this.el.kerning().find('[data-kerned]').length, 1
+    strictEqual this.el.find('[data-kerned]').text(), '。'
+
+  test 'deep_extendingをセットせずにカーニングデータを指定した場合は、薬物がカーニングされない', 2, ->
+    strictEqual this.el.kerning({data:this.data}).find('[data-kerned]').length, 1
+    strictEqual this.el.find('[data-kerned]').html(), 'あ'
+
+  test 'deep_extendingをtrueにセットしてカーニングデータを指定した場合も、薬物がカーニングされる', 3, ->
+    strictEqual this.el.kerning({data:this.data}, true).find('[data-kerned]').length, 2
+    strictEqual $(this.el.find('[data-kerned]')[0]).html(), 'あ'
+    strictEqual $(this.el.find('[data-kerned]')[1]).html(), '。'

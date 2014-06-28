@@ -15,7 +15,7 @@
     strictEqual(this.h1.kerning().text(), this.h1_text);
     return strictEqual(this.h2.kerning().text(), this.h2_text);
   });
-  test('オプションなしの場合、約物のみカーニングする', 2, function() {
+  test('オプションなしの場合、約物のみカーニングされる', 2, function() {
     strictEqual(this.h1.kerning().find('[data-kerned]').length, 2);
     return strictEqual(this.h2.kerning().find('[data-kerned]').length, 0);
   });
@@ -91,7 +91,38 @@
   test('1回と3回を比較', 1, function() {
     return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html());
   });
-  return test('1回と4回を比較', 1, function() {
+  test('1回と4回を比較', 1, function() {
     return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html());
+  });
+  module('Deep Extending', {
+    setup: function() {
+      this.el = $('#deep_extend');
+      this.el.kerning('destroy');
+      return this.data = {
+        kerning: {
+          "あ": [-0.1, -0.1]
+        }
+      };
+    },
+    teardown: function() {
+      return this.el.kerning('destroy');
+    }
+  });
+  test('デフォルトでは、約物のみカーニングされる', 2, function() {
+    strictEqual(this.el.kerning().find('[data-kerned]').length, 1);
+    return strictEqual(this.el.find('[data-kerned]').text(), '。');
+  });
+  test('deep_extendingをセットせずにカーニングデータを指定した場合は、薬物がカーニングされない', 2, function() {
+    strictEqual(this.el.kerning({
+      data: this.data
+    }).find('[data-kerned]').length, 1);
+    return strictEqual(this.el.find('[data-kerned]').html(), 'あ');
+  });
+  return test('deep_extendingをtrueにセットしてカーニングデータを指定した場合も、薬物がカーニングされる', 3, function() {
+    strictEqual(this.el.kerning({
+      data: this.data
+    }, true).find('[data-kerned]').length, 2);
+    strictEqual($(this.el.find('[data-kerned]')[0]).html(), 'あ');
+    return strictEqual($(this.el.find('[data-kerned]')[1]).html(), '。');
   });
 })(jQuery);

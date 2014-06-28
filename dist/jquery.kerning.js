@@ -1,4 +1,4 @@
-/*! kerning - v0.1.1 - 2014-06-28
+/*! kerning - v0.1.1 - 2014-06-29
 * http://karappoinc.github.io/jquery.kerning.js/
 * Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
@@ -35,13 +35,17 @@
       }
     }
   };
-  return $.fn.kerning = function(config) {
+  return $.fn.kerning = function(config, deep_extending) {
+    if (deep_extending == null) {
+      deep_extending = false;
+    }
     return this.each(function() {
       var L, R, container, content, delimiter, destroy, i, kdata, linebreak, me, options, str, strArray, _i, _ref;
       me = $(this);
       container = me;
       strArray = me.html();
       content = '';
+      options = kdata = null;
       destroy = function() {
         var _results;
         _results = [];
@@ -60,7 +64,11 @@
       if (me.find('[data-kerned]').length) {
         destroy();
       }
-      options = $.extend(defaults, config);
+      if (deep_extending) {
+        options = $.extend(true, {}, defaults, config);
+      } else {
+        options = $.extend({}, defaults, config);
+      }
       kdata = options.data.kerning;
       if (options.removeAnchorTags) {
         if ((me.children('a').length)) {
