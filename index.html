@@ -182,8 +182,8 @@
           <pre class="prettyprint">&lt;h1&gt;ポラーノの広場&lt;/h1&gt;
 &lt;p&gt;あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。&lt;/p&gt;</pre>
           <h6>Javascript</h6>
-          <pre class="prettyprint">$.getJSON("./kerning-data.json" , function(data) {
-  $('h1,p').kerning({"data":data});
+          <pre class="prettyprint">$.getJSON("./kerning-data.json" , function(_data) {
+  $('h1,p').kerning({data:_data});
 });</pre>
 
           <br>
@@ -200,6 +200,7 @@
           
           <h4>Feature</h4>
           <br>
+          <h5>Without option</h5>
           <p>
             カーニングデータを指定しなかった場合、デフォルトで全角約物のカーニングのみ設定されます。
           </p>
@@ -213,6 +214,20 @@
           <p class="feature kern">
             どんなフォントでも「約物（やくもの）」のカーニング調整が、簡単にできます。
           </p>
+          <br>
+          <br>
+          <h5>Deep Data Extending</h5>
+          <p>
+            通常、カーニングデータを指定するとデフォルトのカーニングデータが上書きされますが、第２引数にtrueを指定することで、デフォルトのカーニング情報に指定したデータをマージして適用することができます。
+          </p>
+          <pre class="prettyprint">$('p').kerning({data:_data}, true);</pre>
+          <br>
+          <br>
+          <h5>Destroy</h5>
+          <p>
+            一旦カーニングを適用後に、再度'destroy'オプション付きで呼び出すことで、カーニングをキャンセルし、元の状態に戻すことができます。
+          </p>
+          <pre class="prettyprint">$('p').kerning('destroy');</pre>
           <br>
           <br>
 
