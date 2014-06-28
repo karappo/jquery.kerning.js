@@ -8,16 +8,27 @@ module.exports = (grunt)->
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
 
     coffee:
-      compile:
+      main_files:
         options:
           bare: true
           # sourceMap: true
         files: [
-          expand: true
+          expand: true # これないとcompileされない
           cwd: 'src/'
-          src: ['**/jquery.*.coffee']
+          src: ['**/*.coffee']
           dest: 'src/'
-          rename: (dest, src) -> 
+          rename: (dest, src) ->
+            dest + src.replace('.coffee', '.js')
+        ]
+      test_files:
+        options:
+          bare: true
+        files: [
+          expand: true # これないとcompileされない
+          cwd: 'test/'
+          src: ['*.coffee']
+          dest: 'test/'
+          rename: (dest, src) ->
             dest + src.replace('.coffee', '.js')
         ]
     qunit:
