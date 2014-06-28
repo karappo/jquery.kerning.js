@@ -50,7 +50,8 @@ module.exports = (grunt)->
       files: 'dist'
     watch:
       files: ['**/*.coffee','**/*.html']
-      tasks: ['coffee']
+      # tasks: ['coffee']
+      tasks: ['coffee','clean','concat','uglify']
       options:
         livereload: true
     connect:
