@@ -34,5 +34,6 @@ jQuery(function($) {
 
 ## Release History
 
+- v0.2.0 : destroy feature, repeat kerning, data extending
 - v0.1.1 : Change data format simpler.
 - v0.1.0 : First release.
