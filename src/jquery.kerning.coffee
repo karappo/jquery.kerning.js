@@ -1,43 +1,49 @@
 do ($ = jQuery) ->
-  $.fn.kerning = (config) ->
-    defaults = 
-      removeTags: false
-      removeAnchorTags: false
-      data:
-        kerning:
-          "、":[0,-0.4]
-          "。":[0,-0.4]
-          "（":[-0.4,0]
-          "）":[0,-0.4]
-          "〔":[-0.4,0]
-          "〕":[0,-0.4]
-          "［":[-0.4,0]
-          "］":[0,-0.4]
-          "｛":[-0.4,0]
-          "｝":[0,-0.4]
-          "〈":[-0.4,0]
-          "〉":[0,-0.4]
-          "《":[-0.4,0]
-          "》":[0,-0.4]
-          "「":[-0.4,0]
-          "」":[0,-0.4]
-          "『":[-0.4,0]
-          "』":[0,-0.4]
-          "【":[-0.4,0]
-          "】":[0,-0.4]
-          "・":[-0.22,-0.22]
-          "：":[-0.22,-0.22]
-          "；":[-0.22,-0.22]
-          "｜":[-0.22,-0.22]
 
-    options = $.extend(defaults, config)
-    kdata = options.data.kerning;
+  defaults = 
+    removeTags: false
+    removeAnchorTags: false
+    data:
+      kerning:
+        "、":[0,-0.4]
+        "。":[0,-0.4]
+        "（":[-0.4,0]
+        "）":[0,-0.4]
+        "〔":[-0.4,0]
+        "〕":[0,-0.4]
+        "［":[-0.4,0]
+        "］":[0,-0.4]
+        "｛":[-0.4,0]
+        "｝":[0,-0.4]
+        "〈":[-0.4,0]
+        "〉":[0,-0.4]
+        "《":[-0.4,0]
+        "》":[0,-0.4]
+        "「":[-0.4,0]
+        "」":[0,-0.4]
+        "『":[-0.4,0]
+        "』":[0,-0.4]
+        "【":[-0.4,0]
+        "】":[0,-0.4]
+        "・":[-0.22,-0.22]
+        "：":[-0.22,-0.22]
+        "；":[-0.22,-0.22]
+        "｜":[-0.22,-0.22]
+
+  $.fn.kerning = (config) ->
 
     return @each ->
       me = $(this)
       container = me
       strArray = me.html()
       content = ''
+
+      if (config == 'destroy')
+        me.find('[data-kerned]').replaceWith( -> this.innerHTML )
+        return me
+
+      options = $.extend(defaults, config)
+      kdata = options.data.kerning
 
       if(options.removeAnchorTags)
         # アンカー以外のタグ除去

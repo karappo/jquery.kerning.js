@@ -1,49 +1,55 @@
-/*! kerning - v0.1.1 - 2014-06-26
+/*! kerning - v0.1.1 - 2014-06-28
 * http://karappoinc.github.io/jquery.kerning.js/
 * Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
-  return $.fn.kerning = function(config) {
-    var defaults, kdata, options;
-    defaults = {
-      removeTags: false,
-      removeAnchorTags: false,
-      data: {
-        kerning: {
-          "、": [0, -0.4],
-          "。": [0, -0.4],
-          "（": [-0.4, 0],
-          "）": [0, -0.4],
-          "〔": [-0.4, 0],
-          "〕": [0, -0.4],
-          "［": [-0.4, 0],
-          "］": [0, -0.4],
-          "｛": [-0.4, 0],
-          "｝": [0, -0.4],
-          "〈": [-0.4, 0],
-          "〉": [0, -0.4],
-          "《": [-0.4, 0],
-          "》": [0, -0.4],
-          "「": [-0.4, 0],
-          "」": [0, -0.4],
-          "『": [-0.4, 0],
-          "』": [0, -0.4],
-          "【": [-0.4, 0],
-          "】": [0, -0.4],
-          "・": [-0.22, -0.22],
-          "：": [-0.22, -0.22],
-          "；": [-0.22, -0.22],
-          "｜": [-0.22, -0.22]
-        }
+  var defaults;
+  defaults = {
+    removeTags: false,
+    removeAnchorTags: false,
+    data: {
+      kerning: {
+        "、": [0, -0.4],
+        "。": [0, -0.4],
+        "（": [-0.4, 0],
+        "）": [0, -0.4],
+        "〔": [-0.4, 0],
+        "〕": [0, -0.4],
+        "［": [-0.4, 0],
+        "］": [0, -0.4],
+        "｛": [-0.4, 0],
+        "｝": [0, -0.4],
+        "〈": [-0.4, 0],
+        "〉": [0, -0.4],
+        "《": [-0.4, 0],
+        "》": [0, -0.4],
+        "「": [-0.4, 0],
+        "」": [0, -0.4],
+        "『": [-0.4, 0],
+        "』": [0, -0.4],
+        "【": [-0.4, 0],
+        "】": [0, -0.4],
+        "・": [-0.22, -0.22],
+        "：": [-0.22, -0.22],
+        "；": [-0.22, -0.22],
+        "｜": [-0.22, -0.22]
       }
-    };
-    options = $.extend(defaults, config);
-    kdata = options.data.kerning;
+    }
+  };
+  return $.fn.kerning = function(config) {
     return this.each(function() {
-      var L, R, container, content, delimiter, i, linebreak, me, str, strArray, _i, _ref;
+      var L, R, container, content, delimiter, i, kdata, linebreak, me, options, str, strArray, _i, _ref;
       me = $(this);
       container = me;
       strArray = me.html();
       content = '';
+      if (config === 'destroy') {
+        me.find('[data-kerned]').replaceWith(function() {
+          return this.innerHTML;
+        });
+        return me;
+      }
+      options = $.extend(defaults, config);
+      kdata = options.data.kerning;
       if (options.removeAnchorTags) {
         if ((me.children('a').length)) {
           container = me.children('a');
