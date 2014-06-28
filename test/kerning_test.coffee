@@ -18,6 +18,9 @@ do ($ = jQuery) ->
   #   notStrictEqual(actual, expected, [message])
   #   throws(block, [expected], [message])
 
+
+  # ---------------------------------
+  
   module 'No option',
     setup: ->
       this.h1 = $ 'h1'
@@ -38,6 +41,8 @@ do ($ = jQuery) ->
     strictEqual this.h2.kerning().find('[data-kerned]').length, 0
 
 
+  # ---------------------------------
+
   module 'With option',
     setup: ->
       this.h1 = $ 'h1'
@@ -56,6 +61,9 @@ do ($ = jQuery) ->
     strictEqual this.h2.kerning({data:this.kerningdata}).find('[data-kerned]').length, 1
     strictEqual this.h3.kerning({data:this.kerningdata}).find('[data-kerned]').length, 5
 
+
+  # ---------------------------------
+
   module 'With option async',
     setup: ->
       this.p = $ '#paragraph'
@@ -65,6 +73,9 @@ do ($ = jQuery) ->
     $.getJSON '../data/mplus-2m-regular.json' , (_data) ->
       start()
       strictEqual target.kerning({data:_data}).find('[data-kerned]').length, 14
+
+
+  # ---------------------------------
 
   module 'Destroy',
     setup: ->
@@ -79,11 +90,21 @@ do ($ = jQuery) ->
   test 'destroy後は、元のhtmlと一致する', 1, ->
     strictEqual this.p.html(), this.p_clone.kerning().kerning('destroy').html()
 
-  test '何度kerningしても結果は同じ（1回と2回を比較）', 1, ->
+
+  # ---------------------------------
+
+  module 'Repeat kerning',
+    setup: ->
+      this.p = $ '#paragraph'
+      this.p_clone = this.p.clone().insertAfter(this.p)
+    teardown: ->
+      this.p_clone.remove()
+
+  test '1回と2回を比較', 1, ->
     strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().html()
 
-  test '何度kerningしても結果は同じ（1回と3回を比較）', 1, ->
+  test '1回と3回を比較', 1, ->
     strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html()
 
-  test '何度kerningしても結果は同じ（1回と4回を比較）', 1, ->
+  test '1回と4回を比較', 1, ->
     strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html()

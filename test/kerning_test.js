@@ -76,13 +76,22 @@
   test('destroy後は、元のhtmlと一致する', 1, function() {
     return strictEqual(this.p.html(), this.p_clone.kerning().kerning('destroy').html());
   });
-  test('何度kerningしても結果は同じ（1回と2回を比較）', 1, function() {
+  module('Repeat kerning', {
+    setup: function() {
+      this.p = $('#paragraph');
+      return this.p_clone = this.p.clone().insertAfter(this.p);
+    },
+    teardown: function() {
+      return this.p_clone.remove();
+    }
+  });
+  test('1回と2回を比較', 1, function() {
     return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().html());
   });
-  test('何度kerningしても結果は同じ（1回と3回を比較）', 1, function() {
+  test('1回と3回を比較', 1, function() {
     return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html());
   });
-  return test('何度kerningしても結果は同じ（1回と4回を比較）', 1, function() {
+  return test('1回と4回を比較', 1, function() {
     return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html());
   });
 })(jQuery);
