@@ -38,9 +38,18 @@ do ($ = jQuery) ->
       strArray = me.html()
       content = ''
 
-      if (config == 'destroy')
-        me.find('[data-kerned]').replaceWith( -> this.innerHTML )
+      # remove kerned tags
+      destroy = ->
+        while me.find('[data-kerned]').length
+          me.find('[data-kerned]').replaceWith( -> this.innerHTML )
+          strArray = me.html()
+
+      if config == 'destroy'
+        destroy()
         return me
+
+      if me.find('[data-kerned]').length
+        destroy()
 
       options = $.extend(defaults, config)
       kdata = options.data.kerning

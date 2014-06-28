@@ -73,8 +73,17 @@ do ($ = jQuery) ->
     teardown: ->
       this.p_clone.remove()
 
-  test 'カーニング適用後は、元のhtmlと一致しない', 1, ->
+  test 'kening後は、元のhtmlと一致しない', 1, ->
     notStrictEqual this.p.html(), this.p_clone.kerning().html()
 
   test 'destroy後は、元のhtmlと一致する', 1, ->
     strictEqual this.p.html(), this.p_clone.kerning().kerning('destroy').html()
+
+  test '何度kerningしても結果は同じ（1回と2回を比較）', 1, ->
+    strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().html()
+
+  test '何度kerningしても結果は同じ（1回と3回を比較）', 1, ->
+    strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html()
+
+  test '何度kerningしても結果は同じ（1回と4回を比較）', 1, ->
+    strictEqual this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html()

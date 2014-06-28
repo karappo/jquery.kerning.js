@@ -70,10 +70,19 @@
       return this.p_clone.remove();
     }
   });
-  test('カーニング適用後は、元のhtmlと一致しない', 1, function() {
+  test('kening後は、元のhtmlと一致しない', 1, function() {
     return notStrictEqual(this.p.html(), this.p_clone.kerning().html());
   });
-  return test('destroy後は、元のhtmlと一致する', 1, function() {
+  test('destroy後は、元のhtmlと一致する', 1, function() {
     return strictEqual(this.p.html(), this.p_clone.kerning().kerning('destroy').html());
+  });
+  test('何度kerningしても結果は同じ（1回と2回を比較）', 1, function() {
+    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().html());
+  });
+  test('何度kerningしても結果は同じ（1回と3回を比較）', 1, function() {
+    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html());
+  });
+  return test('何度kerningしても結果は同じ（1回と4回を比較）', 1, function() {
+    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html());
   });
 })(jQuery);

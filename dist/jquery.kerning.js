@@ -37,16 +37,28 @@
   };
   return $.fn.kerning = function(config) {
     return this.each(function() {
-      var L, R, container, content, delimiter, i, kdata, linebreak, me, options, str, strArray, _i, _ref;
+      var L, R, container, content, delimiter, destroy, i, kdata, linebreak, me, options, str, strArray, _i, _ref;
       me = $(this);
       container = me;
       strArray = me.html();
       content = '';
+      destroy = function() {
+        var _results;
+        _results = [];
+        while (me.find('[data-kerned]').length) {
+          me.find('[data-kerned]').replaceWith(function() {
+            return this.innerHTML;
+          });
+          _results.push(strArray = me.html());
+        }
+        return _results;
+      };
       if (config === 'destroy') {
-        me.find('[data-kerned]').replaceWith(function() {
-          return this.innerHTML;
-        });
+        destroy();
         return me;
+      }
+      if (me.find('[data-kerned]').length) {
+        destroy();
       }
       options = $.extend(defaults, config);
       kdata = options.data.kerning;
