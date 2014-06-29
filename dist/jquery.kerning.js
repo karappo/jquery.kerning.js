@@ -1,4 +1,4 @@
-/*! kerning - v0.2.0 - 2014-06-29
+/*! kerning - v0.2.1 - 2014-06-29
 * http://karappoinc.github.io/jquery.kerning.js/
 * Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
