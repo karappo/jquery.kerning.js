@@ -11,9 +11,13 @@
         "style/**",
         "test/**",
         ".travis.yml",
+        ".gitignore",
+        "CONTRIBUTING.md",
         "example.html",
         "Gruntfile.coffee",
-        "package.json"
+        "kerning.jquery.json",
+        "package.json",
+        "README.md"
     ],
     "dependencies": {
         "jquery": "*"
