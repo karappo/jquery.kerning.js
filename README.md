@@ -34,6 +34,7 @@ jQuery(function($) {
 
 ## Release History
 
+- v0.2.2 : A few update for bower
 - v0.2.1 : Regist to bower
 - v0.2.0 : destroy feature, repeat kerning, data extending
 - v0.1.1 : Change data format simpler.

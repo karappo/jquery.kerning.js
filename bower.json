@@ -1,6 +1,6 @@
 {
     "name": "jquery.kerning",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "main": "dist/jquery.kerning.min.js",
     "ignore": [
         "data/**",
