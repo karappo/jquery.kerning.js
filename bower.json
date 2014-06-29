@@ -1,0 +1,21 @@
+{
+    "name": "jquery.kerning.js",
+    "version": "0.2.0",
+    "main": "dist/jquery.kerning.min.js",
+    "ignore": [
+        "data/**",
+        "fonts/**",
+        "libs/**",
+        "node_modules/**",
+        "script/**",
+        "style/**",
+        "test/**",
+        ".travis.yml",
+        "example.html",
+        "Gruntfile.coffee",
+        "package.json"
+    ],
+    "dependencies": [
+        "jquery": "*"
+    ]
+}
