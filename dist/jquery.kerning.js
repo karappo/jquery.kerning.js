@@ -35,9 +35,43 @@
       }
     }
   };
-  return $.fn.kerning = function(config, deep_extending) {
-    if (deep_extending == null) {
-      deep_extending = false;
+  $(document).on('ready', function() {
+    return $(document).find('[data-kerning]').each(function() {
+      var opts, parseJSON, txt;
+      parseJSON = function(text) {
+        var O_o, o_O, obj;
+        obj = null;
+        try {
+          obj = JSON.parse(text);
+          console.log('1');
+          return obj;
+        } catch (_error) {
+          O_o = _error;
+        }
+        try {
+          obj = eval("(" + text + ")");
+          console.log('2');
+        } catch (_error) {
+          o_O = _error;
+          console.error("jquery.kerning :: ERROR :: JSON.parse failed");
+          return null;
+        }
+        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred");
+        return obj;
+      };
+      txt = $(this).data('kerning');
+      if (0 < txt.indexOf('{')) {
+        opts = parseJSON(txt);
+      } else {
+        opts = txt;
+      }
+      console.log(opts);
+      return $(this).kerning(opts);
+    });
+  });
+  return $.fn.kerning = function(config, _extend) {
+    if (_extend == null) {
+      _extend = false;
     }
     return this.each(function() {
       var container, content, destroy, kdata, kern, me, options, strArray;
@@ -62,7 +96,7 @@
         if (me.find('[data-kerned]').length) {
           destroy();
         }
-        if (deep_extending) {
+        if (_extend) {
           options = $.extend(true, {}, defaults, _config);
         } else {
           options = $.extend({}, defaults, _config);

@@ -30,7 +30,39 @@ do ($ = jQuery) ->
         "；":[-0.22,-0.22]
         "｜":[-0.22,-0.22]
 
-  $.fn.kerning = (config, deep_extending = false) ->
+  
+
+  $(document).on 'ready', ->
+    $(document).find('[data-kerning]').each ->
+
+      # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
+      parseJSON = (text)->
+        obj = null
+        try
+          obj = JSON.parse( text )
+          console.log('1')
+          return obj
+        catch O_o
+          
+        try
+          obj = eval("(" + text + ")")
+          console.log('2')
+        catch o_O
+          console.error("jquery.kerning :: ERROR :: JSON.parse failed")
+          return null
+        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred")
+        return obj
+
+      txt = $(this).data('kerning')
+      if 0<txt.indexOf('{')
+        opts = parseJSON(txt)
+      else
+        opts = txt
+      
+      console.log(opts)
+      $(this).kerning(opts)
+
+  $.fn.kerning = (config, _extend = false) ->
     
     return @each ->
       me = $(this)
@@ -41,7 +73,7 @@ do ($ = jQuery) ->
 
       # ---------------------
       # methods
-
+          
       # remove kerned tags
       destroy = ->
         while me.find('[data-kerned]').length
@@ -53,7 +85,7 @@ do ($ = jQuery) ->
         if me.find('[data-kerned]').length
           destroy()
 
-        if deep_extending
+        if _extend
           options = $.extend(true, {}, defaults, _config)
         else
           options = $.extend({}, defaults, _config)

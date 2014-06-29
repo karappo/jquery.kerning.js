@@ -48,12 +48,12 @@
   });
   module('With option async', {
     setup: function() {
-      return this.p = $('#paragraph');
+      return this.el = $('#paragraph');
     }
   });
   asyncTest('jsonファイルを読み込んで使える', 1, function() {
     var target;
-    target = this.p;
+    target = this.el;
     return $.getJSON('../data/mplus-2m-regular.json', function(_data) {
       start();
       return strictEqual(target.kerning({
@@ -63,36 +63,36 @@
   });
   module('Destroy', {
     setup: function() {
-      this.p = $('#paragraph');
-      return this.p_clone = this.p.clone().insertAfter(this.p);
+      this.el = $('#paragraph');
+      return this.el_clone = this.el.clone().insertAfter(this.el);
     },
     teardown: function() {
-      return this.p_clone.remove();
+      return this.el_clone.remove();
     }
   });
   test('kening後は、元のhtmlと一致しない', 1, function() {
-    return notStrictEqual(this.p.html(), this.p_clone.kerning().html());
+    return notStrictEqual(this.el.html(), this.el_clone.kerning().html());
   });
   test('destroy後は、元のhtmlと一致する', 1, function() {
-    return strictEqual(this.p.html(), this.p_clone.kerning().kerning('destroy').html());
+    return strictEqual(this.el.html(), this.el_clone.kerning().kerning('destroy').html());
   });
   module('Repeat kerning', {
     setup: function() {
-      this.p = $('#paragraph');
-      return this.p_clone = this.p.clone().insertAfter(this.p);
+      this.el = $('#paragraph');
+      return this.el_clone = this.el.clone().insertAfter(this.el);
     },
     teardown: function() {
-      return this.p_clone.remove();
+      return this.el_clone.remove();
     }
   });
   test('1回と2回を比較', 1, function() {
-    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().html());
+    return strictEqual(this.el.kerning().html(), this.el_clone.kerning().kerning().html());
   });
   test('1回と3回を比較', 1, function() {
-    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().html());
+    return strictEqual(this.el.kerning().html(), this.el_clone.kerning().kerning().kerning().html());
   });
   test('1回と4回を比較', 1, function() {
-    return strictEqual(this.p.kerning().html(), this.p_clone.kerning().kerning().kerning().kerning().html());
+    return strictEqual(this.el.kerning().html(), this.el_clone.kerning().kerning().kerning().kerning().html());
   });
   module('Deep Extending', {
     setup: function() {
@@ -127,16 +127,25 @@
   });
   module('Involve getJSON', {
     setup: function() {
-      return this.p = $('#paragraph');
+      return this.el = $('#paragraph');
     }
   });
-  return asyncTest('第１引数にjsonファイルへのパスを指定できる', 1, function() {
+  asyncTest('第１引数にjsonファイルへのパスを指定できる', 1, function() {
     var target;
-    target = this.p;
+    target = this.el;
     target.kerning('../data/mplus-2m-regular.json');
     return setTimeout(function() {
       start();
       return strictEqual(target.find('[data-kerned]').length, 14);
     }, 2000);
+  });
+  module('Specification with data attribute', {
+    setup: function() {
+      return this.el = $('#auto_kerning');
+    }
+  });
+  return test('[data-kerning]属性を持つものは自動的にカーニングされる', 2, function() {
+    strictEqual(this.el.find('[data-kerned]').length, 1);
+    return strictEqual(this.el.find('[data-kerned]').text(), '。');
   });
 })(jQuery);
