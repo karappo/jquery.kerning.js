@@ -15,7 +15,7 @@
         "Gruntfile.coffee",
         "package.json"
     ],
-    "dependencies": [
+    "dependencies": {
         "jquery": "*"
-    ]
+    }
 }
