@@ -1,5 +1,5 @@
 {
-    "name": "jquery.kerning.js",
+    "name": "jquery.kerning",
     "version": "0.2.0",
     "main": "dist/jquery.kerning.min.js",
     "ignore": [
