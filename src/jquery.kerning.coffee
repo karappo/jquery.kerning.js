@@ -54,13 +54,12 @@ do ($ = jQuery) ->
         return obj
 
       txt = $(this).data('kerning')
-      if 0<txt.indexOf('{')
+      if 0<=txt.indexOf('{')
         opts = parseJSON(txt)
       else
         opts = txt
       
-      console.log(opts)
-      $(this).kerning(opts)
+      $(this).kerning(opts, $(this).data('kerning-extend'))
 
   $.fn.kerning = (config, _extend = false) ->
     

@@ -153,12 +153,9 @@ do ($ = jQuery) ->
 
   # ---------------------------------
 
-  module 'Specification with data attribute',
-    setup: ->
-      this.el = $ '#auto_kerning'
-  
-  test '[data-kerning]属性を持つものは自動的にカーニングされる', 2, ->
-    strictEqual this.el.find('[data-kerned]').length, 1
-    strictEqual this.el.find('[data-kerned]').text(), '。'
+  # TODO [data-kerning]要素をcloneして、jsに置き換えて実行した時と結果がおなじになるようにテストする
+  # module 'Specification with data attribute',
+  #   setup: ->
+  #     this.el = $ '[data-kerning]'
 
     

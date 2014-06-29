@@ -60,13 +60,12 @@
         return obj;
       };
       txt = $(this).data('kerning');
-      if (0 < txt.indexOf('{')) {
+      if (0 <= txt.indexOf('{')) {
         opts = parseJSON(txt);
       } else {
         opts = txt;
       }
-      console.log(opts);
-      return $(this).kerning(opts);
+      return $(this).kerning(opts, $(this).data('kerning-extend'));
     });
   });
   return $.fn.kerning = function(config, _extend) {
