@@ -27,9 +27,7 @@
   
   <script>
     $(function(){
-      $.getJSON("./data/mplus-2m-regular.json" , function(data) {
-        $('.kern').kerning({"data":data});
-      });
+      $('.kern').kerning("./data/mplus-2m-regular.json");
     });
   </script>
 </head>

@@ -118,11 +118,25 @@
     }).find('[data-kerned]').length, 1);
     return strictEqual(this.el.find('[data-kerned]').html(), 'あ');
   });
-  return test('deep_extendingをtrueにセットしてカーニングデータを指定した場合も、薬物がカーニングされる', 3, function() {
+  test('deep_extendingをtrueにセットしてカーニングデータを指定した場合も、薬物がカーニングされる', 3, function() {
     strictEqual(this.el.kerning({
       data: this.data
     }, true).find('[data-kerned]').length, 2);
     strictEqual($(this.el.find('[data-kerned]')[0]).html(), 'あ');
     return strictEqual($(this.el.find('[data-kerned]')[1]).html(), '。');
+  });
+  module('Involve getJSON', {
+    setup: function() {
+      return this.p = $('#paragraph');
+    }
+  });
+  return asyncTest('第１引数にjsonファイルへのパスを指定できる', 1, function() {
+    var target;
+    target = this.p;
+    target.kerning('../data/mplus-2m-regular.json');
+    return setTimeout(function() {
+      start();
+      return strictEqual(target.find('[data-kerned]').length, 14);
+    }, 2000);
   });
 })(jQuery);

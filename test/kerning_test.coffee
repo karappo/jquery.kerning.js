@@ -134,3 +134,20 @@ do ($ = jQuery) ->
     strictEqual this.el.kerning({data:this.data}, true).find('[data-kerned]').length, 2
     strictEqual $(this.el.find('[data-kerned]')[0]).html(), 'あ'
     strictEqual $(this.el.find('[data-kerned]')[1]).html(), '。'
+
+
+  # ---------------------------------
+
+  module 'Involve getJSON',
+    setup: ->
+      this.p = $ '#paragraph'
+  
+  asyncTest '第１引数にjsonファイルへのパスを指定できる', 1, ->
+    target = this.p
+    target.kerning('../data/mplus-2m-regular.json')
+    setTimeout () ->
+      start()
+      strictEqual target.find('[data-kerned]').length, 14
+    , 2000
+
+    

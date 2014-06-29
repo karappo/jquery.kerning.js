@@ -37,7 +37,7 @@
       deep_extending = false;
     }
     return this.each(function() {
-      var L, R, container, content, delimiter, destroy, i, kdata, linebreak, me, options, str, strArray, _i, _ref;
+      var container, content, destroy, kdata, kern, me, options, strArray;
       me = $(this);
       container = me;
       strArray = me.html();
@@ -54,60 +54,77 @@
         }
         return _results;
       };
-      if (config === 'destroy') {
-        destroy();
-        return me;
-      }
-      if (me.find('[data-kerned]').length) {
-        destroy();
-      }
-      if (deep_extending) {
-        options = $.extend(true, {}, defaults, config);
-      } else {
-        options = $.extend({}, defaults, config);
-      }
-      kdata = options.data.kerning;
-      if (options.removeAnchorTags) {
-        if ((me.children('a').length)) {
-          container = me.children('a');
-          strArray = container.html().replace(/(<([^>]+)>)/ig, "").split('');
-        } else {
-          container = me;
-          strArray = me.html().replace(/(<([^>]+)>)/ig, "").split('');
+      kern = function(_config) {
+        var L, R, delimiter, i, linebreak, str, _i, _ref;
+        if (me.find('[data-kerned]').length) {
+          destroy();
         }
-      } else if (options.removeTags) {
-        strArray = me.html().replace(/(<([^>]+)>)/ig, "").split('');
-      } else {
-        me.find('[data-kerned]').empty();
-      }
-      delimiter = me.data('delimiter');
-      linebreak = me.data('linebreak');
-      if (delimiter !== void 0) {
-        strArray = (delimiter + strArray.join(delimiter) + delimiter).split('');
-      }
-      for (i = _i = 0, _ref = strArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        str = strArray[i];
-        L = 0;
-        R = 0;
-        if (kdata[str]) {
-          L = kdata[str][0];
-          R = kdata[str][1];
-          if (linebreak !== void 0) {
-            content += '<span style="display:inline-block;">' + linebreak + '</span>';
+        if (deep_extending) {
+          options = $.extend(true, {}, defaults, _config);
+        } else {
+          options = $.extend({}, defaults, _config);
+        }
+        kdata = options.data.kerning;
+        if (options.removeAnchorTags) {
+          if ((me.children('a').length)) {
+            container = me.children('a');
+            strArray = container.html().replace(/(<([^>]+)>)/ig, "").split('');
+          } else {
+            container = me;
+            strArray = me.html().replace(/(<([^>]+)>)/ig, "").split('');
           }
-          if (L !== 0 || R !== 0) {
-            content += '<span data-kerned style="display:inline-block;margin-left:' + L + 'em;margin-right:' + R + 'em;">' + str + '</span>';
+        } else if (options.removeTags) {
+          strArray = me.html().replace(/(<([^>]+)>)/ig, "").split('');
+        } else {
+          me.find('[data-kerned]').empty();
+        }
+        delimiter = me.data('delimiter');
+        linebreak = me.data('linebreak');
+        if (delimiter !== void 0) {
+          strArray = (delimiter + strArray.join(delimiter) + delimiter).split('');
+        }
+        for (i = _i = 0, _ref = strArray.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          str = strArray[i];
+          L = 0;
+          R = 0;
+          if (kdata[str]) {
+            L = kdata[str][0];
+            R = kdata[str][1];
+            if (linebreak !== void 0) {
+              content += '<span style="display:inline-block;">' + linebreak + '</span>';
+            }
+            if (L !== 0 || R !== 0) {
+              content += '<span data-kerned style="display:inline-block;margin-left:' + L + 'em;margin-right:' + R + 'em;">' + str + '</span>';
+            } else {
+              content += str;
+            }
+            if (linebreak !== void 0) {
+              content += '<span style="display:inline-block;">' + linebreak + '</span><br>';
+            }
           } else {
             content += str;
           }
-          if (linebreak !== void 0) {
-            content += '<span style="display:inline-block;">' + linebreak + '</span><br>';
-          }
-        } else {
-          content += str;
         }
+        container.html(content);
+        return me;
+      };
+      if (typeof config === 'string') {
+        if (config === 'destroy') {
+          destroy();
+          return me;
+        } else if (0 <= config.indexOf('.json')) {
+          return $.getJSON(config, function(_data) {
+            return kern({
+              data: _data
+            });
+          });
+        } else {
+          console.error('jquery.kerning :: Invalid configure');
+          return me;
+        }
+      } else {
+        return kern(config);
       }
-      return container.html(content);
     });
   };
 })(jQuery);
