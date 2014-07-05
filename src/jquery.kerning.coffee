@@ -46,9 +46,9 @@ do ($ = jQuery) ->
         try
           obj = eval("(" + text + ")")
         catch o_O
-          console.error("jquery.kerning :: ERROR :: JSON.parse failed")
+          console.error("jquery.kerning : [ERROR] JSON.parse failed")
           return null
-        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred")
+        console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred")
         return obj
 
       txt = $(this).data('kerning')
@@ -157,7 +157,7 @@ do ($ = jQuery) ->
           $.getJSON config, (_data) ->
             kern({data:_data})
         else
-          console.error('jquery.kerning :: Invalid configure')
+          console.error('jquery.kerning : [ERROR] Invalid configure')
           return me
       else
         kern(config)
