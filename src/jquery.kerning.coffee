@@ -34,19 +34,17 @@ do ($ = jQuery) ->
 
   $(document).on 'ready', ->
     $(document).find('[data-kerning]').each ->
-
+      console.log('onREady...')
       # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
       parseJSON = (text)->
         obj = null
         try
           obj = JSON.parse( text )
-          console.log('1')
           return obj
         catch O_o
           
         try
           obj = eval("(" + text + ")")
-          console.log('2')
         catch o_O
           console.error("jquery.kerning :: ERROR :: JSON.parse failed")
           return null
@@ -54,12 +52,15 @@ do ($ = jQuery) ->
         return obj
 
       txt = $(this).data('kerning')
-      if 0<=txt.indexOf('{')
-        opts = parseJSON(txt)
+      opts = null
+      if txt
+        if 0<=txt.indexOf('{')
+          opts = parseJSON(txt)
+        else
+          opts = txt
+        $(this).kerning(opts, $(this).data('kerning-extend'))
       else
-        opts = txt
-      
-      $(this).kerning(opts, $(this).data('kerning-extend'))
+        $(this).kerning()
 
   $.fn.kerning = (config, _extend = false) ->
     
@@ -146,7 +147,7 @@ do ($ = jQuery) ->
       # ---------------------
       # main
 
-      if typeof config == 'string'
+      if typeof config is 'string'
         if config == 'destroy'
           destroy()
           return me

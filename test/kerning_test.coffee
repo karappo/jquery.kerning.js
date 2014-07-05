@@ -18,7 +18,6 @@ do ($ = jQuery) ->
   #   notStrictEqual(actual, expected, [message])
   #   throws(block, [expected], [message])
 
-
   # ---------------------------------
 
   module 'No option',
@@ -154,8 +153,20 @@ do ($ = jQuery) ->
   # ---------------------------------
 
   # TODO [data-kerning]要素をcloneして、jsに置き換えて実行した時と結果がおなじになるようにテストする
-  # module 'Specification with data attribute',
-  #   setup: ->
-  #     this.el = $ '[data-kerning]'
+  module 'Specification with data attribute',
+    setup: ->
+      this.el = $ '#without_data'
+      this.el_data = $ '#with_data'
 
-    
+  asyncTest 'data-kerning属性を持つ要素とkerning実行後が同じ中身', 2, ()->
+    el = this.el
+    el_data = this.el_data
+    timeoutID = window.setInterval ()->
+      if el.length && el_data.length
+        ok(true, 'DOM has appended.')
+        window.clearTimeout timeoutID
+        start()
+        strictEqual el.kerning().html(), el_data.html()
+    , 100
+
+  # TODO 動的に追加された要素がちゃんとカーニングされているかのテスト

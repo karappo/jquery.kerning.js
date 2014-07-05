@@ -35,19 +35,18 @@
   $(document).on('ready', function() {
     return $(document).find('[data-kerning]').each(function() {
       var opts, parseJSON, txt;
+      console.log('onREady...');
       parseJSON = function(text) {
         var O_o, o_O, obj;
         obj = null;
         try {
           obj = JSON.parse(text);
-          console.log('1');
           return obj;
         } catch (_error) {
           O_o = _error;
         }
         try {
           obj = eval("(" + text + ")");
-          console.log('2');
         } catch (_error) {
           o_O = _error;
           console.error("jquery.kerning :: ERROR :: JSON.parse failed");
@@ -57,12 +56,17 @@
         return obj;
       };
       txt = $(this).data('kerning');
-      if (0 <= txt.indexOf('{')) {
-        opts = parseJSON(txt);
+      opts = null;
+      if (txt) {
+        if (0 <= txt.indexOf('{')) {
+          opts = parseJSON(txt);
+        } else {
+          opts = txt;
+        }
+        return $(this).kerning(opts, $(this).data('kerning-extend'));
       } else {
-        opts = txt;
+        return $(this).kerning();
       }
-      return $(this).kerning(opts, $(this).data('kerning-extend'));
     });
   });
   return $.fn.kerning = function(config, _extend) {

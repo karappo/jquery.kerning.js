@@ -130,7 +130,7 @@
       return this.el = $('#paragraph');
     }
   });
-  return asyncTest('第１引数にjsonファイルへのパスを指定できる', 1, function() {
+  asyncTest('第１引数にjsonファイルへのパスを指定できる', 1, function() {
     var target;
     target = this.el;
     target.kerning('../data/mplus-2m-regular.json');
@@ -138,5 +138,24 @@
       start();
       return strictEqual(target.find('[data-kerned]').length, 14);
     }, 2000);
+  });
+  module('Specification with data attribute', {
+    setup: function() {
+      this.el = $('#without_data');
+      return this.el_data = $('#with_data');
+    }
+  });
+  return asyncTest('data-kerning属性を持つ要素とkerning実行後が同じ中身', 2, function() {
+    var el, el_data, timeoutID;
+    el = this.el;
+    el_data = this.el_data;
+    return timeoutID = window.setInterval(function() {
+      if (el.length && el_data.length) {
+        ok(true, 'DOM has appended.');
+        window.clearTimeout(timeoutID);
+        start();
+        return strictEqual(el.kerning().html(), el_data.html());
+      }
+    }, 100);
   });
 })(jQuery);
