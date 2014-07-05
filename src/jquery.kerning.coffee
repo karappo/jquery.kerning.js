@@ -34,7 +34,6 @@ do ($ = jQuery) ->
 
   $(document).on 'ready', ->
     $(document).find('[data-kerning]').each ->
-      console.log('onREady...')
       # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
       parseJSON = (text)->
         obj = null
