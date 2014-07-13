@@ -11,7 +11,7 @@ module.exports = (grunt)->
       main_files:
         options:
           bare: true
-          # sourceMap: true
+          sourceMap: true
         files: [
           expand: true # これないとcompileされない
           cwd: 'src/'
@@ -23,6 +23,7 @@ module.exports = (grunt)->
       test_files:
         options:
           bare: true
+          sourceMap: true
         files: [
           expand: true # これないとcompileされない
           cwd: 'test/'
