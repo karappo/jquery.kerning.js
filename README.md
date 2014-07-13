@@ -34,7 +34,7 @@ jQuery(function($) {
 
 ## Release History
 
-- v0.3.0 : Support init with [data-kerning]
+- v0.3.0 : Support direct json file specification, initializing with [data-kening]
 - v0.2.2 : A few update for bower
 - v0.2.1 : Regist to bower
 - v0.2.0 : destroy feature, repeat kerning, data extending
