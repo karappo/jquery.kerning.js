@@ -1,6 +1,22 @@
 do ($ = jQuery) ->
 
-  defaults = 
+  $(document).on 'ready', ->
+    $(document).find('[data-kerning]').each ->
+      
+      txt = $(this).data('kerning')
+      opts = null
+      if txt
+        if 0<=txt.indexOf('{')
+          opts = $.kerning.parseJSON(txt)
+        else
+          opts = txt
+        $(this).kerning(opts, $(this).data('kerning-extend'))
+      else
+        $(this).kerning()
+
+  $.kerning = {}
+
+  $.kerning.defaults = 
     removeTags: false
     removeAnchorTags: false
     data:
@@ -30,38 +46,27 @@ do ($ = jQuery) ->
         "；":[-0.22,-0.22]
         "｜":[-0.22,-0.22]
 
+  # 静的関数 ------------------------
+
+  # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
+  $.kerning.parseJSON = (text)->
+    obj = null
+    
+    try
+      obj = JSON.parse( text )
+      return obj
+    catch O_o
+      console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred")
+
+    try
+      obj = eval("(" + text + ")")
+    catch o_O
+      console.error("jquery.kerning : [ERROR] JSON.parse failed")
+      return null
+    
+    return obj
   
-
-  $(document).on 'ready', ->
-    $(document).find('[data-kerning]').each ->
-      # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
-      parseJSON = (text)->
-        obj = null
-        
-        try
-          obj = JSON.parse( text )
-          return obj
-        catch O_o
-          console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred")
-
-        try
-          obj = eval("(" + text + ")")
-        catch o_O
-          console.error("jquery.kerning : [ERROR] JSON.parse failed")
-          return null
-        
-        return obj
-
-      txt = $(this).data('kerning')
-      opts = null
-      if txt
-        if 0<=txt.indexOf('{')
-          opts = parseJSON(txt)
-        else
-          opts = txt
-        $(this).kerning(opts, $(this).data('kerning-extend'))
-      else
-        $(this).kerning()
+  # 本体 ------------------------
 
   $.fn.kerning = (config, _extend = false) ->
     
@@ -87,9 +92,9 @@ do ($ = jQuery) ->
           destroy()
 
         if _extend
-          options = $.extend(true, {}, defaults, _config)
+          options = $.extend(true, {}, $.kerning.defaults, _config)
         else
-          options = $.extend({}, defaults, _config)
+          options = $.extend({}, $.kerning.defaults, _config)
         
         kdata = options.data.kerning
         

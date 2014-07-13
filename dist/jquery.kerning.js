@@ -2,8 +2,25 @@
 * http://karappoinc.github.io/jquery.kerning.js/
 * Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
-  var defaults;
-  defaults = {
+  $(document).on('ready', function() {
+    return $(document).find('[data-kerning]').each(function() {
+      var opts, txt;
+      txt = $(this).data('kerning');
+      opts = null;
+      if (txt) {
+        if (0 <= txt.indexOf('{')) {
+          opts = $.kerning.parseJSON(txt);
+        } else {
+          opts = txt;
+        }
+        return $(this).kerning(opts, $(this).data('kerning-extend'));
+      } else {
+        return $(this).kerning();
+      }
+    });
+  });
+  $.kerning = {};
+  $.kerning.defaults = {
     removeTags: false,
     removeAnchorTags: false,
     data: {
@@ -35,42 +52,25 @@
       }
     }
   };
-  $(document).on('ready', function() {
-    return $(document).find('[data-kerning]').each(function() {
-      var opts, parseJSON, txt;
-      parseJSON = function(text) {
-        var O_o, o_O, obj;
-        obj = null;
-        try {
-          obj = JSON.parse(text);
-          return obj;
-        } catch (_error) {
-          O_o = _error;
-          console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred");
-        }
-        try {
-          obj = eval("(" + text + ")");
-        } catch (_error) {
-          o_O = _error;
-          console.error("jquery.kerning : [ERROR] JSON.parse failed");
-          return null;
-        }
-        return obj;
-      };
-      txt = $(this).data('kerning');
-      opts = null;
-      if (txt) {
-        if (0 <= txt.indexOf('{')) {
-          opts = parseJSON(txt);
-        } else {
-          opts = txt;
-        }
-        return $(this).kerning(opts, $(this).data('kerning-extend'));
-      } else {
-        return $(this).kerning();
-      }
-    });
-  });
+  $.kerning.parseJSON = function(text) {
+    var O_o, o_O, obj;
+    obj = null;
+    try {
+      obj = JSON.parse(text);
+      return obj;
+    } catch (_error) {
+      O_o = _error;
+      console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred");
+    }
+    try {
+      obj = eval("(" + text + ")");
+    } catch (_error) {
+      o_O = _error;
+      console.error("jquery.kerning : [ERROR] JSON.parse failed");
+      return null;
+    }
+    return obj;
+  };
   return $.fn.kerning = function(config, _extend) {
     if (_extend == null) {
       _extend = false;
@@ -99,9 +99,9 @@
           destroy();
         }
         if (_extend) {
-          options = $.extend(true, {}, defaults, _config);
+          options = $.extend(true, {}, $.kerning.defaults, _config);
         } else {
-          options = $.extend({}, defaults, _config);
+          options = $.extend({}, $.kerning.defaults, _config);
         }
         kdata = options.data.kerning;
         if (options.removeAnchorTags) {

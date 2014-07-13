@@ -155,33 +155,12 @@
     }, 100);
   });
   return asyncTest('[data-kerning="{data:_data}"]', 2, function() {
-    var data, el, el_clone, json, parseJSON, timeoutID;
-    parseJSON = function(text) {
-      var O_o, o_O, obj;
-      obj = null;
-      try {
-        obj = JSON.parse(text);
-        return obj;
-      } catch (_error) {
-        O_o = _error;
-        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred");
-      }
-      try {
-        obj = eval("(" + text + ")");
-      } catch (_error) {
-        o_O = _error;
-        console.error("jquery.kerning :: ERROR :: JSON.parse failed");
-        return null;
-      }
-      return obj;
-    };
+    var el, el_clone, json, timeoutID;
     el = $('#data_attr_json');
-    json = parseJSON(el.data('kerning'));
-    data = json.data;
-    console.log('TEST', data);
+    json = $.kerning.parseJSON(el.data('kerning'));
     el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el);
     el_clone.kerning({
-      data: data
+      data: json.data
     });
     return timeoutID = window.setInterval(function() {
       if (el.length && el_clone.length) {

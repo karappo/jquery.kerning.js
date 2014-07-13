@@ -169,30 +169,12 @@ do ($ = jQuery) ->
     , 100
 
   asyncTest '[data-kerning="{data:_data}"]', 2, ()->
-    parseJSON = (text)->
-      obj = null
-      try
-        obj = JSON.parse( text )
-        return obj
-      catch O_o
-        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred")
-
-      try
-        obj = eval("(" + text + ")")
-      catch o_O
-        console.error("jquery.kerning :: ERROR :: JSON.parse failed")
-        return null
-      
-      return obj
-
     el = $ '#data_attr_json'
-    json = parseJSON(el.data('kerning'))
-    data = json.data
-    console.log('TEST',data)
+    json = $.kerning.parseJSON(el.data('kerning'))
     # data属性除去したクローン（カーニング済みかもしれないので中身も初期化）
     el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el)
     # 通常記法でのカーニング適用
-    el_clone.kerning({data:data})
+    el_clone.kerning({data:json.data})
     timeoutID = window.setInterval ()->
       if el.length && el_clone.length
         ok(true, 'DOM has appended.')
