@@ -139,23 +139,59 @@
       return strictEqual(target.find('[data-kerned]').length, 14);
     }, 2000);
   });
-  module('Specification with data attribute', {
-    setup: function() {
-      this.el = $('#without_data');
-      return this.el_data = $('#with_data');
-    }
-  });
-  return asyncTest('data-kerning属性を持つ要素とkerning実行後が同じ中身', 2, function() {
-    var el, el_data, timeoutID;
-    el = this.el;
-    el_data = this.el_data;
+  module('data属性でも同じ設定ができる');
+  asyncTest('[data-kerning]', 2, function() {
+    var el, el_clone, timeoutID;
+    el = $('#data_attr');
+    el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el);
+    el_clone.kerning();
     return timeoutID = window.setInterval(function() {
-      if (el.length && el_data.length) {
+      if (el.length && el_clone.length) {
         ok(true, 'DOM has appended.');
         window.clearTimeout(timeoutID);
         start();
-        return strictEqual(el.kerning().html(), el_data.html());
+        return strictEqual(el.html(), el_clone.html());
       }
     }, 100);
   });
+  return asyncTest('[data-kerning="{data:_data}"]', 2, function() {
+    var data, el, el_clone, json, parseJSON, timeoutID;
+    parseJSON = function(text) {
+      var O_o, o_O, obj;
+      obj = null;
+      try {
+        obj = JSON.parse(text);
+        return obj;
+      } catch (_error) {
+        O_o = _error;
+        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred");
+      }
+      try {
+        obj = eval("(" + text + ")");
+      } catch (_error) {
+        o_O = _error;
+        console.error("jquery.kerning :: ERROR :: JSON.parse failed");
+        return null;
+      }
+      return obj;
+    };
+    el = $('#data_attr_json');
+    json = parseJSON(el.data('kerning'));
+    data = json.data;
+    console.log('TEST', data);
+    el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el);
+    el_clone.kerning({
+      data: data
+    });
+    return timeoutID = window.setInterval(function() {
+      if (el.length && el_clone.length) {
+        ok(true, 'DOM has appended.');
+        window.clearTimeout(timeoutID);
+        start();
+        return strictEqual(el.html(), el_clone.html());
+      }
+    }, 1000);
+  });
 })(jQuery);
+
+//# sourceMappingURL=kerning_test.js.map

@@ -37,17 +37,19 @@ do ($ = jQuery) ->
       # JSON.parseだけだと厳密すぎるのでevalでも評価を試す
       parseJSON = (text)->
         obj = null
+        
         try
           obj = JSON.parse( text )
           return obj
         catch O_o
-          
+          console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred")
+
         try
           obj = eval("(" + text + ")")
         catch o_O
           console.error("jquery.kerning : [ERROR] JSON.parse failed")
           return null
-        console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred")
+        
         return obj
 
       txt = $(this).data('kerning')

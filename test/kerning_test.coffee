@@ -19,7 +19,7 @@ do ($ = jQuery) ->
   #   throws(block, [expected], [message])
 
   # ---------------------------------
-
+  
   module 'No option',
     setup: ->
       this.h1 = $ 'h1'
@@ -149,24 +149,56 @@ do ($ = jQuery) ->
       strictEqual target.find('[data-kerned]').length, 14
     , 2000
 
-
   # ---------------------------------
 
   # TODO [data-kerning]要素をcloneして、jsに置き換えて実行した時と結果がおなじになるようにテストする
-  module 'Specification with data attribute',
-    setup: ->
-      this.el = $ '#without_data'
-      this.el_data = $ '#with_data'
+  module 'data属性でも同じ設定ができる'
 
-  asyncTest 'data-kerning属性を持つ要素とkerning実行後が同じ中身', 2, ()->
-    el = this.el
-    el_data = this.el_data
+  asyncTest '[data-kerning]', 2, ()->
+    el = $ '#data_attr'
+    # data属性除去したクローン（カーニング済みかもしれないので中身も初期化）
+    el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el)
+    # 通常記法でのカーニング適用
+    el_clone.kerning()
     timeoutID = window.setInterval ()->
-      if el.length && el_data.length
+      if el.length && el_clone.length
         ok(true, 'DOM has appended.')
         window.clearTimeout timeoutID
         start()
-        strictEqual el.kerning().html(), el_data.html()
+        strictEqual el.html(), el_clone.html()
     , 100
+
+  asyncTest '[data-kerning="{data:_data}"]', 2, ()->
+    parseJSON = (text)->
+      obj = null
+      try
+        obj = JSON.parse( text )
+        return obj
+      catch O_o
+        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred")
+
+      try
+        obj = eval("(" + text + ")")
+      catch o_O
+        console.error("jquery.kerning :: ERROR :: JSON.parse failed")
+        return null
+      
+      return obj
+
+    el = $ '#data_attr_json'
+    json = parseJSON(el.data('kerning'))
+    data = json.data
+    console.log('TEST',data)
+    # data属性除去したクローン（カーニング済みかもしれないので中身も初期化）
+    el_clone = el.clone().removeAttr('data-kerning').html(el.text()).insertAfter(el)
+    # 通常記法でのカーニング適用
+    el_clone.kerning({data:data})
+    timeoutID = window.setInterval ()->
+      if el.length && el_clone.length
+        ok(true, 'DOM has appended.')
+        window.clearTimeout timeoutID
+        start()
+        strictEqual el.html(), el_clone.html()
+    , 1000
 
   # TODO 動的に追加された要素がちゃんとカーニングされているかのテスト

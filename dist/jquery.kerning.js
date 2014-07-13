@@ -1,4 +1,4 @@
-/*! kerning - v0.2.2 - 2014-07-05
+/*! kerning - v0.2.2 - 2014-07-13
 * http://karappoinc.github.io/jquery.kerning.js/
 * Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
@@ -38,7 +38,6 @@
   $(document).on('ready', function() {
     return $(document).find('[data-kerning]').each(function() {
       var opts, parseJSON, txt;
-      console.log('onREady...');
       parseJSON = function(text) {
         var O_o, o_O, obj;
         obj = null;
@@ -47,15 +46,15 @@
           return obj;
         } catch (_error) {
           O_o = _error;
+          console.log("jquery.kerning : [WARN] As a result of JSON.parse, a trivial problem has occurred");
         }
         try {
           obj = eval("(" + text + ")");
         } catch (_error) {
           o_O = _error;
-          console.error("jquery.kerning :: ERROR :: JSON.parse failed");
+          console.error("jquery.kerning : [ERROR] JSON.parse failed");
           return null;
         }
-        console.log("jquery.kerning :: WARN :: As a result of JSON.parse, a trivial problem has occurred");
         return obj;
       };
       txt = $(this).data('kerning');
@@ -159,7 +158,7 @@
             });
           });
         } else {
-          console.error('jquery.kerning :: Invalid configure');
+          console.error('jquery.kerning : [ERROR] Invalid configure');
           return me;
         }
       } else {
@@ -168,3 +167,5 @@
     });
   };
 })(jQuery);
+
+//# sourceMappingURL=jquery.kerning.js.map
