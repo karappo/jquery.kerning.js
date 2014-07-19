@@ -1,0 +1,129 @@
+!!!
+%html{lang: "ja"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}
+    %meta{content: "width=device-width, initial-scale=1", name: "viewport"}
+    %title jquery.kerning.js
+    %link{href: "//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css", rel: "stylesheet"}
+    =stylesheet_link_tag 'jumbotron-narrow'
+    =stylesheet_link_tag 'index'
+
+    %script{src: "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
+    %script{src: "//google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"}
+    %script{src: "//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"}
+    %script{src: "./lib/jquery.kerning.js"}
+    :javascript
+      $(function(){
+        $.getJSON("./data/mplus-2m-regular.json" , function(data) {
+          $('.mplus.kern').kerning({"data":data});
+        });
+        $.getJSON("./data/utsukushi-mincho.json" , function(data) {
+          $('.utsukushi.kern').kerning({"data":data});
+        });
+        $('.feature.kern').kerning();
+      });
+  %body{onload: "prettyPrint()"}
+    =partial 'layouts/ga'
+    %a{href: "https://github.com/KarappoInc/jquery.kerning.js"}
+      %img{alt: "Fork me on GitHub", src: "https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png", style: "position: absolute; top: 0; right: 0; border: 0;"}
+    .container
+      .header
+        %h3.text-muted jquery.kerning.js
+      .jumbotron
+        %h1 jQuery.Kerning.js
+        %p.lead A kerning plugin specific with Japanese webfont
+        %p
+          %a.btn.btn-lg.btn-info{href: "https://github.com/KarappoInc/jquery.kerning.js", role: "button"} Get Source
+      .row.marketing
+        .col-lg-12
+          %h4 Demo
+          %br
+          %h6
+            %a{href: "http://www.flopdesign.com/freefont/utsukushi-mincho-font.html", target: "_blank"} うつくし明朝
+            \- plain
+          %b.example.utsukushi ポラーノの広場
+          %p.example.utsukushi
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          %h6
+            %a{href: "http://www.flopdesign.com/freefont/utsukushi-mincho-font.html", target: "_blank"} うつくし明朝
+            \- kerned
+          %b.example.utsukushi.kern ポラーノの広場
+          %p.example.utsukushi.kern
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          %h6
+            %a{href: "http://mplus.font-face.jp/#mplus-2m-regular", target: "_blank"} M+ 2m Regular
+            \- plain
+          %b.example.mplus ポラーノの広場
+          %p.example.mplus
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          %h6
+            %a{href: "http://mplus.font-face.jp/#mplus-2m-regular", target: "_blank"} M+ 2m Regular
+            \- kerned
+          %b.example.mplus.kern ポラーノの広場
+          %p.example.mplus.kern
+            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。
+          %h4 Source
+          %br
+          %h6 HTML
+          %pre.prettyprint
+            :preserve
+              <h1>ポラーノの広場</h1>
+              <p>あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。</p>          %h6 Javascript
+          %pre.prettyprint
+            :preserve
+              $.getJSON("./kerning-data.json" , function(_data) {
+                $('h1,p').kerning({data:_data});
+              });          %br
+          %h4 Notice
+          %br
+          %p
+            使用するには、フォントに合わせたカーニングデータの作成が必要です。
+            %br
+            現時点では、ソースコードに付属している
+            %a{href: "https://github.com/KarappoInc/jquery.kerning.js/blob/master/data/kerningdata-template.json", target: "_blank"}> テンプレート
+            を参考に、使用するフォントに合わせたカーニングデータを別途作成する必要があります。
+            %br
+            ※ フォントデータから自動的にjsonデータを生成するツールを試作中です。
+          %br
+          %br
+          %h4 Feature
+          %br
+          %h5 Without option
+          %p
+            カーニングデータを指定しなかった場合、デフォルトで全角約物のカーニングのみ設定されます。
+          %pre.prettyprint $('p').kerning();
+          %br
+          %h6 plain
+          %p.feature
+            どんなフォントでも「約物（やくもの）」のカーニング調整が、簡単にできます。
+          %h6 kerned
+          %p.feature.kern
+            どんなフォントでも「約物（やくもの）」のカーニング調整が、簡単にできます。
+          %br
+          %br
+          %h5 Deep Data Extending
+          %p
+            通常、カーニングデータを指定するとデフォルトのカーニングデータが上書きされ消えてしまいますが、第２引数にtrueを指定することで、デフォルトのカーニング情報に指定したデータをマージして適用することができます。
+          %pre.prettyprint $('p').kerning({data:_data}, true);
+          %br
+          %br
+          %h5 Destroy
+          %p
+            一旦カーニングを適用後に、再度'destroy'オプション付きで呼び出すことで、カーニングをキャンセルし、元の状態に戻すことができます。
+          %pre.prettyprint $('p').kerning('destroy');
+          %br
+          %br
+          %h4 Case Study
+          %br
+          %ul
+            %li
+              %a{href: "http://www.dramaticyotsukaido.com/", target: "_blank"} ドラマチック四街道
+            %li
+              %a{href: "http://theaterq.1001p.jp/", target: "_blank"} THEATER Q
+      .footer
+        %p
+          ©
+          %a{href: "http://karappo.net/", target: "_blank"} Karappo Inc.
+          \&
+          %a{href: "http://ryoken.org/", target: "_blank"} Hideyo Ryoken

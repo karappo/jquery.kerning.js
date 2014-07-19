@@ -1,0 +1,125 @@
+@charset "UTF-8";
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+/* line 21, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+
+/* line 31, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+body { line-height: 1; }
+
+/* line 36, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+
+/* line 40, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+nav ul { list-style: none; }
+
+/* line 44, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+blockquote, q { quotes: none; }
+
+/* line 49, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+
+/* line 54, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+a { margin: 0; padding: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+
+/* change colours to suit your needs */
+/* line 63, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+
+/* change colours to suit your needs */
+/* line 70, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+
+/* line 77, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+del { text-decoration: line-through; }
+
+/* line 81, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+
+/* line 86, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* change border colour to suit your needs */
+/* line 92, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #cccccc; margin: 1em 0; padding: 0; }
+
+/* line 101, /Users/terada/Sites/jquery.kerning.js/source/style/general/_html5reset-1.6.1.scss */
+input, select { vertical-align: middle; }
+
+/* CSS Document */
+/* line 6, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.right { float: right; }
+
+/* line 9, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.left { float: left; }
+
+/* float:left のみクリア */
+/* line 18, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.clfl:after { content: "."; /* 新しい要素を作る */ display: block; /* ブロックレベル要素に */ clear: left; height: 0; visibility: hidden; }
+
+/* float:right のみクリア */
+/* line 28, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.clfr:after { content: "."; /* 新しい要素を作る */ display: block; /* ブロックレベル要素に */ clear: right; height: 0; visibility: hidden; }
+
+/* float 両方クリア */
+/* line 41, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.clf:after { content: "."; /* 新しい要素を作る */ display: block; /* ブロックレベル要素に */ clear: both; height: 0; visibility: hidden; }
+
+/* line 50, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+.clf { min-height: 1px; }
+
+/* line 54, /Users/terada/Sites/jquery.kerning.js/source/style/general/_general.scss */
+* html .clf { height: 1px; /*¥*/ /*/
+height: auto;
+overflow: hidden;
+/**/ }
+
+/* Reset All Default Styles */
+/* line 13, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+
+/* line 24, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+body { line-height: 1; }
+
+/* line 28, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+ol, ul { list-style: none; }
+
+/* line 32, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+blockquote, q { quotes: none; }
+
+/* remember to define focus styles! */
+/* line 38, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+:focus { outline: 0; }
+
+/* remember to highlight inserts somehow! */
+/* line 44, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+ins { text-decoration: none; }
+
+/* line 48, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+del { text-decoration: line-through; }
+
+/* tables still need 'cellspacing="0"' in the markup */
+/* line 54, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* IEの画像の下に隙間ができるバグ対策 */
+/* line 61, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+img { vertical-align: bottom; }
+
+/* IEでカーソルが変わらない対策 */
+/* line 67, /Users/terada/Sites/jquery.kerning.js/source/style/general/_reset.scss */
+a span { cursor: pointer; }
+
+/* line 6, /Users/terada/Sites/jquery.kerning.js/source/style/maker.sass */
+body { padding: 30px; }
+
+/* line 9, /Users/terada/Sites/jquery.kerning.js/source/style/maker.sass */
+#dropzone { border: 1px dashed #bbbbbb; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; padding: 25px; margin-bottom: 30px; text-align: center; font-size: 20px; font-weight: bold; color: #bbbbbb; }
+
+/* line 19, /Users/terada/Sites/jquery.kerning.js/source/style/maker.sass */
+#output { width: 100%; height: -webkit-calc(100% - 100px); resize: none; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; background-color: #333333; color: #8a589e; border-color: #bbbbbb; }

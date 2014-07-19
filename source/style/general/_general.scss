@@ -1,0 +1,60 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+
+.right{
+	float:right;
+}
+.left{
+	float:left;
+}
+
+
+
+
+/* float:left のみクリア */
+
+.clfl:after {
+  content: ".";  /* 新しい要素を作る */
+  display: block;  /* ブロックレベル要素に */
+  clear: left;
+  height: 0;
+  visibility: hidden;
+}
+
+/* float:right のみクリア */
+
+.clfr:after {
+  content: ".";  /* 新しい要素を作る */
+  display: block;  /* ブロックレベル要素に */
+  clear: right;
+  height: 0;
+  visibility: hidden;
+}
+
+
+
+/* float 両方クリア */
+
+.clf:after 
+{
+  content: ".";  /* 新しい要素を作る */
+  display: block;  /* ブロックレベル要素に */
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+
+.clf 
+{
+  min-height: 1px;
+}
+
+* html .clf {
+  height: 1px;
+  /*¥*//*/
+  height: auto;
+  overflow: hidden;
+  /**/
+}
