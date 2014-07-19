@@ -171,7 +171,7 @@ handleFileSelect = (e) ->
       
       window.data = new Uint8Array(reader.result)
 
-      FontInfo = {
+      FontInfo = 
         OffsetTable:
           version:       _ULONG_STR()
           numTables:     _USHORT()
@@ -179,36 +179,33 @@ handleFileSelect = (e) ->
           entrySelector: _USHORT()
           rangeShift:    _USHORT()
         TableDirectory: {}
-      }
       
       for i in [0...FontInfo.OffsetTable.numTables]
         tag = String.fromCharCode.apply(null, __read(4)).replace(' ','')
-        FontInfo.TableDirectory[tag] = {
+        FontInfo.TableDirectory[tag] = 
           checkSum: _ULONG_STR()
           offset:   _ULONG()
           length:   _ULONG()
-        }
       
       # "name" Table =========================
       
       _move FontInfo.TableDirectory.name.offset
 
-      FontInfo['name'] = {
+      FontInfo['name'] = 
         format:  _USHORT()
         count:   _USHORT()
         offset:  _USHORT()
         records: []
-      }
 
       for i in [0...FontInfo.name.count]
-        FontInfo.name.records.push({
+        FontInfo.name.records.push(
           platformID:  _USHORT()
           encordingID: _USHORT()
           languageId:  _USHORT()
           nameId:      _USHORT()
           length:      _USHORT()
           offset:      _USHORT()
-        })
+        )
 
       storageOffset = FontInfo.TableDirectory.name.offset + FontInfo.name.offset # 文字ストレージの先頭
       for i in [0...FontInfo.name.count]
@@ -224,19 +221,18 @@ handleFileSelect = (e) ->
       
       _move(FontInfo.TableDirectory.cmap.offset)
 
-      FontInfo['cmap'] = {
+      FontInfo['cmap'] = 
         version:        _USHORT()
         numTables:      _USHORT()
         encodingRecords:[]
-      }
 
 
       for i in [0...FontInfo.cmap.numTables]
-        FontInfo.cmap.encodingRecords.push({
+        FontInfo.cmap.encodingRecords.push(
           platformID: _USHORT()
           encordingID:_USHORT()
           offset:     _ULONG()
-        })
+        )
 
       # TODO: read encoding sub tables
 
@@ -245,7 +241,7 @@ handleFileSelect = (e) ->
       _move FontInfo.TableDirectory.CFF.offset
 
       # TODO: 値をちゃんと取得
-      FontInfo['CFF'] = {
+      FontInfo['CFF'] = 
         Header:
           major: _Card8()
           minor: _Card8()
@@ -253,7 +249,6 @@ handleFileSelect = (e) ->
           offsetSize: _Card8()
         Name: null
         Top: null
-      }
       
       FontInfo.CFF.Name = _INDEX(true)
       FontInfo.CFF.Top = _INDEX()
@@ -295,7 +290,7 @@ handleFileSelect = (e) ->
       
       _move(FontInfo.TableDirectory.GPOS.offset)
 
-      FontInfo['GPOS'] = {
+      FontInfo['GPOS'] = 
         Header:
           Version:     _FIXED()
           ScriptList:  _USHORT() # offset
@@ -305,49 +300,44 @@ handleFileSelect = (e) ->
         FeatureList: null
         LookupList: null
         Lookups: []
-      }
 
       # Script List
       ScriptListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.ScriptList
       _move(ScriptListOffset)
 
-      FontInfo.GPOS.ScriptList = {
+      FontInfo.GPOS.ScriptList = 
         ScriptCount:  _USHORT()
         ScriptRecord: []
-      }
       
       for i in [0...FontInfo.GPOS.ScriptList.ScriptCount]
-        ScriptRecord = {
+        ScriptRecord = 
           ScriptTag:    _TAG();
           ScriptOffset: _USHORT();
           Script:       {}
-        }
         
         ScriptTableOffset = ScriptListOffset + ScriptRecord.ScriptOffset
         _push()
         _move(ScriptTableOffset)
         
-        ScriptRecord.Script = {
+        ScriptRecord.Script = 
           DefaultLangSys: _USHORT()
           LangSysCount:   _USHORT()
           LangSysRecord:  []
-        }
 
         for j in [0...ScriptRecord.Script.LangSysCount]
-          LangSysRecord = {
+          LangSysRecord = 
             LangSysTag:    _TAG()
             LangSysOffset: _USHORT()
             LangSys:       {}
-          }
+
           _push()
           _move(ScriptTableOffset+LangSysRecord.LangSysOffset)
 
-          LangSysRecord.LangSys = {
+          LangSysRecord.LangSys = 
             LookupOrder:     _USHORT()
             ReqFeatureIndex: _USHORT()
             FeatureCount:    _USHORT()
             FeatureIndex:    []
-          }
 
           ScriptRecord.Script['LangSysRecord'].push(LangSysRecord)
           _pop()
@@ -359,26 +349,23 @@ handleFileSelect = (e) ->
       FeatureListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.FeatureList
       _move(FeatureListOffset)
 
-      FontInfo.GPOS.FeatureList = {
+      FontInfo.GPOS.FeatureList = 
         FeatureCount:  _USHORT()
         FeatureRecord: []
-      }
 
       for i in [0...FontInfo.GPOS.FeatureList.FeatureCount]
-        FeatureRecord = {
+        FeatureRecord = 
           FeatureTag:    _TAG()
           FeatureOffset: _USHORT()
           Feature:       {}
-        }
 
         _push()
         _move(FeatureListOffset+FeatureRecord.FeatureOffset)
 
-        FeatureRecord.Feature = {
+        FeatureRecord.Feature = 
           FeatureParams:   _USHORT()
           LookupCount:     _USHORT()
           LookupListIndex: []
-        }
 
         for j in [0...FeatureRecord.Feature.LookupCount]
           FeatureRecord.Feature.LookupListIndex.push(_USHORT())
@@ -390,10 +377,9 @@ handleFileSelect = (e) ->
       LookupListOffset = FontInfo.TableDirectory.GPOS.offset+FontInfo.GPOS.Header.LookupList
       _move(LookupListOffset)
 
-      FontInfo.GPOS.LookupList = {
+      FontInfo.GPOS.LookupList = 
         LookupCount: _USHORT()
         Lookup:      []
-      }
 
       for i in [0...FontInfo.GPOS.LookupList.LookupCount]
         FontInfo.GPOS.LookupList.Lookup.push(_USHORT())
@@ -406,13 +392,12 @@ handleFileSelect = (e) ->
         LookupOffset = LookupListOffset + FontInfo.GPOS.LookupList.Lookup[i]
         _move(LookupOffset)
 
-        Lookup = {
+        Lookup = 
           LookupType:    _USHORT()
           LookupFlag:    _USHORT_STR()
           SubTableCount: _USHORT()
           MarkFilteringSet: null
           SubTable: []
-        }
 
         SubTableOffsets = []
         for j in [0...Lookup.SubTableCount]
