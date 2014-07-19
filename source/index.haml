@@ -68,13 +68,14 @@
           %h6 HTML
           %pre.prettyprint
             :preserve
-              <h1>ポラーノの広場</h1>
-              <p>あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。</p>          %h6 Javascript
+              &lt;h1&gt;ポラーノの広場&lt;/h1&gt;
+              &lt;p&gt;あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。&lt;/p&gt;
+          %h6 Javascript
           %pre.prettyprint
             :preserve
               $.getJSON("./kerning-data.json" , function(_data) {
                 $('h1,p').kerning({data:_data});
-              });          %br
+              });
           %h4 Notice
           %br
           %p
