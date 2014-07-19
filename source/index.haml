@@ -12,7 +12,7 @@
     %script{src: "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
     %script{src: "//google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"}
     %script{src: "//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"}
-    %script{src: "./lib/jquery.kerning.js"}
+    =javascript_include_tag 'lib/jquery.kerning.js'
     :javascript
       $(function(){
         $.getJSON("./data/mplus-2m-regular.json" , function(data) {
