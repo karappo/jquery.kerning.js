@@ -1,5 +1,5 @@
 *.DS_Store
 *.sass-cache
-vendor
-build
+vendor/*
+build/*
 *.log
