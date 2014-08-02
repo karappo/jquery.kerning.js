@@ -21,7 +21,7 @@
     }
   ],
   "dependencies": {
-    "jquery": "*"
+    "jquery": ">=1.7.2"
   },
   "keywords": ["kern","kerning","font","fonts","webfont","japanese","type","typography","style"]
 }

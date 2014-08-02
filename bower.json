@@ -21,6 +21,6 @@
         "README.md"
     ],
     "dependencies": {
-        "jquery": "*"
+        "jquery": ">=1.7.2"
     }
 }
