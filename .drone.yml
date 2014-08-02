@@ -1,0 +1,6 @@
+image: node0.10
+
+script:
+  - npm install
+  - npm install grunt-cli
+  - npm test
