@@ -115,6 +115,15 @@
           %pre.prettyprint $('p').kerning('destroy');
           %br
           %br
+          %h5 Use "data-kerning" attribute
+          %p
+            javascriptを書かなくても、data属性だけで記述することもできるようになりました。
+          %pre.prettyprint 
+            :preserve
+              &lt;p data-kerning&gt;字詰だけのために、js書かなくても、大丈夫です。&lt;/p&gt;
+              &lt;p data-kerning="{data:_data}"&gt;このように、カーニングデータを指定する事もできます。&lt;/p&gt;
+          %br
+          %br
           %h4 Case Study
           %br
           %ul
