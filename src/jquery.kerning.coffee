@@ -147,6 +147,15 @@ do ($ = jQuery) ->
           # console.log(str,L,R)
 
         container.html(content)
+
+        # style check
+
+        # text-indentが0であるか確かめ、そうでない場合はstyleを追加してキャンセル
+        container.find('[data-kerned]').each ->
+          _el = $(this)
+          if parseInt(_el.css('text-indent'),10) != 0
+            _el.css 'text-indent', 0
+        
         return me
 
 

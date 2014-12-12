@@ -142,6 +142,13 @@
           }
         }
         container.html(content);
+        container.find('[data-kerned]').each(function() {
+          var _el;
+          _el = $(this);
+          if (parseInt(_el.css('text-indent'), 10) !== 0) {
+            return _el.css('text-indent', 0);
+          }
+        });
         return me;
       };
       if (typeof config === 'string') {
