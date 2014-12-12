@@ -15,6 +15,11 @@
        you REALLY want to mess around with jQuery in the console. REMEMBER WE
        ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY. -->
   <script>window._$ = jQuery.noConflict(true);</script>
+  <style>
+    ul#text-indent li{
+      text-indent: -0.75em;
+    }
+  </style>
 </head>
 <body>
   
@@ -30,6 +35,11 @@
     <p id="data_attr" data-kerning>あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。</p>
 
     <p id="data_attr_json" data-kerning='{data:{kerning:{"あ":[-0.5,-0.5]}}}'>あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。</p>
+    
+    <ul id="text-indent">
+      <li>科学技術：情報通信技術、機械工学（ロボティクス、安全、移動など）、人間工学（生理学、心理学、脳科学など）、医療技術（ヘルスケア、生活支援など）</li>
+      <li>人間視点：仕事と家庭生活の両立、子育てや介護、男女共同参画</li>
+    </ul>
 
   </div>
 

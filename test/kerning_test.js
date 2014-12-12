@@ -154,7 +154,7 @@
       }
     }, 100);
   });
-  return asyncTest('[data-kerning="{data:_data}"]', 2, function() {
+  asyncTest('[data-kerning="{data:_data}"]', 2, function() {
     var el, el_clone, json, timeoutID;
     el = $('#data_attr_json');
     json = $.kerning.parseJSON(el.data('kerning'));
@@ -170,6 +170,16 @@
         return strictEqual(el.html(), el_clone.html());
       }
     }, 1000);
+  });
+  module('他で定義されたスタイルの影響を受けない', {
+    setup: function() {
+      return this.el = $('#text-indent');
+    }
+  });
+  return test('生成した要素は必ず text-indent:0 である', function() {
+    return this.el.kerning().find('[data-kerned]').each(function() {
+      return strictEqual(parseInt($(this).css('text-indent'), 10), 0);
+    });
   });
 })(jQuery);
 

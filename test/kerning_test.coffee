@@ -184,3 +184,14 @@ do ($ = jQuery) ->
     , 1000
 
   # TODO 動的に追加された要素がちゃんとカーニングされているかのテスト
+
+  # ---------------------------------
+
+  module '他で定義されたスタイルの影響を受けない', 
+    setup: ->
+      this.el = $ '#text-indent'
+
+  test '生成した要素は必ず text-indent:0 である', ->
+    this.el.kerning().find('[data-kerned]').each ->
+      strictEqual parseInt($(this).css('text-indent'),10), 0
+
