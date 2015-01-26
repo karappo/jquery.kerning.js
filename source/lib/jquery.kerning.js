@@ -1,6 +1,3 @@
-/*! kerning - v0.3.1 - 2014-12-13
-* http://karappoinc.github.io/jquery.kerning.js/
-* Copyright (c) 2014 Karappo Inc.; Licensed MIT */
 (function($) {
   $(document).on('ready', function() {
     return $(document).find('[data-kerning]').each(function() {
