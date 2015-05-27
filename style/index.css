@@ -2,15 +2,15 @@
 body { -webkit-font-smoothing: antialiased; }
 
 /* line 4, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.jumbotron { background-color: #c9cdda; }
+.jumbotron { background-color: #C9CDDA; }
 /* line 6, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.jumbotron h1 { color: white; }
+.jumbotron h1 { color: #fff; }
 /* line 8, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.jumbotron .lead { color: #666666; }
+.jumbotron .lead { color: #666; }
 /* line 10, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
 .jumbotron .btn { background-color: #563d7c; border-color: #563d7c; }
 /* line 13, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.jumbotron .btn:hover { background-color: #6a528f; }
+.jumbotron .btn:hover { background-color: #6A528F; }
 
 /* PrettyPrint */
 /* line 17, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
@@ -26,7 +26,7 @@ body { -webkit-font-smoothing: antialiased; }
 .fun { color: #dc322f; }
 
 /* line 25, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.str, .atv { color: #dd1144; }
+.str, .atv { color: #D14; }
 
 /* line 27, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
 .kwd, .linenums .tag { color: #1e347b; }
@@ -47,12 +47,10 @@ body { -webkit-font-smoothing: antialiased; }
 ol.linenums { margin: 0 0 0 33px; }
 
 /* line 45, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-ol.linenums li { padding-left: 12px; color: #bebec5; line-height: 18px; text-shadow: 0 1px 0 white; }
+ol.linenums li { padding-left: 12px; color: #bebec5; line-height: 18px; text-shadow: 0 1px 0 #fff; }
 
-@font-face { font-family: "mplus-2m-regular"; font-weight: normal; src: url("./font/mplus-2m-regular-sub.eot") format("eot"); src: url("./font/mplus-2m-regular-sub.woff") format("woff"); src: url("./font/mplus-2m-regular-sub.ttf") format("truetype"); }
-
-@font-face { font-family: "utsukushi-mincho"; font-weight: normal; src: url("./font/UtsukushiFONT.otf") format("opentype"); src: url("./font/UtsukushiMincho.ttf") format("truetype"); }
-
+@font-face { font-family: "mplus-2m-regular"; font-weight: normal; src: url("/jquery.kerning.js/fonts/mplus-2m-regular-sub.eot") format("eot"); src: url("/jquery.kerning.js/fonts/mplus-2m-regular-sub.woff") format("woff"); src: url("/jquery.kerning.js/fonts/mplus-2m-regular-sub.ttf") format("truetype"); }
+@font-face { font-family: "utsukushi-mincho"; font-weight: normal; src: url("/jquery.kerning.js/fonts/UtsukushiFONT.otf") format("opentype"); src: url("/jquery.kerning.js/fonts/UtsukushiMincho.ttf") format("truetype"); }
 /* line 63, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
 .mplus { font-family: "mplus-2m-regular"; }
 
@@ -60,16 +58,16 @@ ol.linenums li { padding-left: 12px; color: #bebec5; line-height: 18px; text-sha
 .utsukushi { font-family: "utsukushi-mincho"; }
 
 /* line 67, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.example { font-size: 20px; color: #111111; margin-bottom: 3em; }
+.example { font-size: 20px; color: #111; margin-bottom: 3em; }
 
 /* line 71, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
 b.example { font-size: 28px; margin: 0.5em 0; display: block; font-weight: normal; }
 
 /* line 76, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.feature { font-size: 18px; color: #111111; }
+.feature { font-size: 18px; color: #111; }
 
 /* line 80, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-h6 a, h6:hover { color: #333333; text-decoration: none; }
+h6 a, h6:hover { color: #333; text-decoration: none; }
 
 /* line 85, /Users/terada/Sites/jquery.kerning.js/source/style/index.sass */
-.footer a { color: #777777; text-decoration: none; }
+.footer a { color: #777; text-decoration: none; }

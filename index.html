@@ -11,7 +11,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="./lib/jquery.kerning.js"></script>
+    <script src="/jquery.kerning.js/lib/jquery.kerning.js" type="text/javascript"></script>
     <script>
       $(function(){
         $.getJSON("./data/mplus-2m-regular.json" , function(data) {
@@ -30,7 +30,8 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-2139657-4', 'karappoinc.github.io');
+      
+      ga('create', 'UA-2139657-7', 'auto');
       ga('send', 'pageview');
     </script>
     <a href="https://github.com/KarappoInc/jquery.kerning.js">
@@ -89,6 +90,7 @@
           <pre class="prettyprint">&lt;h1&gt;ポラーノの広場&lt;/h1&gt;&#x000A;&lt;p&gt;あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモーリオ市、郊外のぎらぎらひかる草の波。&lt;/p&gt;</pre>
           <h6>Javascript</h6>
           <pre class="prettyprint">$.getJSON("./kerning-data.json" , function(_data) {&#x000A;  $('h1,p').kerning({data:_data});&#x000A;});</pre>
+          <br>
           <h4>Notice</h4>
           <br>
           <p>
