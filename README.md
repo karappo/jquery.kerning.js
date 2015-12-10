@@ -29,7 +29,7 @@ jQuery(function($) {
 
 ## Code Status
 
-[![Build Status](https://travis-ci.org/KarappoInc/jquery.kerning.js.png?branch=master)](https://travis-ci.org/KarappoInc/jquery.kerning.js)
+[![Build Status](https://travis-ci.org/karappo/jquery.kerning.js.svg?branch=master)](https://travis-ci.org/karappo/jquery.kerning.js.svg?branch=master)
 
 
 ## Release History
