@@ -5,8 +5,8 @@ The jQuery kerning plugin specific with Japanese webfont.
 ## Getting Started
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/karappoinc/jquery.kerning.js/master/dist/jquery.kerning.min.js
-[max]: https://raw.github.com/karappoinc/jquery.kerning.js/master/dist/jquery.kerning.js
+[min]: https://raw.github.com/karappo/jquery.kerning.js/master/dist/jquery.kerning.min.js
+[max]: https://raw.github.com/karappo/jquery.kerning.js/master/dist/jquery.kerning.js
 
 In your web page:
 
@@ -24,7 +24,7 @@ jQuery(function($) {
 ```
 
 ## Examples / Documentation
-[http://karappoinc.github.io/jquery.kerning.js/](http://karappoinc.github.io/jquery.kerning.js/)
+[http://karappo.github.io/jquery.kerning.js/](http://karappo.github.io/jquery.kerning.js/)
 
 
 ## Code Status
